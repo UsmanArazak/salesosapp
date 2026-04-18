@@ -1,23 +1,38 @@
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-import {
-  createPublicSupabaseClient,
-  createServiceRoleSupabaseClient,
-} from "@/lib/supabase";
+import { createPublicSupabaseClient, createServiceRoleSupabaseClient } from "@/lib/supabase";
+import type { UserRole } from "@/types";
 
-type Credentials = {
-  email: string;
-  password: string;
-};
-
-type UserRow = {
+type UsersRow = {
   shop_id: string;
-  role: "owner" | "superadmin";
+  role: UserRole;
 };
 
+function isUserRole(value: unknown): value is UserRole {
+  return value === "owner" || value === "superadmin";
+}
+
+function parseCredentials(
+  credentials: Record<string, string> | undefined,
+): { email: string; password: string } | null {
+  const email = credentials?.email?.trim();
+  const password = credentials?.password;
+  if (!email || !password) return null;
+  return { email, password };
+}
+
+/**
+ * SalesOS NextAuth configuration.
+ *
+ * Constraints (Prompt 1):
+ * - Credentials verification uses Supabase Auth with the public (anon) client.
+ * - The ONLY allowed service-role usage is a one-time lookup of `users` by id
+ *   to extract `shop_id` and `role` for JWT enrichment.
+ */
 export const authOptions: NextAuthOptions = {
   session: { strategy: "jwt" },
+  pages: { signIn: "/login" },
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -26,46 +41,30 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(rawCredentials) {
-        const email = rawCredentials?.email;
-        const password = rawCredentials?.password;
+        const parsed = parseCredentials(rawCredentials);
+        if (!parsed) return null;
 
-        if (typeof email !== "string" || typeof password !== "string") {
-          return null;
-        }
-
-        // Step 1: verify credentials via Supabase Auth using the public (anon) client.
         const publicClient = createPublicSupabaseClient();
-        const { data: authData, error: authError } =
-          await publicClient.auth.signInWithPassword({ email, password });
+        const signIn = await publicClient.auth.signInWithPassword(parsed);
+        if (signIn.error || !signIn.data.user) return null;
 
-        if (authError || !authData.user) {
-          return null;
-        }
+        const authUserId = signIn.data.user.id;
 
-        const authUserId = authData.user.id;
-
-        // Step 2: one-time service role lookup to map auth user -> shop/role.
         const serviceClient = createServiceRoleSupabaseClient();
-        const { data: userRow, error: userError } = await serviceClient
+        const profile = await serviceClient
           .from("users")
-          .select("shop_id,role")
+          .select("shop_id, role")
           .eq("id", authUserId)
-          .maybeSingle<UserRow>();
+          .maybeSingle<UsersRow>();
 
-        if (userError || !userRow) {
-          return null;
-        }
+        if (profile.error || !profile.data) return null;
+        if (!isUserRole(profile.data.role)) return null;
 
         return {
           id: authUserId,
-          email,
-          shopId: userRow.shop_id,
-          role: userRow.role,
-        } satisfies {
-          id: string;
-          email: string;
-          shopId: string;
-          role: UserRow["role"];
+          email: parsed.email,
+          shopId: profile.data.shop_id,
+          role: profile.data.role,
         };
       },
     }),
@@ -73,35 +72,21 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        const u = user as unknown as {
-          id: string;
-          shopId: string;
-          role: "owner" | "superadmin";
-        };
-        token.userId = u.id;
-        token.shopId = u.shopId;
-        token.role = u.role;
+        token.userId = user.id;
+        token.shopId = user.shopId;
+        token.role = user.role;
       }
       return token;
     },
     async session({ session, token }) {
-      if (!token.userId || !token.shopId || !token.role) {
-        return session;
-      }
-
       session.user = {
-        ...(session.user ?? {}),
-        userId: token.userId,
-        shopId: token.shopId,
-        role: token.role,
+        userId: token.userId ?? "",
+        shopId: token.shopId ?? "",
+        role: (token.role as UserRole) ?? "owner",
+        email: session.user?.email ?? null,
       };
       return session;
     },
   },
 };
-
-export const nextAuthCredentialsSchema = {
-  email: "string",
-  password: "string",
-} as const satisfies Record<keyof Credentials, "string">;
 
