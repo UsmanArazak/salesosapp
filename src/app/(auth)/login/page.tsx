@@ -171,7 +171,7 @@ export default function LoginPage() {
       </div>
 
       <p className="mt-8 text-xs" style={{ color: "var(--text-muted)" }}>
-        SalesOS · iDICE Founders Lab · 2026
+        SalesOS · 2026
       </p>
     </div>
   );
