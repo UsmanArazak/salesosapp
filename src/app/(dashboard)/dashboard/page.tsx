@@ -129,13 +129,26 @@ export default async function DashboardPage() {
   return (
     <div>
       {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>
-          Dashboard
-        </h1>
-        <p className="text-sm mt-0.5" style={{ color: "var(--text-muted)" }}>
-          {todayLabel()}
-        </p>
+      <div className="mb-6 flex items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>
+            Dashboard
+          </h1>
+          <p className="text-sm mt-0.5" style={{ color: "var(--text-muted)" }}>
+            {todayLabel()}
+          </p>
+        </div>
+        <Link
+          href="/dashboard/sales/new"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-all active:scale-[0.97] shadow-sm flex-shrink-0"
+          style={{ background: "var(--accent)" }}
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} className="w-4 h-4">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          Record Sale
+        </Link>
       </div>
 
       {/* ── Featured: Gross Profit Card ─── */}
@@ -280,27 +293,7 @@ export default async function DashboardPage() {
           }
         />
 
-        {/* Record Sale shortcut */}
-        <Link
-          href="/dashboard/sales/new"
-          className="rounded-2xl border p-4 flex flex-col items-center justify-center gap-2 text-center transition-all active:scale-[0.98]"
-          style={{
-            background: "var(--accent-dim)",
-            borderColor: "var(--accent-border)",
-            color: "var(--accent)",
-          }}
-        >
-          <div
-            className="w-8 h-8 rounded-lg flex items-center justify-center"
-            style={{ background: "rgba(255,83,71,0.12)" }}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} className="w-4 h-4">
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
-          </div>
-          <span className="text-xs font-semibold">Record Sale</span>
-        </Link>
+
       </div>
 
       {/* ── Quick Actions ─── */}
