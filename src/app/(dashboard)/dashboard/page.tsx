@@ -282,7 +282,7 @@ export default async function DashboardPage() {
           label="Low Stock Alerts"
           value={`${stats.lowStockCount} product${stats.lowStockCount !== 1 ? "s" : ""}`}
           description={stats.lowStockCount > 0 ? "Tap to view & restock" : "All stock levels OK"}
-          href="/dashboard/inventory"
+          href="/dashboard/inventory/alerts"
           warning={stats.lowStockCount > 0}
           icon={
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
