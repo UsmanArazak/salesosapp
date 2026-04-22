@@ -1,80 +1,5 @@
 import Dexie, { type Table } from "dexie";
 
-export interface PendingSale {
-  id: string;
-  createdAt: string;
-  payload: unknown;
-}
-
-export interface PendingExpense {
-  id: string;
-  createdAt: string;
-  payload: unknown;
-}
-
-export interface PendingProductChange {
-  id: string;
-  createdAt: string;
-  payload: unknown;
-}
-
-export class SalesOSLocal extends Dexie {
-  pendingSales!: Table<PendingSale, string>;
-  pendingExpenses!: Table<PendingExpense, string>;
-  pendingProducts!: Table<PendingProductChange, string>;
-
-  constructor() {
-    super("SalesOSLocal");
-
-    this.version(1).stores({
-      pendingSales: "id, createdAt",
-      pendingExpenses: "id, createdAt",
-      pendingProducts: "id, createdAt",
-    });
-  }
-}
-
-export const salesOSLocal = new SalesOSLocal();
-
-import Dexie, { type Table } from "dexie";
-
-export type PendingSale = {
-  id: string;
-  createdAt: string;
-  payload: unknown;
-};
-
-export type PendingExpense = {
-  id: string;
-  createdAt: string;
-  payload: unknown;
-};
-
-export type PendingProduct = {
-  id: string;
-  createdAt: string;
-  payload: unknown;
-};
-
-export class SalesOSLocal extends Dexie {
-  pendingSales!: Table<PendingSale, string>;
-  pendingExpenses!: Table<PendingExpense, string>;
-  pendingProducts!: Table<PendingProduct, string>;
-
-  constructor() {
-    super("SalesOSLocal");
-    this.version(1).stores({
-      pendingSales: "id, createdAt",
-      pendingExpenses: "id, createdAt",
-      pendingProducts: "id, createdAt",
-    });
-  }
-}
-
-export const salesOSLocal = new SalesOSLocal();
-
-import Dexie, { type Table } from "dexie";
-
 export type PendingSale = {
   id?: number;
   createdAt: string;
@@ -110,4 +35,3 @@ export class SalesOSLocal extends Dexie {
 }
 
 export const salesOSLocal = new SalesOSLocal();
-

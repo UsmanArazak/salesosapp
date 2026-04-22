@@ -79,11 +79,12 @@ export const authOptions: NextAuthOptions = {
       return token;
     },
     async session({ session, token }) {
+      const role: UserRole = token.role === "superadmin" ? "superadmin" : "owner";
       session.user = {
+        ...(session.user ?? {}),
         userId: token.userId ?? "",
         shopId: token.shopId ?? "",
-        role: (token.role as UserRole) ?? "owner",
-        email: session.user?.email ?? null,
+        role,
       };
       return session;
     },

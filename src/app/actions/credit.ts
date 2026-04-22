@@ -1,7 +1,3 @@
-export {};
-
-export {};
-
 export type CreditActionNotImplemented = {
   error: "NOT_IMPLEMENTED";
 };

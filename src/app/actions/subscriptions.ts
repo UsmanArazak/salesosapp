@@ -1,7 +1,3 @@
-export {};
-
-export {};
-
 export type SubscriptionsActionNotImplemented = {
   error: "NOT_IMPLEMENTED";
 };
