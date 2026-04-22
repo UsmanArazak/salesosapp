@@ -33,10 +33,10 @@ export default async function CustomerProfilePage({
     .order("created_at", { ascending: false });
 
   // TS requires casting due to complex recursive joins from Supabase matching the expected type
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (
     <CustomerProfileClient 
       customer={customer} 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       creditHistory={(creditHistory as any) ?? []} 
     />
   );
