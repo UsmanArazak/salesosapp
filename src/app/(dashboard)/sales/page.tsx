@@ -31,5 +31,6 @@ export default async function SalesPage() {
 
   // Add type assertion since Supabase returns nested joins weirdly.
   // The client component already defines the proper type.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return <SalesList sales={(sales as any) ?? []} />;
 }
