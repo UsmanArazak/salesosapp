@@ -77,7 +77,7 @@ export function SalesList({ sales }: { sales: SaleRow[] }) {
           </p>
         </div>
         <Link
-          href="/dashboard/sales/new"
+          href="/sales/new"
           className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-all active:scale-[0.97] shadow-sm"
           style={{ background: "var(--accent)" }}
         >
@@ -134,7 +134,7 @@ export function SalesList({ sales }: { sales: SaleRow[] }) {
                 Record your first sale to start tracking revenue
               </p>
               <Link
-                href="/dashboard/sales/new"
+                href="/sales/new"
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white"
                 style={{ background: "var(--accent)" }}
               >

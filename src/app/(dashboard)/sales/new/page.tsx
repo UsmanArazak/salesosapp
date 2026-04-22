@@ -35,7 +35,7 @@ export default async function NewSalePage() {
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <Link
-          href="/dashboard/sales"
+          href="/sales"
           className="w-9 h-9 rounded-xl border flex items-center justify-center transition-colors bg-white"
           style={{ borderColor: "var(--border-color)", color: "var(--text-muted)" }}
         >

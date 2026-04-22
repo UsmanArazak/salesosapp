@@ -33,7 +33,7 @@ export default function NewExpensePage() {
       setError(result.error);
       setLoading(false);
     } else {
-      router.push("/dashboard/expenses");
+      router.push("/expenses");
       router.refresh(); // Used safely here since no NextAuth session race condition is happening on sub-pages
     }
   }
@@ -45,7 +45,7 @@ export default function NewExpensePage() {
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <Link
-          href="/dashboard/expenses"
+          href="/expenses"
           className="w-9 h-9 rounded-xl border flex items-center justify-center transition-colors bg-white"
           style={{ borderColor: "var(--border-color)", color: "var(--text-muted)" }}
         >

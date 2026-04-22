@@ -68,7 +68,7 @@ export function InventoryList({ products }: { products: ProductRow[] }) {
           </p>
         </div>
         <Link
-          href="/dashboard/inventory/new"
+          href="/inventory/new"
           id="add-product-btn"
           className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-all active:scale-[0.97] shadow-sm"
           style={{ background: "var(--accent)" }}
@@ -138,7 +138,7 @@ export function InventoryList({ products }: { products: ProductRow[] }) {
                 Add your first product to get started
               </p>
               <Link
-                href="/dashboard/inventory/new"
+                href="/inventory/new"
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white"
                 style={{ background: "var(--accent)" }}
               >
@@ -227,7 +227,7 @@ export function InventoryList({ products }: { products: ProductRow[] }) {
                 {/* Actions */}
                 <div className="flex items-center gap-1 flex-shrink-0 ml-1">
                   <Link
-                    href={`/dashboard/inventory/${product.id}/edit`}
+                    href={`/inventory/${product.id}/edit`}
                     className="w-8 h-8 rounded-lg flex items-center justify-center transition-colors"
                     style={{ color: "var(--accent)" }}
                     title="Edit"

@@ -11,7 +11,7 @@ export default function NewProductPage() {
   async function handleSubmit(data: Parameters<typeof createProduct>[0]) {
     const result = await createProduct(data);
     if ("success" in result) {
-      router.push("/dashboard/inventory");
+      router.push("/inventory");
       router.refresh();
     }
     return result;
@@ -22,7 +22,7 @@ export default function NewProductPage() {
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <Link
-          href="/dashboard/inventory"
+          href="/inventory"
           className="w-9 h-9 rounded-xl border flex items-center justify-center transition-colors"
           style={{
             background: "var(--bg-surface)",
@@ -52,7 +52,7 @@ export default function NewProductPage() {
         <ProductForm
           onSubmit={handleSubmit}
           submitLabel="Add Product"
-          backHref="/dashboard/inventory"
+          backHref="/inventory"
         />
       </div>
     </div>

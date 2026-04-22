@@ -24,7 +24,7 @@ const navItems: NavItem[] = [
     ),
   },
   {
-    href: "/dashboard/sales",
+    href: "/sales",
     label: "Sales",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
@@ -35,7 +35,7 @@ const navItems: NavItem[] = [
     ),
   },
   {
-    href: "/dashboard/inventory",
+    href: "/inventory",
     label: "Inventory",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
@@ -46,7 +46,7 @@ const navItems: NavItem[] = [
     ),
   },
   {
-    href: "/dashboard/customers",
+    href: "/customers",
     label: "Customers",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
@@ -58,7 +58,7 @@ const navItems: NavItem[] = [
     ),
   },
   {
-    href: "/dashboard/expenses",
+    href: "/expenses",
     label: "Expenses",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">

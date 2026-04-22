@@ -33,7 +33,7 @@ export function ExpenseList({ expenses }: { expenses: ExpenseRow[] }) {
           </p>
         </div>
         <Link
-          href="/dashboard/expenses/new"
+          href="/expenses/new"
           className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-all active:scale-[0.97] shadow-sm flex-shrink-0"
           style={{ background: "var(--accent)" }}
         >

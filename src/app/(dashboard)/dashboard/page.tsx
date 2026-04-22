@@ -139,7 +139,7 @@ export default async function DashboardPage() {
           </p>
         </div>
         <Link
-          href="/dashboard/sales/new"
+          href="/sales/new"
           className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-all active:scale-[0.97] shadow-sm flex-shrink-0"
           style={{ background: "var(--accent)" }}
         >
@@ -254,7 +254,7 @@ export default async function DashboardPage() {
           label="Customer Debt"
           value={formatNaira(stats.outstandingCredit)}
           description="Total owed to your shop"
-          href="/dashboard/customers"
+          href="/customers"
           warning={stats.outstandingCredit > 0}
           icon={
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
@@ -282,7 +282,7 @@ export default async function DashboardPage() {
           label="Low Stock Alerts"
           value={`${stats.lowStockCount} product${stats.lowStockCount !== 1 ? "s" : ""}`}
           description={stats.lowStockCount > 0 ? "Tap to view & restock" : "All stock levels OK"}
-          href="/dashboard/inventory/alerts"
+          href="/inventory/alerts"
           warning={stats.lowStockCount > 0}
           icon={
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
@@ -306,10 +306,10 @@ export default async function DashboardPage() {
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
-            { label: "Add Product", href: "/dashboard/inventory/new", emoji: "📦" },
-            { label: "Log Expense", href: "/dashboard/expenses/new", emoji: "💸" },
-            { label: "Add Customer", href: "/dashboard/customers/new", emoji: "👤" },
-            { label: "View Reports", href: "/dashboard/reports", emoji: "📊" },
+            { label: "Add Product", href: "/inventory/new", emoji: "📦" },
+            { label: "Log Expense", href: "/expenses/new", emoji: "💸" },
+            { label: "Add Customer", href: "/customers/new", emoji: "👤" },
+            { label: "View Reports", href: "/reports", emoji: "📊" },
           ].map((action) => (
             <Link
               key={action.href}

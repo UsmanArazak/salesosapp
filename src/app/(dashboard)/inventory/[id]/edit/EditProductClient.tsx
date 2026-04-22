@@ -12,7 +12,7 @@ export function EditProductClient({ product }: { product: ProductRow }) {
   async function handleSubmit(data: Parameters<typeof updateProduct>[1]) {
     const result = await updateProduct(product.id, data);
     if ("success" in result) {
-      router.push("/dashboard/inventory");
+      router.push("/inventory");
       router.refresh();
     }
     return result;
@@ -23,7 +23,7 @@ export function EditProductClient({ product }: { product: ProductRow }) {
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <Link
-          href="/dashboard/inventory"
+          href="/inventory"
           className="w-9 h-9 rounded-xl border flex items-center justify-center transition-colors"
           style={{
             background: "var(--bg-surface)",
@@ -61,7 +61,7 @@ export function EditProductClient({ product }: { product: ProductRow }) {
           }}
           onSubmit={handleSubmit}
           submitLabel="Save Changes"
-          backHref="/dashboard/inventory"
+          backHref="/inventory"
         />
       </div>
     </div>

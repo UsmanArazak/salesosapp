@@ -32,7 +32,7 @@ export function CustomerList({ customers }: { customers: CustomerRow[] }) {
           </p>
         </div>
         <Link
-          href="/dashboard/customers/new"
+          href="/customers/new"
           className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-all active:scale-[0.97] shadow-sm flex-shrink-0"
           style={{ background: "var(--accent)" }}
         >
@@ -102,7 +102,7 @@ export function CustomerList({ customers }: { customers: CustomerRow[] }) {
             return (
               <Link
                 key={c.id}
-                href={`/dashboard/customers/${c.id}`}
+                href={`/customers/${c.id}`}
                 className="block rounded-2xl border bg-white p-4 transition-all active:scale-[0.98]"
                 style={{ borderColor: hasDebt ? "var(--warning-border)" : "var(--border-color)" }}
               >

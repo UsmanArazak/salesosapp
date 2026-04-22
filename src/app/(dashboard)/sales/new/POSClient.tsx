@@ -127,7 +127,7 @@ export function POSClient({ products, customers }: Props) {
     if ("error" in result) {
       setError(result.error);
     } else {
-      router.push("/dashboard/sales");
+      router.push("/sales");
       router.refresh();
     }
   }
@@ -315,7 +315,7 @@ export function POSClient({ products, customers }: Props) {
         {/* Checkout Button */}
         <div className="flex gap-3">
           <Link
-            href="/dashboard/sales"
+            href="/sales"
             className="flex-1 py-4 rounded-xl text-sm font-semibold text-center border bg-[var(--bg-elevated)] text-[var(--text-dim)]"
           >
             Cancel
