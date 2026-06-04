@@ -20,10 +20,10 @@ export function CyclingText() {
   }, []);
 
   return (
-    <span className="inline-block min-w-[90px] text-left">
+    <span className="inline-block min-w-[125px] sm:min-w-[210px] text-center">
       <span
-        className={`inline-block font-bold transition-all duration-300 transform ${
-          fade ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+        className={`inline-block font-extrabold transition-all duration-300 transform ${
+          fade ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2"
         }`}
         style={{ color: "var(--accent)" }}
       >

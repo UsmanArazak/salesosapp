@@ -73,13 +73,13 @@ export default async function Home() {
 
           {/* Heading */}
           <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-stone-900 leading-[1.1] max-w-4xl mx-auto">
-            One tool to <span className="underline decoration-orange-500 decoration-wavy decoration-2">manage</span> <br className="hidden sm:inline" />
+            One tool to <span className="underline decoration-orange-500 decoration-wavy decoration-2 inline-block"><CyclingText /></span> <br className="hidden sm:inline" />
             your shop and your profits
           </h1>
 
           {/* Description */}
-          <p className="text-base sm:text-lg text-stone-500 max-w-2xl mx-auto mt-6 leading-relaxed">
-            SalesOS helps <CyclingText /> your business by recording daily sales, automating profit calculations, tracking customer credit, and managing stock levels.
+          <p className="text-base sm:text-lg text-stone-500 max-w-xl mx-auto mt-6 leading-relaxed">
+            SalesOS helps small retail shops record daily sales, automate profit calculations, track customer credit, and manage stock levels instantly.
           </p>
 
           {/* CTA Buttons */}
