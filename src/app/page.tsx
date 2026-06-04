@@ -73,8 +73,8 @@ export default async function Home() {
 
           {/* Heading */}
           <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-stone-900 leading-[1.1] max-w-4xl mx-auto">
-            One tool to <span className="underline decoration-orange-500 decoration-wavy decoration-2 inline-block"><CyclingText /></span> <br className="hidden sm:inline" />
-            your shop and your profits
+            SalesOS helps <span className="underline decoration-orange-500 decoration-wavy decoration-2 inline-block"><CyclingText /></span> <br className="hidden sm:inline" />
+            your business
           </h1>
 
           {/* Description */}
