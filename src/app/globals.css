@@ -17,11 +17,27 @@
   --accent-border: rgba(255, 83, 71, 0.25);
   --danger: #ef4444;
   --danger-dim: rgba(239, 68, 68, 0.08);
+  --danger-border: rgba(239, 68, 68, 0.25);
+  --danger-surface: rgba(239, 68, 68, 0.05);
   --warning: #f59e0b;
   --warning-dim: rgba(245, 158, 11, 0.1);
   --warning-border: rgba(245, 158, 11, 0.3);
   --success: #16a34a;
   --success-dim: rgba(22, 163, 74, 0.08);
+  --success-border: rgba(22, 163, 74, 0.25);
+  --success-surface: rgba(22, 163, 74, 0.05);
+
+  /* ── Admin Panel Tokens (indigo) ─────────────── */
+  --admin-accent:        #4f46e5;
+  --admin-accent-hover:  #4338ca;
+  --admin-accent-dim:    rgba(79, 70, 229, 0.08);
+  --admin-accent-border: rgba(79, 70, 229, 0.25);
+  --admin-bg-base:       #f5f5ff;
+  --admin-bg-surface:    #ffffff;
+  --admin-bg-elevated:   #f9f9ff;
+  --admin-border:        #e0e0f0;
+  --admin-text-primary:  #1e1b4b;
+  --admin-text-muted:    #6b7280;
 }
 
 * {
