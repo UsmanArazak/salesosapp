@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { signIn, getSession } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -23,14 +23,20 @@ export default function LoginPage() {
       redirect: false,
     });
 
-    setLoading(false);
-
     if (result?.error) {
+      setLoading(false);
       setError("Invalid email or password. Please try again.");
       return;
     }
 
-    window.location.href = "/dashboard";
+    const session = await getSession();
+    setLoading(false);
+
+    if (session?.user?.role === "superadmin") {
+      window.location.href = "/superadmin";
+    } else {
+      window.location.href = "/dashboard";
+    }
   }
 
   return (
