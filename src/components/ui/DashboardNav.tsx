@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 
@@ -89,12 +90,13 @@ export function DashboardNav({ shopName }: { shopName?: string }) {
           className="flex items-center gap-2.5 px-5 py-5 border-b"
           style={{ borderColor: "var(--border-color)" }}
         >
-          <div
-            className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm text-white flex-shrink-0 shadow-sm"
-            style={{ background: "var(--accent)" }}
-          >
-            S
-          </div>
+          <Image
+            src="/logo.png"
+            alt="SalesOS Logo"
+            width={32}
+            height={32}
+            className="rounded-lg flex-shrink-0"
+          />
           <div className="min-w-0">
             <p className="font-bold text-sm leading-tight truncate" style={{ color: "var(--text-primary)" }}>
               SalesOS
@@ -152,12 +154,13 @@ export function DashboardNav({ shopName }: { shopName?: string }) {
         style={{ background: "var(--bg-surface)", borderColor: "var(--border-color)" }}
       >
         <div className="flex items-center gap-2">
-          <div
-            className="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs text-white"
-            style={{ background: "var(--accent)" }}
-          >
-            S
-          </div>
+          <Image
+            src="/logo.png"
+            alt="SalesOS Logo"
+            width={28}
+            height={28}
+            className="rounded-lg"
+          />
           <span className="font-bold text-base" style={{ color: "var(--text-primary)" }}>
             SalesOS
           </span>
