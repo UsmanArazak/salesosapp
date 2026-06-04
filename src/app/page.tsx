@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { CyclingText } from "./CyclingText";
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
@@ -77,8 +78,8 @@ export default async function Home() {
           </h1>
 
           {/* Description */}
-          <p className="text-base sm:text-lg text-stone-500 max-w-xl mx-auto mt-6 leading-relaxed">
-            SalesOS helps small retail shops record daily sales, automate profits calculation, track customer credit, and manage stock levels instantly.
+          <p className="text-base sm:text-lg text-stone-500 max-w-2xl mx-auto mt-6 leading-relaxed">
+            SalesOS helps <CyclingText /> your business by recording daily sales, automating profit calculations, tracking customer credit, and managing stock levels.
           </p>
 
           {/* CTA Buttons */}
