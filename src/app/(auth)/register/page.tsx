@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import Link from "next/link";
+import Image from "next/image";
 import { registerShop } from "@/app/actions/auth";
 
 export default function RegisterPage() {
@@ -53,12 +54,13 @@ export default function RegisterPage() {
       {/* Brand */}
       <div className="mb-8 text-center">
         <div className="inline-flex items-center gap-2.5 mb-2">
-          <div
-            className="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-white text-base shadow-sm"
-            style={{ background: "var(--accent)" }}
-          >
-            S
-          </div>
+          <Image
+            src="/logo.png"
+            alt="SalesOS Logo"
+            width={36}
+            height={36}
+            className="rounded-xl"
+          />
           <span className="font-bold text-2xl tracking-tight" style={{ color: "var(--text-primary)" }}>
             SalesOS
           </span>
