@@ -28,49 +28,43 @@ function todayLabel(): string {
   });
 }
 
-// ─── Stat Card ────────────────────────────────────────────────────────────────
+// ─── Stat Card — matches dashboard/page.tsx StatCard exactly ─────────────────
 
 function StatCard({
   label,
   value,
   description,
   icon,
-  highlight = false,
+  warning = false,
 }: {
   label: string;
   value: string;
   description?: string;
   icon: React.ReactNode;
-  highlight?: boolean;
+  warning?: boolean;
 }) {
   return (
     <div
-      className="rounded-2xl border p-4 h-full"
-      style={{
-        background: highlight ? "var(--admin-accent-dim)" : "var(--admin-bg-surface)",
-        borderColor: highlight ? "var(--admin-accent-border)" : "var(--admin-border)",
-      }}
+      className="rounded-2xl border p-4 h-full bg-white transition-all"
+      style={{ borderColor: warning ? "var(--warning-border)" : "var(--border-color)" }}
     >
       <div
         className="w-8 h-8 rounded-lg flex items-center justify-center mb-3"
         style={{
-          background: highlight ? "var(--admin-accent)" : "var(--admin-bg-elevated)",
-          color: highlight ? "#fff" : "var(--admin-text-muted)",
+          background: warning ? "var(--warning-dim)" : "var(--bg-elevated)",
+          color: warning ? "var(--warning)" : "var(--text-muted)",
         }}
       >
         {icon}
       </div>
-      <p className="text-xs font-medium mb-1" style={{ color: "var(--admin-text-muted)" }}>
+      <p className="text-xs font-medium mb-1" style={{ color: "var(--text-muted)" }}>
         {label}
       </p>
-      <p
-        className="text-2xl font-bold leading-tight"
-        style={{ color: highlight ? "var(--admin-accent)" : "var(--admin-text-primary)" }}
-      >
+      <p className="text-lg font-bold leading-tight truncate" style={{ color: "var(--text-primary)" }}>
         {value}
       </p>
       {description && (
-        <p className="text-xs mt-1" style={{ color: "var(--admin-text-muted)" }}>
+        <p className="text-xs mt-1" style={{ color: "var(--text-muted)" }}>
           {description}
         </p>
       )}
@@ -86,8 +80,8 @@ function PlanBadge({ plan }: { plan: string }) {
     <span
       className="inline-block text-[11px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-md"
       style={{
-        background: isPro ? "var(--admin-accent-dim)" : "rgba(107,114,128,0.1)",
-        color: isPro ? "var(--admin-accent)" : "var(--admin-text-muted)",
+        background: isPro ? "var(--accent-dim)" : "var(--bg-elevated)",
+        color: isPro ? "var(--accent)" : "var(--text-muted)",
       }}
     >
       {isPro ? "Pro" : "Free"}
@@ -103,7 +97,6 @@ async function getPlatformStats() {
   const now = new Date();
   const monthStart = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01T00:00:00.000Z`;
 
-  // Run all counts + data fetches in parallel
   const [
     { count: totalShops },
     { count: totalUsers },
@@ -128,7 +121,6 @@ async function getPlatformStats() {
 
   const totalRevenue = (allSalesRevenue ?? []).reduce((sum, s) => sum + (s.total_amount ?? 0), 0);
 
-  // Join owner email onto recent shops in memory
   const recentShops = (shopsRaw ?? []).map((shop) => ({
     ...shop,
     ownerEmail: (usersRaw ?? []).find((u) => u.shop_id === shop.id)?.email ?? "—",
@@ -155,138 +147,139 @@ export default async function SuperAdminPage() {
   const stats = await getPlatformStats();
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold" style={{ color: "var(--admin-text-primary)" }}>
+    <div>
+      {/* Header — mirrors dashboard/page.tsx header */}
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>
           Platform Overview
         </h1>
-        <p className="text-sm mt-0.5" style={{ color: "var(--admin-text-muted)" }}>
+        <p className="text-sm mt-0.5" style={{ color: "var(--text-muted)" }}>
           {todayLabel()}
         </p>
       </div>
 
-      {/* ── Row 1: Plan Breakdown ─────────────────────────── */}
-      <div>
-        <p
-          className="text-xs font-semibold uppercase tracking-widest mb-3"
-          style={{ color: "var(--admin-text-muted)" }}
+      {/* ── Featured Hero Card — Total Revenue ─── */}
+      <div
+        className="rounded-2xl border p-5 mb-4"
+        style={{
+          background: "linear-gradient(135deg, rgba(255,83,71,0.07) 0%, rgba(255,83,71,0.02) 100%)",
+          borderColor: "var(--accent-border)",
+        }}
+      >
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <p
+              className="text-xs font-semibold uppercase tracking-wider mb-2"
+              style={{ color: "var(--accent)" }}
+            >
+              Total Revenue Processed
+            </p>
+            <p className="text-4xl font-bold tracking-tight" style={{ color: "var(--accent)" }}>
+              {formatNaira(stats.totalRevenue)}
+            </p>
+            <p className="text-xs mt-2" style={{ color: "var(--text-muted)" }}>
+              Cumulative sum of all sales across all shops
+            </p>
+          </div>
+          <div
+            className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+            style={{ background: "rgba(255,83,71,0.1)", color: "var(--accent)" }}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-6 h-6">
+              <line x1="12" y1="1" x2="12" y2="23" />
+              <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
+            </svg>
+          </div>
+        </div>
+
+        <div
+          className="flex gap-4 mt-4 pt-4 border-t text-xs"
+          style={{ borderColor: "rgba(255,83,71,0.15)" }}
         >
-          Shops &amp; Users
-        </p>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <StatCard
-            label="Total Shops"
-            value={stats.totalShops.toLocaleString()}
-            description="All registered shops"
-            highlight
-            icon={
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
-                <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
-                <polyline points="9 22 9 12 15 12 15 22" />
-              </svg>
-            }
-          />
-          <StatCard
-            label="Total Users"
-            value={stats.totalUsers.toLocaleString()}
-            description="All owner accounts"
-            icon={
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
-                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-                <circle cx="9" cy="7" r="4" />
-                <path d="M23 21v-2a4 4 0 00-3-3.87" />
-                <path d="M16 3.13a4 4 0 010 7.75" />
-              </svg>
-            }
-          />
-          <StatCard
-            label="Free Plan"
-            value={stats.freeShops.toLocaleString()}
-            description="On the free tier"
-            icon={
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
-                <circle cx="12" cy="12" r="10" />
-                <line x1="12" y1="8" x2="12" y2="12" />
-                <line x1="12" y1="16" x2="12.01" y2="16" />
-              </svg>
-            }
-          />
-          <StatCard
-            label="Pro Plan"
-            value={stats.proShops.toLocaleString()}
-            description="Paying customers"
-            icon={
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-              </svg>
-            }
-          />
+          <div>
+            <span style={{ color: "var(--text-muted)" }}>Total Sales</span>
+            <span className="ml-1.5 font-semibold" style={{ color: "var(--text-primary)" }}>
+              {stats.totalSalesCount.toLocaleString()} transactions
+            </span>
+          </div>
+          <div>
+            <span style={{ color: "var(--text-muted)" }}>New This Month</span>
+            <span className="ml-1.5 font-semibold" style={{ color: "var(--text-primary)" }}>
+              {stats.newShopsMonth} shop{stats.newShopsMonth !== 1 ? "s" : ""}
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* ── Row 2: Activity ────────────────────────────────── */}
-      <div>
-        <p
-          className="text-xs font-semibold uppercase tracking-widest mb-3"
-          style={{ color: "var(--admin-text-muted)" }}
-        >
-          Platform Activity
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          <StatCard
-            label="New Shops This Month"
-            value={stats.newShopsMonth.toLocaleString()}
-            description="Registered this calendar month"
-            icon={
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
-              </svg>
-            }
-          />
-          <StatCard
-            label="Total Sales Recorded"
-            value={stats.totalSalesCount.toLocaleString()}
-            description="All transactions platform-wide"
-            icon={
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
-                <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
-                <line x1="3" y1="6" x2="21" y2="6" />
-                <path d="M16 10a4 4 0 01-8 0" />
-              </svg>
-            }
-          />
-          <StatCard
-            label="Total Revenue Processed"
-            value={formatNaira(stats.totalRevenue)}
-            description="Sum of all sales across all shops"
-            highlight
-            icon={
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
-                <line x1="12" y1="1" x2="12" y2="23" />
-                <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
-              </svg>
-            }
-          />
-        </div>
+      {/* ── 5 Stat Cards — matches dashboard grid ─── */}
+      <div className="grid grid-cols-2 gap-3 mb-8">
+        <StatCard
+          label="Total Shops"
+          value={stats.totalShops.toLocaleString()}
+          description="All registered shops"
+          icon={
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
+              <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+              <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
+          }
+        />
+
+        <StatCard
+          label="Total Users"
+          value={stats.totalUsers.toLocaleString()}
+          description="All owner accounts"
+          icon={
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
+              <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 00-3-3.87" />
+              <path d="M16 3.13a4 4 0 010 7.75" />
+            </svg>
+          }
+        />
+
+        <StatCard
+          label="Free Plan Shops"
+          value={stats.freeShops.toLocaleString()}
+          description="On the free tier"
+          icon={
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+          }
+        />
+
+        <StatCard
+          label="Pro Plan Shops"
+          value={stats.proShops.toLocaleString()}
+          description="Paying customers"
+          warning={stats.proShops === 0}
+          icon={
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+            </svg>
+          }
+        />
       </div>
 
-      {/* ── Recent Shops Table ─────────────────────────────── */}
+      {/* ── Recent Shops Table ─── */}
       <div>
         <p
-          className="text-xs font-semibold uppercase tracking-widest mb-3"
-          style={{ color: "var(--admin-text-muted)" }}
+          className="text-xs font-semibold uppercase tracking-wider mb-3"
+          style={{ color: "var(--text-muted)" }}
         >
           Recently Registered Shops
         </p>
 
         <div
-          className="rounded-2xl border overflow-hidden"
-          style={{ borderColor: "var(--admin-border)", background: "var(--admin-bg-surface)" }}
+          className="rounded-2xl border overflow-hidden bg-white"
+          style={{ borderColor: "var(--border-color)" }}
         >
           {stats.recentShops.length === 0 ? (
-            <div className="py-16 text-center text-sm" style={{ color: "var(--admin-text-muted)" }}>
+            <div className="py-16 text-center text-sm" style={{ color: "var(--text-muted)" }}>
               No shops registered yet.
             </div>
           ) : (
@@ -296,9 +289,9 @@ export default async function SuperAdminPage() {
                   <tr
                     className="border-b text-xs font-semibold uppercase tracking-wider"
                     style={{
-                      borderColor: "var(--admin-border)",
-                      background: "var(--admin-bg-elevated)",
-                      color: "var(--admin-text-muted)",
+                      borderColor: "var(--border-color)",
+                      background: "var(--bg-elevated)",
+                      color: "var(--text-muted)",
                     }}
                   >
                     <th className="text-left px-5 py-3">Shop Name</th>
@@ -311,25 +304,22 @@ export default async function SuperAdminPage() {
                   {stats.recentShops.map((shop, i) => (
                     <tr
                       key={shop.id}
-                      className="border-b last:border-0 transition-colors"
+                      className="border-b last:border-0"
                       style={{
-                        borderColor: "var(--admin-border)",
-                        background: i % 2 === 1 ? "var(--admin-bg-elevated)" : "transparent",
+                        borderColor: "var(--border-color)",
+                        background: i % 2 === 1 ? "var(--bg-elevated)" : "transparent",
                       }}
                     >
-                      <td
-                        className="px-5 py-3.5 font-semibold"
-                        style={{ color: "var(--admin-text-primary)" }}
-                      >
+                      <td className="px-5 py-3.5 font-semibold" style={{ color: "var(--text-primary)" }}>
                         {shop.name}
                       </td>
-                      <td className="px-5 py-3.5" style={{ color: "var(--admin-text-muted)" }}>
+                      <td className="px-5 py-3.5" style={{ color: "var(--text-muted)" }}>
                         {shop.ownerEmail}
                       </td>
                       <td className="px-5 py-3.5">
                         <PlanBadge plan={shop.plan} />
                       </td>
-                      <td className="px-5 py-3.5" style={{ color: "var(--admin-text-muted)" }}>
+                      <td className="px-5 py-3.5" style={{ color: "var(--text-muted)" }}>
                         {formatDate(shop.created_at)}
                       </td>
                     </tr>

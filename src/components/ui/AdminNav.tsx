@@ -70,26 +70,26 @@ export function AdminNav({ adminEmail }: { adminEmail?: string }) {
       {/* ── DESKTOP SIDEBAR ─────────────────────────────── */}
       <aside
         className="hidden md:flex fixed left-0 top-0 h-full w-56 flex-col border-r z-30"
-        style={{ background: "var(--admin-bg-surface)", borderColor: "var(--admin-border)" }}
+        style={{ background: "var(--bg-surface)", borderColor: "var(--border-color)" }}
       >
         {/* Brand */}
         <div
           className="flex items-center gap-2.5 px-5 py-5 border-b"
-          style={{ borderColor: "var(--admin-border)" }}
+          style={{ borderColor: "var(--border-color)" }}
         >
           <div
             className="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm text-white flex-shrink-0 shadow-sm"
-            style={{ background: "var(--admin-accent)" }}
+            style={{ background: "var(--accent)" }}
           >
-            A
+            S
           </div>
           <div className="min-w-0">
-            <p className="font-bold text-sm leading-tight" style={{ color: "var(--admin-text-primary)" }}>
-              SalesOS Admin
+            <p className="font-bold text-sm leading-tight truncate" style={{ color: "var(--text-primary)" }}>
+              SalesOS
             </p>
             <span
               className="inline-block text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded mt-0.5"
-              style={{ background: "var(--admin-accent-dim)", color: "var(--admin-accent)" }}
+              style={{ background: "var(--accent-dim)", color: "var(--accent)" }}
             >
               Admin Mode
             </span>
@@ -100,7 +100,7 @@ export function AdminNav({ adminEmail }: { adminEmail?: string }) {
         {adminEmail && (
           <div
             className="px-5 py-2.5 border-b text-xs truncate"
-            style={{ borderColor: "var(--admin-border)", color: "var(--admin-text-muted)" }}
+            style={{ borderColor: "var(--border-color)", color: "var(--text-muted)" }}
           >
             {adminEmail}
           </div>
@@ -116,8 +116,8 @@ export function AdminNav({ adminEmail }: { adminEmail?: string }) {
                 href={item.href}
                 className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all"
                 style={{
-                  color: active ? "var(--admin-accent)" : "var(--admin-text-muted)",
-                  background: active ? "var(--admin-accent-dim)" : "transparent",
+                  color: active ? "var(--accent)" : "var(--text-muted)",
+                  background: active ? "var(--accent-dim)" : "transparent",
                 }}
               >
                 {item.icon}
@@ -127,12 +127,12 @@ export function AdminNav({ adminEmail }: { adminEmail?: string }) {
           })}
         </nav>
 
-        {/* Divider + back to shop link */}
+        {/* Back to shop */}
         <div className="px-3 pb-2">
           <Link
             href="/dashboard"
-            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all w-full"
-            style={{ color: "var(--admin-text-muted)" }}
+            className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all w-full hover:bg-gray-50"
+            style={{ color: "var(--text-muted)" }}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
               <polyline points="15 18 9 12 15 6" />
@@ -142,12 +142,12 @@ export function AdminNav({ adminEmail }: { adminEmail?: string }) {
         </div>
 
         {/* Sign out */}
-        <div className="px-3 py-4 border-t" style={{ borderColor: "var(--admin-border)" }}>
+        <div className="px-3 py-4 border-t" style={{ borderColor: "var(--border-color)" }}>
           <button
             id="admin-signout-btn"
             onClick={() => signOut({ callbackUrl: "/login" })}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all"
-            style={{ color: "var(--admin-text-muted)" }}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all hover:bg-gray-50"
+            style={{ color: "var(--text-muted)" }}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
               <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
@@ -162,21 +162,21 @@ export function AdminNav({ adminEmail }: { adminEmail?: string }) {
       {/* ── MOBILE TOP HEADER ──────────────────────────── */}
       <header
         className="md:hidden fixed top-0 left-0 right-0 h-14 flex items-center justify-between px-4 border-b z-30"
-        style={{ background: "var(--admin-bg-surface)", borderColor: "var(--admin-border)" }}
+        style={{ background: "var(--bg-surface)", borderColor: "var(--border-color)" }}
       >
         <div className="flex items-center gap-2">
           <div
             className="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs text-white"
-            style={{ background: "var(--admin-accent)" }}
+            style={{ background: "var(--accent)" }}
           >
-            A
+            S
           </div>
-          <span className="font-bold text-base" style={{ color: "var(--admin-text-primary)" }}>
-            SalesOS Admin
+          <span className="font-bold text-base" style={{ color: "var(--text-primary)" }}>
+            SalesOS
           </span>
           <span
             className="text-[10px] font-bold uppercase tracking-widest px-1.5 py-0.5 rounded"
-            style={{ background: "var(--admin-accent-dim)", color: "var(--admin-accent)" }}
+            style={{ background: "var(--accent-dim)", color: "var(--accent)" }}
           >
             Admin
           </span>
@@ -184,7 +184,7 @@ export function AdminNav({ adminEmail }: { adminEmail?: string }) {
         <button
           onClick={() => signOut({ callbackUrl: "/login" })}
           className="text-xs font-medium"
-          style={{ color: "var(--admin-text-muted)" }}
+          style={{ color: "var(--text-muted)" }}
         >
           Sign out
         </button>
@@ -194,8 +194,8 @@ export function AdminNav({ adminEmail }: { adminEmail?: string }) {
       <nav
         className="md:hidden fixed bottom-0 left-0 right-0 border-t z-30 flex items-stretch"
         style={{
-          background: "var(--admin-bg-surface)",
-          borderColor: "var(--admin-border)",
+          background: "var(--bg-surface)",
+          borderColor: "var(--border-color)",
           paddingBottom: "env(safe-area-inset-bottom)",
         }}
       >
@@ -206,7 +206,7 @@ export function AdminNav({ adminEmail }: { adminEmail?: string }) {
               key={item.href}
               href={item.href}
               className="flex-1 flex flex-col items-center justify-center gap-1 py-2 text-[10px] font-medium transition-colors"
-              style={{ color: active ? "var(--admin-accent)" : "var(--admin-text-muted)" }}
+              style={{ color: active ? "var(--accent)" : "var(--text-muted)" }}
             >
               {item.icon}
               {item.label}
