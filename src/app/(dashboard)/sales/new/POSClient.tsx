@@ -76,6 +76,7 @@ export function POSClient({ products, customers }: Props) {
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function syncOfflineSales() {
@@ -87,7 +88,7 @@ export function POSClient({ products, customers }: Props) {
 
       for (const sale of offlineSales) {
         const result = await recordSale({
-          items: sale.cart.map((c: any) => ({
+          items: sale.cart.map((c: CartItem) => ({
             productId: c.productId,
             quantity: c.quantity,
             unitPrice: c.unitPrice,

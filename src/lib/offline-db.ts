@@ -2,10 +2,21 @@ import Dexie, { Table } from 'dexie';
 
 export interface OfflineSale {
   id?: number; // Auto-incremented ID for Dexie
-  cart: any[];
+  cart: {
+    productId: string;
+    name: string;
+    unitPrice: number;
+    quantity: number;
+    maxStock: number;
+  }[];
   paymentMethod: "cash" | "transfer" | "credit";
   notes: string;
-  customerData: any; // e.g., { mode, id, name, phone }
+  customerData: {
+    mode: "existing" | "new";
+    id?: string;
+    name?: string;
+    phone?: string;
+  };
   timestamp: number;
 }
 

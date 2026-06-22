@@ -20,17 +20,6 @@ type Props = {
   backHref?: string;
 };
 
-const CATEGORY_SUGGESTIONS = [
-  "Food & Drinks",
-  "Toiletries",
-  "Clothing",
-  "Electronics",
-  "Household",
-  "Stationery",
-  "Medicine",
-  "Raw Materials",
-  "Other",
-];
 
 function Field({
   id,
@@ -117,7 +106,6 @@ export function ProductForm({
   backHref = "/dashboard/inventory",
 }: Props) {
   const [name, setName] = useState(initial.name ?? "");
-  const [category, setCategory] = useState(initial.category ?? "");
   const [buyingPrice, setBuyingPrice] = useState(initial.buyingPrice ?? "");
   const [sellingPrice, setSellingPrice] = useState(initial.sellingPrice ?? "");
   const [stockQuantity, setStockQuantity] = useState(initial.stockQuantity ?? "");
@@ -151,7 +139,6 @@ export function ProductForm({
     setLoading(true);
     const result = await onSubmit({
       name,
-      category,
       buyingPrice: bp,
       sellingPrice: sp,
       stockQuantity: sq,

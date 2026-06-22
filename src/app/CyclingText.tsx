@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 
+const words = ["manage", "track", "grow", "understand", "run", "scale"];
+
 export function CyclingText() {
-  const words = ["manage", "track", "grow", "understand", "run", "scale"];
   const [index, setIndex] = useState(0);
   const [fade, setFade] = useState(true);
 
