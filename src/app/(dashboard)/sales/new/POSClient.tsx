@@ -53,6 +53,15 @@ export function POSClient({ products, customers }: Props) {
   const [syncing, setSyncing] = useState(false);
   const queuedSalesCount = useLiveQuery(() => db.syncQueue.count(), []) ?? 0;
 
+  // Cache data locally on load
+  useEffect(() => {
+    if (products.length > 0) db.products.bulkPut(products);
+    if (customers.length > 0) db.customers.bulkPut(customers);
+  }, [products, customers]);
+
+  const cachedProducts = useLiveQuery(() => db.products.toArray(), []) || products;
+  const cachedCustomers = useLiveQuery(() => db.customers.toArray(), []) || customers;
+
   useEffect(() => {
     setIsOnline(navigator.onLine);
     const handleOnline = () => {
@@ -103,7 +112,7 @@ export function POSClient({ products, customers }: Props) {
     }
   }
 
-  const filteredProducts = products.filter(
+  const filteredProducts = cachedProducts.filter(
     (p) =>
       p.stock_quantity > 0 &&
       p.name.toLowerCase().includes(productQuery.toLowerCase()) &&
@@ -357,7 +366,7 @@ export function POSClient({ products, customers }: Props) {
             <div className="mb-4 p-4 rounded-xl border" style={{ borderColor: "var(--warning-border)", background: "var(--warning-dim)" }}>
                <div className="flex justify-between items-center mb-3">
                   <label className="text-sm font-medium" style={{ color: "var(--warning)" }}>Customer Details</label>
-                  {customers.length > 0 && (
+                  {cachedCustomers.length > 0 && (
                     <button 
                       type="button" 
                       onClick={() => setCustomerMode(m => m === "existing" ? "new" : "existing")}
@@ -369,7 +378,7 @@ export function POSClient({ products, customers }: Props) {
                   )}
                </div>
 
-               {customerMode === "existing" && customers.length > 0 ? (
+               {customerMode === "existing" && cachedCustomers.length > 0 ? (
                  <select
                    value={selectedCustomerId}
                    onChange={(e) => setSelectedCustomerId(e.target.value)}
@@ -377,7 +386,7 @@ export function POSClient({ products, customers }: Props) {
                    style={{ background: "var(--bg-surface)", borderColor: "var(--border-color)", color: "var(--text-primary)" }}
                  >
                    <option value="">-- Select Customer --</option>
-                   {customers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                   {cachedCustomers.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                  </select>
                ) : (
                  <div className="space-y-3">

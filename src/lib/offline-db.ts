@@ -9,13 +9,29 @@ export interface OfflineSale {
   timestamp: number;
 }
 
+export interface CachedProduct {
+  id: string;
+  name: string;
+  selling_price: number;
+  stock_quantity: number;
+}
+
+export interface CachedCustomer {
+  id: string;
+  name: string;
+}
+
 export class SalesOSDB extends Dexie {
   syncQueue!: Table<OfflineSale, number>;
+  products!: Table<CachedProduct, string>;
+  customers!: Table<CachedCustomer, string>;
 
   constructor() {
     super('SalesOSDB');
-    this.version(1).stores({
-      syncQueue: '++id, timestamp', // Store queued sales
+    this.version(2).stores({
+      syncQueue: '++id, timestamp',
+      products: 'id, name', // Cache for POS
+      customers: 'id, name'
     });
   }
 }

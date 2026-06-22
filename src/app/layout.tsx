@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   title: "SalesOS — Smart Sales Management for Your Shop",
   description:
     "Record sales, manage inventory, track customer credit, and see your real profit every day.",
+  manifest: "/manifest.json",
 };
 
 export default function RootLayout({
