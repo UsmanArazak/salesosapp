@@ -139,6 +139,7 @@ export function ProductForm({
     setLoading(true);
     const result = await onSubmit({
       name,
+      category: "", // Empty category since field was removed for MVP
       buyingPrice: bp,
       sellingPrice: sp,
       stockQuantity: sq,
