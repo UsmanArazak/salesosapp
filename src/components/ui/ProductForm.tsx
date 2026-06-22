@@ -178,21 +178,7 @@ export function ProductForm({
         />
       </Field>
 
-      {/* Row 2 — Category */}
-      <Field id="p-category" label="Category">
-        <Input
-          id="p-category"
-          value={category}
-          onChange={setCategory}
-          placeholder="e.g. Food & Drinks"
-          list="category-list"
-        />
-        <datalist id="category-list">
-          {CATEGORY_SUGGESTIONS.map((c) => (
-            <option key={c} value={c} />
-          ))}
-        </datalist>
-      </Field>
+
 
       {/* Row 3 — Prices */}
       <div className="grid grid-cols-2 gap-3">
