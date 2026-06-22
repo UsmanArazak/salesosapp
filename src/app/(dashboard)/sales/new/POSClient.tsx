@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { recordSale } from "@/app/actions/sales";
+import { db } from "@/lib/offline-db";
+import { useLiveQuery } from "dexie-react-hooks";
 
 export type ProductMini = {
   id: string;
@@ -45,6 +47,61 @@ export function POSClient({ products, customers }: Props) {
   const [selectedCustomerId, setSelectedCustomerId] = useState("");
   const [newCustomerName, setNewCustomerName] = useState("");
   const [newCustomerPhone, setNewCustomerPhone] = useState("");
+
+  // Offline support state
+  const [isOnline, setIsOnline] = useState(true);
+  const [syncing, setSyncing] = useState(false);
+  const queuedSalesCount = useLiveQuery(() => db.syncQueue.count(), []) ?? 0;
+
+  useEffect(() => {
+    setIsOnline(navigator.onLine);
+    const handleOnline = () => {
+      setIsOnline(true);
+      syncOfflineSales();
+    };
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, []);
+
+  async function syncOfflineSales() {
+    if (syncing) return;
+    setSyncing(true);
+    try {
+      const offlineSales = await db.syncQueue.toArray();
+      if (offlineSales.length === 0) return;
+
+      for (const sale of offlineSales) {
+        const result = await recordSale({
+          items: sale.cart.map((c: any) => ({
+            productId: c.productId,
+            quantity: c.quantity,
+            unitPrice: c.unitPrice,
+          })),
+          paymentMethod: sale.paymentMethod,
+          notes: sale.notes,
+          customerId: sale.customerData.id,
+          newCustomerName: sale.customerData.name,
+          newCustomerPhone: sale.customerData.phone,
+        });
+
+        if (!("error" in result)) {
+          // If successful, remove from queue
+          await db.syncQueue.delete(sale.id!);
+        } else {
+           console.error("Failed to sync offline sale:", result.error);
+        }
+      }
+    } finally {
+      setSyncing(false);
+      router.refresh();
+    }
+  }
 
   const filteredProducts = products.filter(
     (p) =>
@@ -110,6 +167,28 @@ export function POSClient({ products, customers }: Props) {
     }
 
     setLoading(true);
+
+    if (!isOnline) {
+      await db.syncQueue.add({
+        cart,
+        paymentMethod,
+        notes,
+        customerData: {
+          mode: customerMode,
+          id: customerMode === "existing" ? selectedCustomerId : undefined,
+          name: customerMode === "new" ? newCustomerName : undefined,
+          phone: customerMode === "new" ? newCustomerPhone : undefined,
+        },
+        timestamp: Date.now()
+      });
+      setLoading(false);
+      setCart([]);
+      setProductQuery("");
+      setNotes("");
+      setError("Success: Saved offline. Will sync when connection is restored.");
+      return;
+    }
+
     const result = await recordSale({
       items: cart.map((c) => ({
         productId: c.productId,
@@ -134,6 +213,35 @@ export function POSClient({ products, customers }: Props) {
 
   return (
     <div className="max-w-xl mx-auto space-y-6">
+      {/* Offline Status Bar */}
+      {(!isOnline || queuedSalesCount > 0) && (
+        <div className={`p-3 rounded-xl flex items-center justify-between text-sm ${!isOnline ? "bg-amber-50 border-amber-200 text-amber-800" : "bg-blue-50 border-blue-200 text-blue-800"} border`}>
+          <div className="flex items-center gap-2">
+            {!isOnline ? (
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1.414 5.658a9 9 0 01-2.167-9.238m7.824 2.167a1 1 0 111.414 1.414m-1.414-1.414L3 3m8.293 8.293l1.414 1.414" />
+              </svg>
+            ) : (
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            )}
+            <span className="font-medium">
+              {!isOnline ? "You are offline." : "Back online."} {queuedSalesCount > 0 && `${queuedSalesCount} sale(s) pending sync.`}
+            </span>
+          </div>
+          {isOnline && queuedSalesCount > 0 && (
+            <button
+              onClick={syncOfflineSales}
+              disabled={syncing}
+              className="px-3 py-1 bg-white rounded shadow-sm text-xs font-semibold disabled:opacity-50"
+            >
+              {syncing ? "Syncing..." : "Sync Now"}
+            </button>
+          )}
+        </div>
+      )}
+
       {/* Search & Add Products */}
       <div className="rounded-2xl border p-5 bg-white" style={{ borderColor: "var(--border-color)" }}>
         <h2 className="text-sm font-bold mb-3" style={{ color: "var(--text-primary)" }}>Add Items</h2>
@@ -305,9 +413,16 @@ export function POSClient({ products, customers }: Props) {
           </div>
         </div>
 
-        {/* Error */}
+        {/* Error / Success Message */}
         {error && (
-          <div className="rounded-xl px-4 py-3 text-sm border" style={{ background: "var(--danger-dim)", borderColor: "var(--danger)", color: "#dc2626" }}>
+          <div
+            className="rounded-xl px-4 py-3 text-sm border font-medium"
+            style={{
+              background: error.startsWith("Success") ? "rgba(34,197,94,0.1)" : "var(--danger-dim)",
+              borderColor: error.startsWith("Success") ? "rgba(34,197,94,0.25)" : "var(--danger)",
+              color: error.startsWith("Success") ? "#16a34a" : "#dc2626",
+            }}
+          >
             {error}
           </div>
         )}
