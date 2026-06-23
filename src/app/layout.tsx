@@ -14,6 +14,10 @@ export const metadata: Metadata = {
   description:
     "Record sales, manage inventory, track customer credit, and see your real profit every day.",
   manifest: "/manifest.json",
+  icons: {
+    icon: "/logo.png",
+    apple: "/logo.png",
+  },
 };
 
 export default function RootLayout({
