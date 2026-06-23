@@ -91,9 +91,7 @@ export function WaitlistForm() {
         {status === "loading" ? "Joining..." : "Join the Waitlist →"}
       </button>
 
-      <p className="text-center text-xs text-stone-400">
-        Early access members get premium perks. No spam, ever.
-      </p>
+
     </form>
   );
 }
