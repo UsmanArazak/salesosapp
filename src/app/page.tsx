@@ -57,12 +57,12 @@ export default function Home() {
                 />
               </span>
               <br />
-              your shop
+              your business
             </h1>
 
             {/* Subheading */}
             <p className="text-base sm:text-lg text-stone-500 max-w-lg mx-auto leading-relaxed">
-              Record sales without internet, track your stock, manage customer credit, and see your daily profit — all from your phone. No notebook, no stress.
+              Record sales without internet, track your stock, manage customer credit, and see your daily profit — all from your phone. No notebook, no stress. Run your business smarter.
             </p>
 
             {/* Feature pills */}
@@ -112,48 +112,7 @@ export default function Home() {
 
             <WaitlistForm />
           </div>
-
-          {/* Trust indicators */}
-          <div className="mt-6 flex items-center justify-center gap-6 text-xs text-stone-400 font-medium">
-            <span className="flex items-center gap-1.5">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-3.5 h-3.5 text-orange-400">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              </svg>
-              Your data is safe
-            </span>
-            <span className="flex items-center gap-1.5">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-3.5 h-3.5 text-orange-400">
-                <circle cx="12" cy="12" r="10" />
-                <polyline points="12 6 12 12 16 14" />
-              </svg>
-              Takes 30 seconds
-            </span>
-            <span className="flex items-center gap-1.5">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-3.5 h-3.5 text-orange-400">
-                <path d="M18 8h1a4 4 0 010 8h-1" />
-                <path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z" />
-                <line x1="6" y1="1" x2="6" y2="4" />
-                <line x1="10" y1="1" x2="10" y2="4" />
-                <line x1="14" y1="1" x2="14" y2="4" />
-              </svg>
-              No spam, ever
-            </span>
-          </div>
         </section>
-
-        {/* Bottom divider strip */}
-        <div className="border-t border-stone-200/60 bg-stone-50 py-10 px-6">
-          <div className="max-w-3xl mx-auto">
-            <p className="text-center text-xs font-semibold uppercase tracking-widest text-stone-400 mb-6">
-              Designed for shops like these
-            </p>
-            <div className="flex flex-wrap justify-center gap-x-10 gap-y-3 text-sm font-bold text-stone-400/70">
-              {["Provision Stores", "Boutiques", "Electronics Shops", "Pharmacies", "Food Vendors", "Hardware Stores"].map((s) => (
-                <span key={s} className="hover:text-stone-600 transition-colors">{s}</span>
-              ))}
-            </div>
-          </div>
-        </div>
 
       </main>
 
@@ -165,7 +124,7 @@ export default function Home() {
             <span className="font-bold text-white">SalesOS</span>
             <span className="text-stone-600">© 2026. All rights reserved.</span>
           </div>
-          <span className="text-stone-500">Built with ❤️ for Nigerian shop owners</span>
+          <span className="text-stone-500">Built with ❤️ for Nigerian business owners</span>
         </div>
       </footer>
 
