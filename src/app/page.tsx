@@ -65,24 +65,6 @@ export default function Home() {
               Record sales without internet, track your stock, manage customer credit, and see your daily profit — all from your phone. No notebook, no stress. Run your business smarter.
             </p>
 
-            {/* Feature pills */}
-            <div className="flex flex-wrap justify-center gap-2">
-              {[
-                { icon: "📦", label: "Inventory Tracking" },
-                { icon: "💰", label: "Instant Profit View" },
-                { icon: "👤", label: "Customer Credit" },
-                { icon: "📵", label: "Works Offline" },
-              ].map((f) => (
-                <span
-                  key={f.label}
-                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold border"
-                  style={{ background: "#fff", borderColor: "#E7E5E4", color: "#44403C" }}
-                >
-                  <span>{f.icon}</span>
-                  {f.label}
-                </span>
-              ))}
-            </div>
           </div>
         </section>
 
