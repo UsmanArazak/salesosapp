@@ -40,7 +40,10 @@ export async function joinWaitlist(formData: FormData): Promise<WaitlistResult> 
     joined_at: new Date().toISOString(),
   });
 
-  if (error) return { error: "Something went wrong. Please try again." };
+  if (error) {
+    console.error("[Waitlist] Supabase insert error:", error.message, error.code);
+    return { error: `Failed to join: ${error.message}` };
+  }
 
   return { success: true };
 }
