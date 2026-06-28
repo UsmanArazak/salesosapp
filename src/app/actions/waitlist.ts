@@ -10,8 +10,9 @@ export async function joinWaitlist(formData: FormData): Promise<WaitlistResult> 
   const name = (formData.get("name") as string)?.trim();
   const email = (formData.get("email") as string)?.trim().toLowerCase();
   const whatsapp = (formData.get("whatsapp") as string)?.trim();
+  const business_type = (formData.get("business_type") as string)?.trim();
 
-  if (!name || !email || !whatsapp) {
+  if (!name || !email || !whatsapp || !business_type) {
     return { error: "Please fill in all fields." };
   }
 
@@ -37,6 +38,7 @@ export async function joinWaitlist(formData: FormData): Promise<WaitlistResult> 
     name,
     email,
     whatsapp,
+    business_type,
     joined_at: new Date().toISOString(),
   });
 

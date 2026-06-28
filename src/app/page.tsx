@@ -1,8 +1,27 @@
 import Image from "next/image";
 import { WaitlistForm } from "./WaitlistForm";
 import { CyclingText } from "./CyclingText";
+import { createServiceRoleSupabaseClient } from "@/lib/supabase";
 
-export default function Home() {
+const FACEBOOK_URL = "#"; // TODO: Replace with your Facebook page URL
+const INSTAGRAM_URL = "#"; // TODO: Replace with your Instagram page URL
+const BETA_LIMIT = 50;
+
+export default async function Home() {
+  // Fetch real waitlist count for the urgency bar
+  let signupCount = 0;
+  try {
+    const supabase = createServiceRoleSupabaseClient();
+    const { count } = await supabase
+      .from("waitlist")
+      .select("*", { count: "exact", head: true });
+    signupCount = count ?? 0;
+  } catch {
+    signupCount = 0;
+  }
+
+  const spotsLeft = Math.max(0, BETA_LIMIT - signupCount);
+  const pct = Math.min(100, Math.round((signupCount / BETA_LIMIT) * 100));
   return (
     <div className="min-h-dvh flex flex-col font-sans select-none" style={{ background: "#FAFAF9", color: "#1C1917" }}>
 
@@ -25,8 +44,6 @@ export default function Home() {
 
       {/* ── HERO ─────────────────────────────────────────────── */}
       <main className="flex-grow">
-
-        {/* Top section */}
         <section className="relative overflow-hidden">
 
           {/* Radial glow background */}
@@ -70,6 +87,27 @@ export default function Home() {
 
         {/* Waitlist Form Section */}
         <section className="max-w-lg mx-auto px-6 pb-24">
+
+          {/* ── URGENCY / SCARCITY BAR ───────────────────────── */}
+          <div className="mb-5">
+            <div className="flex items-center justify-between text-xs mb-2">
+              <span className="font-semibold text-stone-500">Beta spots claimed</span>
+              <span className="font-bold text-orange-600">{signupCount} / {BETA_LIMIT} spots taken</span>
+            </div>
+            <div className="h-2 w-full rounded-full bg-stone-100 overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all"
+                style={{
+                  width: `${pct}%`,
+                  background: "linear-gradient(90deg, #fb923c, #f97316)",
+                }}
+              />
+            </div>
+            <p className="text-center text-xs text-orange-700 font-semibold mt-2">
+              ⚡ Only <span className="underline underline-offset-2">{spotsLeft} spot{spotsLeft !== 1 ? "s" : ""}</span> left for our free beta — don&apos;t miss out.
+            </p>
+          </div>
+
           <div
             className="rounded-3xl border p-8 shadow-xl"
             style={{
@@ -100,12 +138,48 @@ export default function Home() {
 
       {/* ── FOOTER ─────────────────────────────────────────── */}
       <footer className="border-t border-stone-200/60 bg-stone-900 text-stone-400 py-8 px-6">
-        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+        <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-5 text-xs">
+
+          {/* Branding */}
           <div className="flex items-center gap-2">
             <Image src="/logo.png" alt="SalesOS" width={20} height={20} className="rounded-md opacity-70" />
             <span className="font-bold text-white">SalesOS</span>
             <span className="text-stone-600">© 2026. All rights reserved.</span>
           </div>
+
+          {/* Social links */}
+          <div className="flex items-center gap-4">
+            <a
+              href={FACEBOOK_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="SalesOS on Facebook"
+              className="flex items-center gap-1.5 text-stone-400 hover:text-white transition-colors"
+            >
+              {/* Facebook icon */}
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4" aria-hidden="true">
+                <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
+              </svg>
+              <span className="text-[11px] font-medium">Facebook</span>
+            </a>
+            <span className="w-px h-4 bg-stone-700" />
+            <a
+              href={INSTAGRAM_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="SalesOS on Instagram"
+              className="flex items-center gap-1.5 text-stone-400 hover:text-white transition-colors"
+            >
+              {/* Instagram icon */}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4" aria-hidden="true">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" />
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+              </svg>
+              <span className="text-[11px] font-medium">Instagram</span>
+            </a>
+          </div>
+
           <span className="text-stone-500">Built with ❤️ for Nigerian business owners</span>
         </div>
       </footer>

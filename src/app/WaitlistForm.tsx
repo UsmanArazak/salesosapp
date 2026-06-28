@@ -3,6 +3,21 @@
 import { useState, useRef } from "react";
 import { joinWaitlist } from "@/app/actions/waitlist";
 
+const BUSINESS_TYPES = [
+  "Provisions / Grocery Store",
+  "Fashion & Clothing",
+  "Electronics & Gadgets",
+  "Food & Catering",
+  "Pharmacy / Chemist",
+  "Cosmetics & Beauty",
+  "Building Materials",
+  "Auto Parts & Mechanic",
+  "Drinks & Bar",
+  "Supermarket / Convenience Store",
+  "Agriculture & Farm Produce",
+  "Other",
+];
+
 export function WaitlistForm() {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
@@ -46,6 +61,7 @@ export function WaitlistForm() {
 
   return (
     <form ref={formRef} onSubmit={handleSubmit} className="space-y-4 w-full max-w-md mx-auto">
+      {/* Full name */}
       <div>
         <input
           type="text"
@@ -56,6 +72,7 @@ export function WaitlistForm() {
         />
       </div>
 
+      {/* Email */}
       <div>
         <input
           type="email"
@@ -66,6 +83,7 @@ export function WaitlistForm() {
         />
       </div>
 
+      {/* WhatsApp */}
       <div className="flex items-center border border-stone-200 bg-white rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-orange-500/30 focus-within:border-orange-400 transition-all">
         <span className="px-4 text-sm text-stone-500 border-r border-stone-200 py-3.5 bg-stone-50 shrink-0">
           🇳🇬 +234
@@ -79,6 +97,31 @@ export function WaitlistForm() {
         />
       </div>
 
+      {/* Business type */}
+      <div className="relative">
+        <select
+          name="business_type"
+          required
+          defaultValue=""
+          className="w-full appearance-none px-4 py-3.5 rounded-xl border border-stone-200 bg-white text-sm text-stone-900 focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-400 transition-all cursor-pointer"
+        >
+          <option value="" disabled className="text-stone-400">
+            What type of business do you run?
+          </option>
+          {BUSINESS_TYPES.map((type) => (
+            <option key={type} value={type}>
+              {type}
+            </option>
+          ))}
+        </select>
+        {/* Dropdown chevron */}
+        <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#a8a29e" strokeWidth={2} className="w-4 h-4">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </div>
+      </div>
+
       {status === "error" && (
         <p className="text-xs text-red-500 font-medium">{errorMsg}</p>
       )}
@@ -90,8 +133,6 @@ export function WaitlistForm() {
       >
         {status === "loading" ? "Joining..." : "Join the Waitlist →"}
       </button>
-
-
     </form>
   );
 }
