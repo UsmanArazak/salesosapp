@@ -18,7 +18,7 @@ async function getWaitlistData() {
 
   const { data, error } = await supabase
     .from("waitlist")
-    .select("id, name, email, whatsapp, joined_at")
+    .select("id, name, email, whatsapp, business_type, joined_at")
     .order("joined_at", { ascending: false });
 
   if (error) {
@@ -159,6 +159,7 @@ export default async function WaitlistAdminPage() {
                   <th className="text-left px-5 py-3">Name</th>
                   <th className="text-left px-5 py-3">Email</th>
                   <th className="text-left px-5 py-3">WhatsApp</th>
+                  <th className="text-left px-5 py-3">Business Type</th>
                   <th className="text-left px-5 py-3">Signed Up</th>
                 </tr>
               </thead>
@@ -193,6 +194,9 @@ export default async function WaitlistAdminPage() {
                       >
                         {entry.whatsapp}
                       </a>
+                    </td>
+                    <td className="px-5 py-3.5 text-xs" style={{ color: "var(--text-muted)" }}>
+                      {entry.business_type ?? "—"}
                     </td>
                     <td className="px-5 py-3.5 text-xs" style={{ color: "var(--text-muted)" }}>
                       {formatDate(entry.joined_at)}
