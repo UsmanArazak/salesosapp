@@ -1,27 +1,11 @@
 import Image from "next/image";
 import { WaitlistForm } from "./WaitlistForm";
 import { CyclingText } from "./CyclingText";
-import { createServiceRoleSupabaseClient } from "@/lib/supabase";
 
 const FACEBOOK_URL = "#"; // TODO: Replace with your Facebook page URL
 const INSTAGRAM_URL = "#"; // TODO: Replace with your Instagram page URL
-const BETA_LIMIT = 50;
 
-export default async function Home() {
-  // Fetch real waitlist count for the urgency bar
-  let signupCount = 0;
-  try {
-    const supabase = createServiceRoleSupabaseClient();
-    const { count } = await supabase
-      .from("waitlist")
-      .select("*", { count: "exact", head: true });
-    signupCount = count ?? 0;
-  } catch {
-    signupCount = 0;
-  }
-
-  const spotsLeft = Math.max(0, BETA_LIMIT - signupCount);
-  const pct = Math.min(100, Math.round((signupCount / BETA_LIMIT) * 100));
+export default function Home() {
   return (
     <div className="min-h-dvh flex flex-col font-sans select-none" style={{ background: "#FAFAF9", color: "#1C1917" }}>
 
@@ -79,7 +63,7 @@ export default async function Home() {
 
             {/* Subheading */}
             <p className="text-base sm:text-lg text-stone-500 max-w-lg mx-auto leading-relaxed">
-              Record sales without internet, track your stock, manage customer credit, and see your daily profit — all from your phone. No notebook, no stress. Run your business smarter.
+              Record sales without internet, track your stock, manage customer credit, and see your daily profit, all from your phone. No notebook, no stress. Run your business smarter.
             </p>
 
           </div>
@@ -88,24 +72,11 @@ export default async function Home() {
         {/* Waitlist Form Section */}
         <section className="max-w-lg mx-auto px-6 pb-24">
 
-          {/* ── URGENCY / SCARCITY BAR ───────────────────────── */}
-          <div className="mb-5">
-            <div className="flex items-center justify-between text-xs mb-2">
-              <span className="font-semibold text-stone-500">Beta spots claimed</span>
-              <span className="font-bold text-orange-600">{signupCount} / {BETA_LIMIT} spots taken</span>
-            </div>
-            <div className="h-2 w-full rounded-full bg-stone-100 overflow-hidden">
-              <div
-                className="h-full rounded-full transition-all"
-                style={{
-                  width: `${pct}%`,
-                  background: "linear-gradient(90deg, #fb923c, #f97316)",
-                }}
-              />
-            </div>
-            <p className="text-center text-xs text-orange-700 font-semibold mt-2">
-              ⚡ Only <span className="underline underline-offset-2">{spotsLeft} spot{spotsLeft !== 1 ? "s" : ""}</span> left for our free beta — don&apos;t miss out.
-            </p>
+          {/* ── URGENCY / SCARCITY MESSAGE ───────────────────────── */}
+          <div className="mb-5 text-center">
+            <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-semibold bg-orange-50 text-orange-800 border border-orange-200/50">
+              ⚡ Limited Slots Available for Free Beta
+            </span>
           </div>
 
           <div
