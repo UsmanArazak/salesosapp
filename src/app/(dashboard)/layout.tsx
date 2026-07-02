@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import { createServiceRoleSupabaseClient } from "@/lib/supabase";
 import { DashboardNav } from "@/components/ui/DashboardNav";
+import { PWAInstallBanner } from "@/components/ui/PWAInstallBanner";
 
 async function getShopName(shopId: string): Promise<string> {
   try {
@@ -28,6 +29,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
   return (
     <div className="min-h-dvh" style={{ background: "var(--bg-base)" }}>
       <DashboardNav shopName={shopName} />
+      <PWAInstallBanner />
 
       {/* Main content — offset for sidebar (desktop) and header+bottom-nav (mobile) */}
       <main
