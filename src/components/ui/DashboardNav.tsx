@@ -60,7 +60,7 @@ const navItems: NavItem[] = [
   },
 ];
 
-export function DashboardNav({ shopName }: { shopName?: string }) {
+export function DashboardNav() {
   const pathname = usePathname();
 
   function isActive(href: string) {
@@ -77,26 +77,34 @@ export function DashboardNav({ shopName }: { shopName?: string }) {
       >
         {/* Brand */}
         <div
-          className="flex items-center gap-2.5 px-5 py-5 border-b"
+          className="flex items-center justify-between gap-2.5 px-5 py-5 border-b"
           style={{ borderColor: "var(--border-color)" }}
         >
-          <Image
-            src="/logo.png"
-            alt="SalesOS Logo"
-            width={32}
-            height={32}
-            className="rounded-lg flex-shrink-0"
-          />
-          <div className="min-w-0">
-            <p className="font-bold text-sm leading-tight truncate" style={{ color: "var(--text-primary)" }}>
-              SalesOS
-            </p>
-            {shopName && (
-              <p className="text-xs truncate" style={{ color: "var(--text-muted)" }}>
-                {shopName}
+          <div className="flex items-center gap-2.5 min-w-0">
+            <Image
+              src="/logo.png"
+              alt="SalesOS Logo"
+              width={32}
+              height={32}
+              className="rounded-lg flex-shrink-0"
+            />
+            <div className="min-w-0">
+              <p className="font-bold text-sm leading-tight truncate" style={{ color: "var(--text-primary)" }}>
+                SalesOS
               </p>
-            )}
+            </div>
           </div>
+          <Link
+            href="/shop"
+            className="w-8 h-8 rounded-lg border flex items-center justify-center transition-colors bg-white hover:bg-gray-50 shrink-0"
+            style={{ borderColor: "var(--border-color)", color: "var(--text-muted)" }}
+            title="Shop Settings"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-4.5 h-4.5">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              <polyline points="9 22 9 12 15 12 15 22" />
+            </svg>
+          </Link>
         </div>
 
         {/* Nav links */}
@@ -155,11 +163,17 @@ export function DashboardNav({ shopName }: { shopName?: string }) {
             SalesOS
           </span>
         </div>
-        {shopName && (
-          <span className="text-xs truncate max-w-[140px]" style={{ color: "var(--text-muted)" }}>
-            {shopName}
-          </span>
-        )}
+        <Link
+          href="/shop"
+          className="w-9 h-9 rounded-xl border flex items-center justify-center transition-colors bg-white hover:bg-gray-50 shrink-0"
+          style={{ borderColor: "var(--border-color)", color: "var(--text-muted)" }}
+          aria-label="Shop Settings"
+        >
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
+          </svg>
+        </Link>
       </header>
 
       {/* ── MOBILE BOTTOM NAV ──────────────────────────── */}
@@ -185,18 +199,6 @@ export function DashboardNav({ shopName }: { shopName?: string }) {
             </Link>
           );
         })}
-        <button
-          onClick={() => signOut({ callbackUrl: "/login" })}
-          className="flex-1 flex flex-col items-center justify-center gap-1 py-2 text-[10px] font-medium"
-          style={{ color: "var(--text-muted)" }}
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
-            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
-            <polyline points="16 17 21 12 16 7" />
-            <line x1="21" y1="12" x2="9" y2="12" />
-          </svg>
-          Sign out
-        </button>
       </nav>
     </>
   );

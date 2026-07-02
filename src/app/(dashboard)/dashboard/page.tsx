@@ -346,17 +346,16 @@ export default async function DashboardPage() {
         >
           Quick Actions
         </p>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="grid grid-cols-3 gap-3">
           {[
             { label: "Add Product", href: "/inventory/new", emoji: "📦" },
-            { label: "Log Expense", href: "/expenses/new", emoji: "💸" },
             { label: "Add Customer", href: "/customers/new", emoji: "👤" },
             { label: "View Reports", href: "/reports", emoji: "📊" },
           ].map((action) => (
             <Link
               key={action.href}
               href={action.href}
-              className="flex items-center gap-2.5 rounded-xl border px-3.5 py-3 text-sm font-medium transition-all active:scale-[0.98] bg-white"
+              className="flex items-center justify-center gap-2.5 rounded-xl border px-3.5 py-3 text-sm font-medium transition-all active:scale-[0.98] bg-white text-center flex-col sm:flex-row"
               style={{
                 borderColor: "var(--border-color)",
                 color: "var(--text-primary)",
