@@ -140,7 +140,7 @@ export default async function DashboardPage() {
       key: "product",
       emoji: "📦",
       title: "Add your first product",
-      description: "Add the things you sell — name, buying price, selling price, and how many you have in stock.",
+      description: "Add the products you sell: their name, how much you buy them, how much you sell them, and how many you buy.",
       href: "/inventory/new",
       cta: "Add Product",
       done: stats.hasProducts,
@@ -149,7 +149,7 @@ export default async function DashboardPage() {
       key: "sale",
       emoji: "💰",
       title: "Record your first sale",
-      description: "Every time you sell something, tap Record Sale. SalesOS will automatically calculate your profit.",
+      description: "Every time you sell something, record the sale to calculate your profit.",
       href: "/sales/new",
       cta: "Record Sale",
       done: stats.hasSales,
@@ -158,7 +158,7 @@ export default async function DashboardPage() {
       key: "customer",
       emoji: "👤",
       title: "Add a customer",
-      description: "Save your regular customers so you can track who bought on credit and how much they owe you.",
+      description: "When a customer buys on debt, save their details so you never forget.",
       href: "/customers/new",
       cta: "Add Customer",
       done: stats.hasCustomers,
@@ -218,7 +218,7 @@ export default async function DashboardPage() {
               {formatNaira(stats.grossProfit)}
             </p>
             <p className="text-xs mt-2" style={{ color: "var(--text-muted)" }}>
-              Revenue&nbsp;−&nbsp;Cost of goods sold&nbsp;−&nbsp;Today&apos;s expenses
+              Revenue - Cost of goods sold - Today&apos;s expenses
             </p>
           </div>
           <div
@@ -258,7 +258,7 @@ export default async function DashboardPage() {
           <div>
             <span style={{ color: "var(--text-muted)" }}>COGS</span>
             <span className="ml-1.5 font-semibold" style={{ color: "#dc2626" }}>
-              −{formatNaira(stats.salesToday - stats.grossProfit > 0 ? stats.salesToday - stats.grossProfit : 0)}
+              -{formatNaira(stats.salesToday - stats.grossProfit > 0 ? stats.salesToday - stats.grossProfit : 0)}
             </span>
           </div>
         </div>

@@ -18,16 +18,16 @@ export function OnboardingChecklist({ steps }: { steps: Step[] }) {
 
   return (
     <div
-      className="rounded-2xl border p-5 mb-6"
+      className="rounded-2xl border p-4 mb-4"
       style={{
         background: "linear-gradient(135deg, rgba(249,115,22,0.05) 0%, rgba(249,115,22,0.01) 100%)",
         borderColor: "rgba(249,115,22,0.2)",
       }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-3">
         <div>
-          <h2 className="font-bold text-base" style={{ color: "var(--text-primary)" }}>
+          <h2 className="font-bold text-sm" style={{ color: "var(--text-primary)" }}>
             🚀 Get started with SalesOS
           </h2>
           <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
@@ -43,7 +43,7 @@ export function OnboardingChecklist({ steps }: { steps: Step[] }) {
       </div>
 
       {/* Progress bar */}
-      <div className="h-1.5 w-full rounded-full mb-5 overflow-hidden" style={{ background: "var(--border-color)" }}>
+      <div className="h-1 w-full rounded-full mb-4 overflow-hidden" style={{ background: "var(--border-color)" }}>
         <div
           className="h-full rounded-full transition-all duration-500"
           style={{
@@ -54,23 +54,23 @@ export function OnboardingChecklist({ steps }: { steps: Step[] }) {
       </div>
 
       {/* Steps */}
-      <div className="space-y-3">
+      <div className="space-y-2">
         {steps.map((step) => (
           <div
             key={step.key}
-            className="flex items-start gap-3 rounded-xl p-3 border bg-white"
+            className="flex items-center gap-3 rounded-xl p-2.5 border bg-white"
             style={{ borderColor: step.done ? "rgba(22,163,74,0.2)" : "var(--border-color)" }}
           >
             {/* Checkbox */}
             <div
-              className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
+              className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0"
               style={{
                 background: step.done ? "rgba(22,163,74,0.1)" : "var(--bg-elevated)",
                 border: `2px solid ${step.done ? "#16a34a" : "var(--border-color)"}`,
               }}
             >
               {step.done && (
-                <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth={2.5} className="w-3 h-3">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth={3} className="w-2.5 h-2.5">
                   <polyline points="20 6 9 17 4 12" />
                 </svg>
               )}
@@ -81,7 +81,7 @@ export function OnboardingChecklist({ steps }: { steps: Step[] }) {
               <div className="flex items-center gap-1.5">
                 <span>{step.emoji}</span>
                 <p
-                  className="text-sm font-semibold"
+                  className="text-xs sm:text-sm font-semibold truncate"
                   style={{
                     color: step.done ? "var(--text-muted)" : "var(--text-primary)",
                     textDecoration: step.done ? "line-through" : "none",
@@ -90,18 +90,13 @@ export function OnboardingChecklist({ steps }: { steps: Step[] }) {
                   {step.title}
                 </p>
               </div>
-              {!step.done && (
-                <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
-                  {step.description}
-                </p>
-              )}
             </div>
 
             {/* CTA */}
             {!step.done && (
               <Link
                 href={step.href}
-                className="text-xs font-bold px-3 py-1.5 rounded-lg flex-shrink-0 transition-all active:scale-[0.97]"
+                className="text-xs font-bold px-2.5 py-1.5 rounded-lg flex-shrink-0 transition-all active:scale-[0.97]"
                 style={{ background: "var(--accent)", color: "#fff" }}
               >
                 {step.cta}

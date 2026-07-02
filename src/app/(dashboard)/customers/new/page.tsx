@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { createCustomer } from "@/app/actions/customers";
+import { DismissableHelpBanner } from "@/components/ui/DismissableHelpBanner";
 
 export default function NewCustomerPage() {
   const router = useRouter();
@@ -51,6 +52,11 @@ export default function NewCustomerPage() {
           </p>
         </div>
       </div>
+
+      <DismissableHelpBanner
+        storageKey="new-customer"
+        message="When a customer buys on debt, save their details so you never forget."
+      />
 
       {/* Form Card */}
       <div

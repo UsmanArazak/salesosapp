@@ -6,6 +6,7 @@ import Link from "next/link";
 import { recordSale } from "@/app/actions/sales";
 import { db } from "@/lib/offline-db";
 import { useLiveQuery } from "dexie-react-hooks";
+import { DismissableHelpBanner } from "@/components/ui/DismissableHelpBanner";
 
 export type ProductMini = {
   id: string;
@@ -223,6 +224,11 @@ export function POSClient({ products, customers }: Props) {
 
   return (
     <div className="max-w-xl mx-auto space-y-6">
+      <DismissableHelpBanner
+        storageKey="new-sale"
+        message="Record a sale: pick the products sold, select how they paid (cash, transfer, or credit), and track your daily profit instantly."
+      />
+
       {/* Offline Status Bar */}
       {(!isOnline || queuedSalesCount > 0) && (
         <div className={`p-3 rounded-xl flex items-center justify-between text-sm ${!isOnline ? "bg-amber-50 border-amber-200 text-amber-800" : "bg-blue-50 border-blue-200 text-blue-800"} border`}>

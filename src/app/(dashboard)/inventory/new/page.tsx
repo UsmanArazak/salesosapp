@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ProductForm } from "@/components/ui/ProductForm";
 import { createProduct } from "@/app/actions/products";
+import { DismissableHelpBanner } from "@/components/ui/DismissableHelpBanner";
 
 export default function NewProductPage() {
   const router = useRouter();
@@ -43,6 +44,11 @@ export default function NewProductPage() {
           </p>
         </div>
       </div>
+
+      <DismissableHelpBanner
+        storageKey="new-product"
+        message="Add the products you sell: their name, how much you buy them, how much you sell them, and how many you buy."
+      />
 
       {/* Form Card */}
       <div
