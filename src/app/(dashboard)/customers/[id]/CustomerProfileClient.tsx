@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { RepaymentModal } from "./RepaymentModal";
+import { deleteCustomer } from "@/app/actions/customers";
 
 type Customer = {
   id: string;
@@ -45,7 +47,26 @@ export function CustomerProfileClient({
   customer: Customer;
   creditHistory: CreditRecord[];
 }) {
+  const router = useRouter();
   const [modalOpen, setModalOpen] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  async function handleDelete() {
+    if (!confirm(`Are you sure you want to delete ${customer.name}? This cannot be undone.`)) {
+      return;
+    }
+
+    setDeleting(true);
+    const res = await deleteCustomer(customer.id);
+    setDeleting(false);
+
+    if ("error" in res) {
+      alert(res.error);
+    } else {
+      router.push("/customers");
+      router.refresh();
+    }
+  }
 
   return (
     <div className="max-w-xl mx-auto space-y-6">
@@ -58,24 +79,45 @@ export function CustomerProfileClient({
       )}
 
       {/* Header */}
-      <div className="flex items-center gap-3">
-        <Link
-          href="/customers"
-          className="w-9 h-9 rounded-xl border flex items-center justify-center transition-colors bg-white hover:bg-gray-50"
-          style={{ borderColor: "var(--border-color)", color: "var(--text-muted)" }}
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4">
-            <polyline points="15 18 9 12 15 6" />
-          </svg>
-        </Link>
-        <div>
-          <h1 className="text-xl font-bold truncate max-w-[200px]" style={{ color: "var(--text-primary)" }}>
-            {customer.name}
-          </h1>
-          <p className="text-sm" style={{ color: "var(--text-muted)" }}>
-            {customer.phone || "No phone linked"}
-          </p>
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <Link
+            href="/customers"
+            className="w-9 h-9 rounded-xl border flex items-center justify-center transition-colors bg-white hover:bg-gray-50"
+            style={{ borderColor: "var(--border-color)", color: "var(--text-muted)" }}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4">
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </Link>
+          <div>
+            <h1 className="text-xl font-bold truncate max-w-[200px]" style={{ color: "var(--text-primary)" }}>
+              {customer.name}
+            </h1>
+            <p className="text-sm" style={{ color: "var(--text-muted)" }}>
+              {customer.phone || "No phone linked"}
+            </p>
+          </div>
         </div>
+
+        {/* Delete Button */}
+        <button
+          onClick={handleDelete}
+          disabled={deleting}
+          className="p-2.5 rounded-xl border text-red-600 hover:bg-red-50 border-red-200 transition-colors disabled:opacity-50"
+          title="Delete Customer"
+        >
+          {deleting ? (
+            <span className="text-xs font-bold">Deleting...</span>
+          ) : (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4">
+              <polyline points="3 6 5 6 21 6" />
+              <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+              <line x1="10" y1="11" x2="10" y2="17" />
+              <line x1="14" y1="11" x2="14" y2="17" />
+            </svg>
+          )}
+        </button>
       </div>
 
       {/* Debt Card */}

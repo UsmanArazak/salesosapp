@@ -98,3 +98,53 @@ export async function recordRepayment(customerId: string, amountToPay: number): 
 
   return { success: true };
 }
+
+export async function deleteCustomer(customerId: string): Promise<ActionResult> {
+  const session = await getServerSession(authOptions);
+  if (!session) return { error: "Not authenticated" };
+
+  const shopId = session.user.shopId;
+  const supabase = createServiceRoleSupabaseClient();
+
+  // 1. Fetch customer to check total debt
+  const { data: customer, error: custErr } = await supabase
+    .from("customers")
+    .select("total_debt")
+    .eq("id", customerId)
+    .eq("shop_id", shopId)
+    .single();
+
+  if (custErr || !customer) return { error: "Customer not found." };
+  if (customer.total_debt > 0) {
+    return { error: "Cannot delete a customer with outstanding debt. Please record repayment first." };
+  }
+
+  // 2. Delete credit sales first to avoid foreign key violations
+  const { error: creditErr } = await supabase
+    .from("credit_sales")
+    .delete()
+    .eq("customer_id", customerId)
+    .eq("shop_id", shopId);
+
+  if (creditErr) {
+    console.error("Error deleting customer credit sales:", creditErr.message);
+    return { error: "Failed to delete customer's credit records." };
+  }
+
+  // 3. Delete customer
+  const { error: deleteErr } = await supabase
+    .from("customers")
+    .delete()
+    .eq("id", customerId)
+    .eq("shop_id", shopId);
+
+  if (deleteErr) {
+    console.error("Error deleting customer:", deleteErr.message);
+    return { error: "Failed to delete customer." };
+  }
+
+  revalidatePath("/dashboard/customers");
+  revalidatePath("/dashboard");
+  return { success: true };
+}
+
