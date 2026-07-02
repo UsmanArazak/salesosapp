@@ -81,13 +81,23 @@ export function CustomerList({ customers }: { customers: CustomerRow[] }) {
         >
           {customers.length === 0 ? (
             <>
-              <p className="text-3xl mb-3">👥</p>
-              <p className="font-semibold mb-1" style={{ color: "var(--text-primary)" }}>
+              <p className="text-4xl mb-3">👥</p>
+              <p className="font-bold text-base mb-1" style={{ color: "var(--text-primary)" }}>
                 No customers yet
               </p>
-              <p className="text-sm" style={{ color: "var(--text-muted)" }}>
-                Add customers to track who owes you money.
+              <p className="text-sm mb-1" style={{ color: "var(--text-muted)" }}>
+                Save your regular customers here.
               </p>
+              <p className="text-sm mb-5" style={{ color: "var(--text-muted)" }}>
+                When a customer buys on <strong>credit</strong>, add them here so you can track how much they owe you and when they pay back. You can also see their full purchase history.
+              </p>
+              <Link
+                href="/customers/new"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white"
+                style={{ background: "var(--accent)" }}
+              >
+                + Add Your First Customer
+              </Link>
             </>
           ) : (
             <p className="font-semibold" style={{ color: "var(--text-primary)" }}>

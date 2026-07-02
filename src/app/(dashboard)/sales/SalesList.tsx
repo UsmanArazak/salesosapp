@@ -126,19 +126,22 @@ export function SalesList({ sales }: { sales: SaleRow[] }) {
         >
           {sales.length === 0 ? (
             <>
-              <p className="text-3xl mb-3">🧾</p>
-              <p className="font-semibold mb-1" style={{ color: "var(--text-primary)" }}>
-                No sales yet
+              <p className="text-4xl mb-3">🧧</p>
+              <p className="font-bold text-base mb-1" style={{ color: "var(--text-primary)" }}>
+                No sales recorded yet
               </p>
-              <p className="text-sm mb-4" style={{ color: "var(--text-muted)" }}>
-                Record your first sale to start tracking revenue
+              <p className="text-sm mb-1" style={{ color: "var(--text-muted)" }}>
+                Every time you sell something, record it here.
+              </p>
+              <p className="text-sm mb-5" style={{ color: "var(--text-muted)" }}>
+                Tap <strong>Record Sale</strong>, pick the products sold, choose how the customer paid (cash, transfer, or credit), and SalesOS will instantly show you your profit for the day.
               </p>
               <Link
                 href="/sales/new"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white"
                 style={{ background: "var(--accent)" }}
               >
-                Record Sale
+                + Record Your First Sale
               </Link>
             </>
           ) : (

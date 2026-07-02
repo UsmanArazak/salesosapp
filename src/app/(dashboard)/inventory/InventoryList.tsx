@@ -130,19 +130,22 @@ export function InventoryList({ products }: { products: ProductRow[] }) {
         >
           {products.length === 0 ? (
             <>
-              <p className="text-3xl mb-3">📦</p>
-              <p className="font-semibold mb-1" style={{ color: "var(--text-primary)" }}>
+              <p className="text-4xl mb-3">📦</p>
+              <p className="font-bold text-base mb-1" style={{ color: "var(--text-primary)" }}>
                 No products yet
               </p>
-              <p className="text-sm mb-4" style={{ color: "var(--text-muted)" }}>
-                Add your first product to get started
+              <p className="text-sm mb-1" style={{ color: "var(--text-muted)" }}>
+                This is where all the things you sell will appear.
+              </p>
+              <p className="text-sm mb-5" style={{ color: "var(--text-muted)" }}>
+                Add each product with its <strong>name</strong>, <strong>buying price</strong>, <strong>selling price</strong>, and <strong>quantity in stock</strong>. SalesOS will use this to track your profit automatically.
               </p>
               <Link
                 href="/inventory/new"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold text-white"
                 style={{ background: "var(--accent)" }}
               >
-                Add Product
+                + Add Your First Product
               </Link>
             </>
           ) : (

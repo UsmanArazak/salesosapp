@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { createServiceRoleSupabaseClient } from "@/lib/supabase";
 import Link from "next/link";
+import { OnboardingChecklist } from "@/components/ui/OnboardingChecklist";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -37,12 +38,16 @@ async function getDashboardStats(shopId: string) {
     { data: openCredit },
     { data: monthExpensesRaw },
     { data: todayExpensesRaw },
+    { count: allSalesCount },
+    { count: customerCount },
   ] = await Promise.all([
     supabase.from("sales").select("id, total_amount").eq("shop_id", shopId).gte("created_at", todayStart),
     supabase.from("products").select("buying_price, stock_quantity, low_stock_threshold").eq("shop_id", shopId).eq("archived", false),
     supabase.from("credit_sales").select("amount, amount_paid").eq("shop_id", shopId).neq("status", "paid"),
     supabase.from("expenses").select("amount").eq("shop_id", shopId).gte("date", monthStart),
     supabase.from("expenses").select("amount").eq("shop_id", shopId).eq("date", todayISO),
+    supabase.from("sales").select("*", { count: "exact", head: true }).eq("shop_id", shopId),
+    supabase.from("customers").select("*", { count: "exact", head: true }).eq("shop_id", shopId),
   ]);
 
   const saleIds = (todaySalesRaw ?? []).map((s) => s.id);
@@ -60,7 +65,11 @@ async function getDashboardStats(shopId: string) {
   const monthExpenses = (monthExpensesRaw ?? []).reduce((s, e) => s + (e.amount ?? 0), 0);
   const lowStockCount = (products ?? []).filter((p) => p.stock_quantity <= p.low_stock_threshold).length;
 
-  return { salesToday, grossProfit, stockValue, outstandingCredit, monthExpenses, lowStockCount };
+  const hasProducts = (products?.length ?? 0) > 0;
+  const hasSales = (allSalesCount ?? 0) > 0;
+  const hasCustomers = (customerCount ?? 0) > 0;
+
+  return { salesToday, grossProfit, stockValue, outstandingCredit, monthExpenses, lowStockCount, hasProducts, hasSales, hasCustomers };
 }
 
 // ─── Stat Card ────────────────────────────────────────────────────────────────
@@ -126,6 +135,36 @@ export default async function DashboardPage() {
   const stats = await getDashboardStats(session.user.shopId);
   const isProfit = stats.grossProfit >= 0;
 
+  const onboardingSteps = [
+    {
+      key: "product",
+      emoji: "📦",
+      title: "Add your first product",
+      description: "Add the things you sell — name, buying price, selling price, and how many you have in stock.",
+      href: "/inventory/new",
+      cta: "Add Product",
+      done: stats.hasProducts,
+    },
+    {
+      key: "sale",
+      emoji: "💰",
+      title: "Record your first sale",
+      description: "Every time you sell something, tap Record Sale. SalesOS will automatically calculate your profit.",
+      href: "/sales/new",
+      cta: "Record Sale",
+      done: stats.hasSales,
+    },
+    {
+      key: "customer",
+      emoji: "👤",
+      title: "Add a customer",
+      description: "Save your regular customers so you can track who bought on credit and how much they owe you.",
+      href: "/customers/new",
+      cta: "Add Customer",
+      done: stats.hasCustomers,
+    },
+  ];
+
   return (
     <div>
       {/* Header */}
@@ -150,6 +189,9 @@ export default async function DashboardPage() {
           Record Sale
         </Link>
       </div>
+
+      {/* Onboarding Checklist — only shows until all 3 steps done */}
+      <OnboardingChecklist steps={onboardingSteps} />
 
       {/* ── Featured: Gross Profit Card ─── */}
       <div
