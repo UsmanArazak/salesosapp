@@ -1,21 +1,16 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
-function requireEnv(name: string): string {
-  const value = process.env[name];
-  if (!value) {
-    throw new Error(`Missing required environment variable: ${name}`);
-  }
-  return value;
-}
-
 /**
  * Public (anon) Supabase client.
  *
  * Use this for all normal application data access so that RLS is enforced.
  */
 export function createPublicSupabaseClient(): SupabaseClient {
-  const url = requireEnv("NEXT_PUBLIC_SUPABASE_URL");
-  const anonKey = requireEnv("NEXT_PUBLIC_SUPABASE_ANON_KEY");
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !anonKey) {
+    throw new Error("Missing required client-side environment variables: NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY");
+  }
   return createClient(url, anonKey);
 }
 
@@ -28,8 +23,11 @@ export function createPublicSupabaseClient(): SupabaseClient {
  * This MUST NOT be used for general data access.
  */
 export function createServiceRoleSupabaseClient(): SupabaseClient {
-  const url = requireEnv("NEXT_PUBLIC_SUPABASE_URL");
-  const serviceRoleKey = requireEnv("SUPABASE_SERVICE_ROLE_KEY");
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !serviceRoleKey) {
+    throw new Error("Missing required server-side environment variables: NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
+  }
   return createClient(url, serviceRoleKey);
 }
 
