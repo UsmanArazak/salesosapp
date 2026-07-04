@@ -1,6 +1,6 @@
 "use server";
 
-import { createServiceRoleSupabaseClient } from "@/lib/supabase";
+import { createServiceRoleSupabaseClient, createPublicSupabaseClient } from "@/lib/supabase";
 
 type RegisterInput = {
   shopName: string;
@@ -73,3 +73,22 @@ export async function registerShop(input: RegisterInput): Promise<RegisterResult
 
   return { success: true };
 }
+
+export async function requestPasswordReset(email: string, redirectTo: string): Promise<RegisterResult> {
+  if (!email.trim()) {
+    return { error: "Email address is required." };
+  }
+
+  const supabase = createPublicSupabaseClient();
+  const { error } = await supabase.auth.resetPasswordForEmail(email.trim().toLowerCase(), {
+    redirectTo,
+  });
+
+  if (error) {
+    console.error("Supabase Reset Password Error:", error.message);
+    return { error: error.message };
+  }
+
+  return { success: true };
+}
+
