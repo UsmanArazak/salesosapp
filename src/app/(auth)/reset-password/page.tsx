@@ -44,13 +44,18 @@ export default function ResetPasswordPage() {
         return;
       }
 
-      // Explicitly sign out of the temporary Supabase session to keep things clean
-      await supabase.auth.signOut();
+      try {
+        // Sign out of the temporary Supabase recovery session safely
+        await supabase.auth.signOut();
+      } catch (signOutErr) {
+        console.warn("Temporary Supabase session signout warning:", signOutErr);
+      }
 
       setSuccess(true);
     } catch (err) {
       console.error("Password Reset Error:", err);
-      setError("An unexpected error occurred. Please try again.");
+      const message = err instanceof Error ? err.message : "An unexpected error occurred. Please try again.";
+      setError(message);
     } finally {
       setLoading(false);
     }
