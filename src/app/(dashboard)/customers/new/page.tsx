@@ -19,15 +19,15 @@ export default function NewCustomerPage() {
     setLoading(true);
     setError("");
 
-    const result = await createCustomer({ name, phone });
+    createCustomer({ name, phone }).then((result) => {
+      if ("error" in result) {
+        console.error("Failed to create customer:", result.error);
+      } else {
+        router.refresh();
+      }
+    });
 
-    if ("error" in result) {
-      setError(result.error);
-      setLoading(false);
-    } else {
-      router.push("/customers");
-      router.refresh();
-    }
+    router.push("/customers");
   }
 
   return (

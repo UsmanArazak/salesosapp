@@ -115,6 +115,7 @@ export function DashboardNav() {
               <Link
                 key={item.href}
                 href={item.href}
+                prefetch={true}
                 className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all"
                 style={{
                   color: active ? "var(--accent)" : "var(--text-muted)",
@@ -191,6 +192,7 @@ export function DashboardNav() {
             <Link
               key={item.href}
               href={item.href}
+              prefetch={true}
               className="flex-1 flex flex-col items-center justify-center gap-1 py-2 text-[10px] font-medium transition-colors"
               style={{ color: active ? "var(--accent)" : "var(--text-muted)" }}
             >

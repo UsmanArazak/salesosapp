@@ -203,7 +203,7 @@ export function POSClient({ products, customers }: Props) {
       return;
     }
 
-    const result = await recordSale({
+    const payload = {
       items: cart.map((c) => ({
         productId: c.productId,
         quantity: c.quantity,
@@ -215,15 +215,22 @@ export function POSClient({ products, customers }: Props) {
       customerId: customerMode === "existing" ? selectedCustomerId : undefined,
       newCustomerName: customerMode === "new" ? newCustomerName : undefined,
       newCustomerPhone: customerMode === "new" ? newCustomerPhone : undefined,
-    });
-    setLoading(false);
+    };
 
-    if ("error" in result) {
-      setError(result.error);
-    } else {
-      router.push("/sales");
-      router.refresh();
-    }
+    // Optimistic update: fire and forget
+    recordSale(payload).then((result) => {
+      if (!("error" in result)) {
+        router.refresh();
+      } else {
+        console.error("Background sale failed:", result.error);
+      }
+    });
+
+    setLoading(false);
+    setCart([]);
+    setNotes("");
+    setAmountPaid("");
+    router.push("/sales");
   }
 
   return (

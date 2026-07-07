@@ -10,12 +10,17 @@ export default function NewProductPage() {
   const router = useRouter();
 
   async function handleSubmit(data: Parameters<typeof createProduct>[0]) {
-    const result = await createProduct(data);
-    if ("success" in result) {
-      router.push("/inventory");
-      router.refresh();
-    }
-    return result;
+    // Optimistic UI: fire background request, immediately redirect
+    createProduct(data).then((result) => {
+      if ("success" in result) {
+        router.refresh();
+      } else {
+        console.error("Failed to create product:", result.error);
+      }
+    });
+
+    router.push("/inventory");
+    return { success: true } as const;
   }
 
   return (
