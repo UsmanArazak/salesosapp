@@ -99,6 +99,79 @@ function Input({
   );
 }
 
+function PriceInput({
+  id,
+  value,
+  onChange,
+  placeholder,
+  required,
+}: {
+  id: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+  required?: boolean;
+}) {
+  const [focused, setFocused] = useState(false);
+
+  // Remove commas for processing
+  const rawValue = value.replace(/,/g, "").replace(/\D/g, "");
+  const displayValue = rawValue ? parseInt(rawValue, 10).toLocaleString("en-US") : "";
+
+  const handleChange = (val: string) => {
+    const numeric = val.replace(/\D/g, "");
+    onChange(numeric);
+  };
+
+  const increment = () => {
+    const current = parseInt(rawValue || "0", 10);
+    onChange((current + 1000).toString());
+  };
+
+  const decrement = () => {
+    const current = parseInt(rawValue || "0", 10);
+    onChange(Math.max(0, current - 1000).toString());
+  };
+
+  return (
+    <div className="relative flex items-center">
+      <button
+        type="button"
+        onClick={decrement}
+        className="absolute left-2 text-stone-400 hover:text-stone-600 p-1.5 bg-stone-100 hover:bg-stone-200 rounded-md transition-colors"
+        tabIndex={-1}
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4"><path d="M5 12h14"/></svg>
+      </button>
+      <input
+        id={id}
+        type="text"
+        inputMode="numeric"
+        value={displayValue}
+        onChange={(e) => handleChange(e.target.value)}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+        placeholder={placeholder}
+        required={required}
+        className="w-full rounded-xl border px-10 py-3 text-sm transition-colors focus:outline-none text-center font-medium"
+        style={{
+          background: "var(--bg-elevated)",
+          borderColor: focused ? "var(--accent)" : "var(--border-color)",
+          color: "var(--text-primary)",
+        }}
+      />
+      <button
+        type="button"
+        onClick={increment}
+        className="absolute right-2 text-stone-400 hover:text-stone-600 p-1.5 bg-stone-100 hover:bg-stone-200 rounded-md transition-colors"
+        tabIndex={-1}
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+    </div>
+  );
+}
+
 export function ProductForm({
   initial = {},
   onSubmit,
@@ -106,29 +179,31 @@ export function ProductForm({
   backHref = "/dashboard/inventory",
 }: Props) {
   const [name, setName] = useState(initial.name ?? "");
-  const [buyingPrice, setBuyingPrice] = useState(initial.buyingPrice ?? "");
-  const [sellingPrice, setSellingPrice] = useState(initial.sellingPrice ?? "");
-  const [stockQuantity, setStockQuantity] = useState(initial.stockQuantity ?? "");
+  const [buyingPrice, setBuyingPrice] = useState(initial.buyingPrice?.toString() ?? "");
+  const [sellingPrice, setSellingPrice] = useState(initial.sellingPrice?.toString() ?? "");
+  const [stockQuantity, setStockQuantity] = useState(initial.stockQuantity?.toString() ?? "");
   const [lowStockThreshold, setLowStockThreshold] = useState(
-    initial.lowStockThreshold ?? "5"
+    initial.lowStockThreshold?.toString() ?? ""
   );
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   // Live margin preview
+  const parsedSp = parseFloat(sellingPrice.toString().replace(/,/g, ""));
+  const parsedBp = parseFloat(buyingPrice.toString().replace(/,/g, ""));
   const margin =
-    sellingPrice && buyingPrice
-      ? parseFloat(sellingPrice) - parseFloat(buyingPrice)
+    !isNaN(parsedSp) && !isNaN(parsedBp)
+      ? parsedSp - parsedBp
       : null;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
 
-    const bp = parseFloat(buyingPrice);
-    const sp = parseFloat(sellingPrice);
-    const sq = parseInt(stockQuantity);
-    const lst = parseInt(lowStockThreshold);
+    const bp = parsedBp;
+    const sp = parsedSp;
+    const sq = parseInt(stockQuantity.toString().replace(/,/g, ""));
+    const lst = lowStockThreshold ? parseInt(lowStockThreshold.toString().replace(/,/g, "")) : 0;
 
     if (isNaN(bp) || bp < 0) return setError("Enter a valid buying price.");
     if (isNaN(sp) || sp < 0) return setError("Enter a valid selling price.");
@@ -171,27 +246,21 @@ export function ProductForm({
       {/* Row 3 — Prices */}
       <div className="grid grid-cols-2 gap-3">
         <Field id="p-buying" label="Buying price (₦)" required>
-          <Input
+          <PriceInput
             id="p-buying"
-            type="number"
             value={buyingPrice}
             onChange={setBuyingPrice}
             placeholder="0"
             required
-            min="0"
-            step="0.01"
           />
         </Field>
         <Field id="p-selling" label="Selling price (₦)" required>
-          <Input
+          <PriceInput
             id="p-selling"
-            type="number"
             value={sellingPrice}
             onChange={setSellingPrice}
             placeholder="0"
             required
-            min="0"
-            step="0.01"
           />
         </Field>
       </div>
@@ -239,7 +308,7 @@ export function ProductForm({
             type="number"
             value={lowStockThreshold}
             onChange={setLowStockThreshold}
-            placeholder="5"
+            placeholder="Optional"
             min="0"
             step="1"
           />
