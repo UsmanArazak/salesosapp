@@ -39,6 +39,7 @@ export function POSClient({ products, customers }: Props) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [productQuery, setProductQuery] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<"cash" | "transfer" | "credit">("cash");
+  const [amountPaid, setAmountPaid] = useState("");
   const [notes, setNotes] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -96,6 +97,7 @@ export function POSClient({ products, customers }: Props) {
           })),
           paymentMethod: sale.paymentMethod,
           notes: sale.notes,
+          amountPaid: sale.amountPaid,
           customerId: sale.customerData.id,
           newCustomerName: sale.customerData.name,
           newCustomerPhone: sale.customerData.phone,
@@ -184,6 +186,7 @@ export function POSClient({ products, customers }: Props) {
         cart,
         paymentMethod,
         notes,
+        amountPaid: parseFloat(amountPaid) || undefined,
         customerData: {
           mode: customerMode,
           id: customerMode === "existing" ? selectedCustomerId : undefined,
@@ -208,6 +211,7 @@ export function POSClient({ products, customers }: Props) {
       })),
       paymentMethod,
       notes,
+      amountPaid: parseFloat(amountPaid) || undefined,
       customerId: customerMode === "existing" ? selectedCustomerId : undefined,
       newCustomerName: customerMode === "new" ? newCustomerName : undefined,
       newCustomerPhone: customerMode === "new" ? newCustomerPhone : undefined,
@@ -413,6 +417,23 @@ export function POSClient({ products, customers }: Props) {
                     />
                  </div>
                )}
+
+               <div className="mt-4 pt-4 border-t" style={{ borderColor: "rgba(0,0,0,0.05)" }}>
+                 <label className="block text-sm font-medium mb-1.5" style={{ color: "var(--warning)" }}>Amount Paid Upfront (₦)</label>
+                 <input
+                   type="number"
+                   placeholder="0"
+                   min="0"
+                   step="0.01"
+                   value={amountPaid}
+                   onChange={(e) => setAmountPaid(e.target.value)}
+                   className="w-full rounded-xl border px-3 py-2 text-sm focus:outline-none"
+                   style={{ background: "var(--bg-surface)", borderColor: "var(--warning-border)", color: "var(--text-primary)" }}
+                 />
+                 <p className="text-xs mt-1.5 opacity-80" style={{ color: "var(--warning)" }}>
+                   If they are paying part of it now, enter the amount. The rest will be recorded as debt.
+                 </p>
+               </div>
             </div>
           )}
 

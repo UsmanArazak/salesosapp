@@ -18,6 +18,7 @@ export type RecordSaleInput = {
   customerId?: string;      // if selecting existing
   newCustomerName?: string; // if creating new inline
   newCustomerPhone?: string;
+  amountPaid?: number;      // upfront payment for credit sales
 };
 
 type ActionResult = { success: true } | { error: string };
@@ -126,31 +127,36 @@ export async function recordSale(input: RecordSaleInput): Promise<ActionResult> 
 
   // Step D: Handle Credit Sale tracking
   if (input.paymentMethod === "credit" && finalCustomerId) {
+    const amountPaid = input.amountPaid || 0;
+    const addedDebt = totalAmount - amountPaid;
+
     // Insert into credit_sales
     await supabase.from("credit_sales").insert({
       shop_id: shopId,
       customer_id: finalCustomerId,
       sale_id: sale.id,
       amount: totalAmount,
-      amount_paid: 0,
-      status: "unpaid"
+      amount_paid: amountPaid,
+      status: addedDebt <= 0 ? "paid" : "unpaid"
     });
 
-    // Fetch customer's current debt
-    const { data: custInfo } = await supabase
-      .from("customers")
-      .select("total_debt")
-      .eq("id", finalCustomerId)
-      .eq("shop_id", shopId)
-      .single();
-    
-    // Update customer total debt
-    if (custInfo) {
-      await supabase
+    if (addedDebt > 0) {
+      // Fetch customer's current debt
+      const { data: custInfo } = await supabase
         .from("customers")
-        .update({ total_debt: custInfo.total_debt + totalAmount })
+        .select("total_debt")
         .eq("id", finalCustomerId)
-        .eq("shop_id", shopId);
+        .eq("shop_id", shopId)
+        .single();
+      
+      // Update customer total debt
+      if (custInfo) {
+        await supabase
+          .from("customers")
+          .update({ total_debt: custInfo.total_debt + addedDebt })
+          .eq("id", finalCustomerId)
+          .eq("shop_id", shopId);
+      }
     }
   }
 
