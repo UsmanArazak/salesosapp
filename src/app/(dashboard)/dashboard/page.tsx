@@ -157,8 +157,8 @@ export default async function DashboardPage() {
     {
       key: "customer",
       emoji: "👤",
-      title: "Add a customer",
-      description: "When a customer buys on debt, save their details so you never forget.",
+      title: "Add a customer on debt",
+      description: "Add customers who owe you money or buy on credit, so you can easily track their debts.",
       href: "/customers/new",
       cta: "Add Customer",
       done: stats.hasCustomers,
