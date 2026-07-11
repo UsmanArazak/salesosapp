@@ -346,10 +346,11 @@ export default async function DashboardPage() {
         >
           Quick Actions
         </p>
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
             { label: "Add Product", href: "/inventory/new", emoji: "📦" },
             { label: "Add Customer", href: "/customers/new", emoji: "👤" },
+            { label: "View Reports", href: "/reports", emoji: "📊" },
             { label: "Expenses", href: "/expenses", emoji: "💸" },
           ].map((action) => (
             <Link
