@@ -14,11 +14,11 @@ export function PWAInstallBanner() {
   const [installed, setInstalled] = useState(false);
 
   useEffect(() => {
-    // Don't show if dismissed within the last 7 days
+    // Don't show if dismissed within the last 1 day
     const dismissedTime = localStorage.getItem("pwa-banner-dismissed-time");
     if (dismissedTime) {
       const daysSince = (Date.now() - parseInt(dismissedTime)) / (1000 * 60 * 60 * 24);
-      if (daysSince < 7) return; // Hide for 7 days
+      if (daysSince < 1) return; // Hide for 1 day
     }
 
     // Check if already installed (running as standalone PWA)
