@@ -350,7 +350,7 @@ export default async function DashboardPage() {
           {[
             { label: "Add Product", href: "/inventory/new", emoji: "📦" },
             { label: "Add Customer", href: "/customers/new", emoji: "👤" },
-            { label: "View Reports", href: "/reports", emoji: "📊" },
+            { label: "Expenses", href: "/expenses", emoji: "💸" },
           ].map((action) => (
             <Link
               key={action.href}
