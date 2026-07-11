@@ -14,9 +14,12 @@ export function PWAInstallBanner() {
   const [installed, setInstalled] = useState(false);
 
   useEffect(() => {
-    // Don't show if already dismissed this session
-    const dismissed = sessionStorage.getItem("pwa-banner-dismissed");
-    if (dismissed) return;
+    // Don't show if dismissed within the last 7 days
+    const dismissedTime = localStorage.getItem("pwa-banner-dismissed-time");
+    if (dismissedTime) {
+      const daysSince = (Date.now() - parseInt(dismissedTime)) / (1000 * 60 * 60 * 24);
+      if (daysSince < 7) return; // Hide for 7 days
+    }
 
     // Check if already installed (running as standalone PWA)
     if (window.matchMedia("(display-mode: standalone)").matches) {
@@ -52,7 +55,8 @@ export function PWAInstallBanner() {
   }
 
   function handleDismiss() {
-    sessionStorage.setItem("pwa-banner-dismissed", "1");
+    // Save dismissal time to localStorage to remember across sessions
+    localStorage.setItem("pwa-banner-dismissed-time", Date.now().toString());
     setVisible(false);
   }
 
