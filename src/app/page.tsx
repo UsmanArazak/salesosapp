@@ -180,8 +180,8 @@ export default async function Home() {
               </div>
             </div>
 
-            {/* Row 2: Two columns */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Row 2: Three columns */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               
               {/* Card Left: Offline POS */}
               <div className="bg-stone-100/80 border border-stone-200/60 rounded-3xl p-8 space-y-6">
@@ -198,7 +198,7 @@ export default async function Home() {
                 <div className="bg-white rounded-2xl border border-stone-200/80 p-5 space-y-3">
                   {[
                     { label: "Works without Data", active: true },
-                    { label: "Instant receipt generation", active: true },
+                    { label: "Fast barcode scanning", active: true },
                     { label: "Auto-sync to cloud", active: true },
                   ].map((ctrl, i) => (
                     <div key={i} className="flex justify-between items-center text-xs">
@@ -231,8 +231,8 @@ export default async function Home() {
                 {/* Mock list */}
                 <div className="bg-white rounded-2xl border border-stone-200/80 p-4 space-y-3">
                   {[
-                    { name: "Alhaji Ibrahim", amount: "₦25,000", status: "Owing" },
-                    { name: "Chioma Obi", amount: "₦8,500", status: "Owing" },
+                    { name: "Alhaji Ibrahim", amount: "₦25,000", status: "Overdue (23 days ago)" },
+                    { name: "Chioma Obi", amount: "₦8,500", status: "Part payment logged" },
                   ].map((debtor, i) => (
                     <div key={i} className="flex justify-between items-center text-xs border-b last:border-0 pb-2 last:pb-0">
                       <div>
@@ -240,6 +240,34 @@ export default async function Home() {
                         <span className="text-[10px] text-stone-400">{debtor.status}</span>
                       </div>
                       <span className="font-bold text-orange-600">{debtor.amount}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+
+              <div className="bg-stone-100/80 border border-stone-200/60 rounded-3xl p-8 space-y-6">
+                <div>
+                  <h3 className="text-xl font-bold tracking-tight text-stone-900">
+                    Smart Inventory
+                  </h3>
+                  <p className="text-xs text-stone-500 mt-2 leading-relaxed">
+                    Get alerted before you run out of stock. Track variations, cost prices, and expected profits.
+                  </p>
+                </div>
+
+                {/* Mock list */}
+                <div className="bg-white rounded-2xl border border-stone-200/80 p-4 space-y-3">
+                  {[
+                    { name: "Peak Milk (Tin)", qty: "4 left", status: "Low Stock", statusColor: "text-red-500" },
+                    { name: "Milo Refill", qty: "32 left", status: "In Stock", statusColor: "text-green-500" },
+                  ].map((item, i) => (
+                    <div key={i} className="flex justify-between items-center text-xs border-b last:border-0 pb-2 last:pb-0">
+                      <div>
+                        <p className="font-semibold text-stone-850">{item.name}</p>
+                        <span className={`text-[10px] ${item.statusColor}`}>{item.status}</span>
+                      </div>
+                      <span className="font-bold text-stone-600">{item.qty}</span>
                     </div>
                   ))}
                 </div>
