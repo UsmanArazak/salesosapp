@@ -64,11 +64,7 @@ export default async function Home() {
       {/* ── HERO SECTION ─────────────────────────────────────────────── */}
       <main className="flex-grow">
         <section className="max-w-5xl mx-auto px-6 pt-16 pb-20 text-center relative">
-          {/* Pill Badge */}
-          <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full text-xs font-semibold bg-stone-200/50 text-stone-800 border border-stone-200/80 mb-8">
-            <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
-            🇳🇬 💊 Pharmacy • 👗 Boutique • 🛒 Supermarket • 💻 Electronics • 💄 Cosmetics
-          </div>
+
 
           {/* Heading */}
           <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-stone-900 leading-[1.1] max-w-4xl mx-auto">
