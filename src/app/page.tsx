@@ -129,7 +129,7 @@ export default async function Home() {
                   Real-time Profit Analytics
                 </h3>
                 <p className="text-sm text-stone-500 leading-relaxed">
-                  Know exactly how much profit you make daily. SalesOS aggregates all transactions and cost of goods to provide live visual breakdowns of your net profit.
+                  Easily track your daily, weekly, and monthly profits. SalesOS automatically calculates your true profit after removing the cost of goods, so you always know how your business is doing.
                 </p>
                 <Link
                   href="/register"
@@ -140,19 +140,33 @@ export default async function Home() {
               </div>
 
               {/* Chart Mockup Graphic */}
-              <div className="md:col-span-7 bg-white rounded-2xl border border-stone-200/80 p-5 shadow-sm space-y-4">
+              <div className="md:col-span-7 bg-white rounded-2xl border border-stone-200/80 p-5 shadow-sm space-y-4 mt-6 md:mt-0">
                 <div className="flex justify-between items-center text-xs">
-                  <span className="font-semibold text-stone-700">Your Shop Name</span>
+                  <span className="font-semibold text-stone-700">Global Tech Gadgets</span>
                   <span className="text-stone-400">Weekly net profit</span>
                 </div>
-                <div className="h-40 flex items-end gap-3 pt-4 border-b border-stone-100 pb-2">
-                  <div className="bg-stone-200 w-full rounded-t-md transition-all hover:bg-orange-500" style={{ height: "45%" }} />
-                  <div className="bg-stone-200 w-full rounded-t-md transition-all hover:bg-orange-500" style={{ height: "30%" }} />
-                  <div className="bg-stone-200 w-full rounded-t-md transition-all hover:bg-orange-500" style={{ height: "70%" }} />
-                  <div className="bg-stone-200 w-full rounded-t-md transition-all hover:bg-orange-500" style={{ height: "50%" }} />
-                  <div className="bg-orange-500 w-full rounded-t-md shadow-sm" style={{ height: "90%" }} />
-                  <div className="bg-stone-200 w-full rounded-t-md transition-all hover:bg-orange-500" style={{ height: "40%" }} />
-                  <div className="bg-stone-200 w-full rounded-t-md transition-all hover:bg-orange-500" style={{ height: "60%" }} />
+                <div className="h-40 flex items-end gap-2 sm:gap-3 pt-6 border-b border-stone-100 pb-2">
+                  <div className="bg-stone-200 w-full rounded-t-md transition-all hover:bg-orange-500 relative group" style={{ height: "45%" }}>
+                    <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[9px] font-bold text-stone-500 group-hover:text-orange-600">₦12k</span>
+                  </div>
+                  <div className="bg-stone-200 w-full rounded-t-md transition-all hover:bg-orange-500 relative group" style={{ height: "30%" }}>
+                    <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[9px] font-bold text-stone-500 group-hover:text-orange-600">₦8.5k</span>
+                  </div>
+                  <div className="bg-stone-200 w-full rounded-t-md transition-all hover:bg-orange-500 relative group" style={{ height: "70%" }}>
+                    <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[9px] font-bold text-stone-500 group-hover:text-orange-600">₦18k</span>
+                  </div>
+                  <div className="bg-stone-200 w-full rounded-t-md transition-all hover:bg-orange-500 relative group" style={{ height: "50%" }}>
+                    <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[9px] font-bold text-stone-500 group-hover:text-orange-600">₦14k</span>
+                  </div>
+                  <div className="bg-orange-500 w-full rounded-t-md shadow-sm relative group" style={{ height: "90%" }}>
+                    <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[9px] font-bold text-orange-600">₦24k</span>
+                  </div>
+                  <div className="bg-stone-200 w-full rounded-t-md transition-all hover:bg-orange-500 relative group" style={{ height: "40%" }}>
+                    <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[9px] font-bold text-stone-500 group-hover:text-orange-600">₦11k</span>
+                  </div>
+                  <div className="bg-stone-200 w-full rounded-t-md transition-all hover:bg-orange-500 relative group" style={{ height: "60%" }}>
+                    <span className="absolute -top-5 left-1/2 -translate-x-1/2 text-[9px] font-bold text-stone-500 group-hover:text-orange-600">₦16k</span>
+                  </div>
                 </div>
                 <div className="flex justify-between text-[10px] text-stone-400">
                   <span>Mon</span>
