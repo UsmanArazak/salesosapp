@@ -30,7 +30,6 @@ export default async function Home() {
           <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-stone-600">
             <a href="#features" className="hover:text-stone-900 transition-colors">Features</a>
             <a href="#integrations" className="hover:text-stone-900 transition-colors">Integrations</a>
-            <a href="#testimonials" className="hover:text-stone-900 transition-colors">Success Stories</a>
             <a href="#pricing" className="hover:text-stone-900 transition-colors">Pricing</a>
           </nav>
 
@@ -54,7 +53,7 @@ export default async function Home() {
                   href="/register"
                   className="px-5 py-2.5 rounded-full text-sm font-bold text-white transition-all hover:opacity-90 active:scale-[0.98] shadow-sm bg-stone-900"
                 >
-                  Start Now
+                  Register your shop
                 </Link>
               </>
             )}
@@ -66,9 +65,9 @@ export default async function Home() {
       <main className="flex-grow">
         <section className="max-w-5xl mx-auto px-6 pt-16 pb-20 text-center relative">
           {/* Pill Badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full text-xs font-semibold bg-stone-200/50 text-stone-800 border border-stone-200/80 mb-8">
+          <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full text-xs font-semibold bg-stone-200/50 text-stone-800 border border-stone-200/80 mb-8">
             <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
-            CREATE RETAIL POWER
+            🇳🇬 💊 Pharmacy • 👗 Boutique • 🛒 Supermarket • 💻 Electronics • 💄 Cosmetics
           </div>
 
           {/* Heading */}
@@ -78,8 +77,8 @@ export default async function Home() {
           </h1>
 
           {/* Description */}
-          <p className="text-base sm:text-lg text-stone-500 max-w-xl mx-auto mt-6 leading-relaxed">
-            SalesOS helps small retail shops record daily sales, automate profit calculations, track customer credit, and manage stock levels instantly.
+          <p className="text-base sm:text-xl text-stone-600 font-medium max-w-2xl mx-auto mt-6 leading-relaxed">
+            Track Every Sale. See Every Naira. Run a Better Business.
           </p>
 
           {/* CTA Buttons */}
@@ -97,30 +96,16 @@ export default async function Home() {
                   href="/register"
                   className="w-full sm:w-auto px-8 py-4 rounded-full font-bold text-white shadow-md bg-stone-900 transition-all hover:opacity-90 active:scale-[0.97]"
                 >
-                  Start for Free
+                  Register your shop
                 </Link>
                 <Link
                   href="/login"
                   className="w-full sm:w-auto px-8 py-4 rounded-full font-semibold bg-white border border-stone-200 text-stone-800 transition-all hover:bg-stone-50 active:scale-[0.97]"
                 >
-                  Get a Demo
+                  Sign in to your shop
                 </Link>
               </>
             )}
-          </div>
-
-          {/* Small partner logos */}
-          <div className="mt-20 border-t border-stone-200/80 pt-8 max-w-4xl mx-auto">
-            <p className="text-xs uppercase tracking-widest font-semibold text-stone-400 mb-6">
-              Empowering local retail shops across the nation
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-6 text-sm font-bold text-stone-400/80">
-              <span className="hover:text-stone-600 transition-colors">OPay</span>
-              <span className="hover:text-stone-600 transition-colors">Monnify</span>
-              <span className="hover:text-stone-600 transition-colors">Paystack</span>
-              <span className="hover:text-stone-600 transition-colors">Interswitch</span>
-              <span className="hover:text-stone-600 transition-colors">PalmPay</span>
-            </div>
           </div>
         </section>
 
@@ -131,37 +116,37 @@ export default async function Home() {
               FEATURES
             </div>
             <h2 className="text-3xl font-extrabold tracking-tight text-stone-900">
-              Latest tools to manage everything you need
+              Everything you need to run your shop
             </h2>
             <p className="text-sm text-stone-500 max-w-md mx-auto">
-              Track performance, manage daily checkout flows, and optimize product lines with simple, modern utilities.
+              Stop guessing your profits and losing money to untracked debt. SalesOS gives you full control.
             </p>
           </div>
 
-          {/* Feature Cards Grid (Inspired by mock layout) */}
+          {/* Feature Cards Grid */}
           <div className="space-y-6">
             
             {/* Row 1: Large dashboard card */}
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 bg-stone-100/80 border border-stone-200/60 rounded-3xl p-8 items-center">
               <div className="md:col-span-5 space-y-4">
                 <h3 className="text-2xl font-bold tracking-tight text-stone-900">
-                  Dynamic dashboard
+                  Real-time Profit Analytics
                 </h3>
                 <p className="text-sm text-stone-500 leading-relaxed">
-                  SalesOS aggregates all transaction metrics, cost of goods, and operations cost to provide live visual breakdowns of net daily profits.
+                  Know exactly how much profit you make daily. SalesOS aggregates all transactions and cost of goods to provide live visual breakdowns of your net profit.
                 </p>
                 <Link
                   href="/register"
                   className="inline-block px-5 py-2.5 rounded-full text-xs font-bold text-white bg-stone-900 transition-all hover:opacity-90"
                 >
-                  Explore all
+                  Create a Free Account
                 </Link>
               </div>
 
               {/* Chart Mockup Graphic */}
               <div className="md:col-span-7 bg-white rounded-2xl border border-stone-200/80 p-5 shadow-sm space-y-4">
                 <div className="flex justify-between items-center text-xs">
-                  <span className="font-semibold text-stone-700">Acme Provisions Ltd</span>
+                  <span className="font-semibold text-stone-700">Your Shop Name</span>
                   <span className="text-stone-400">Weekly net profit</span>
                 </div>
                 <div className="h-40 flex items-end gap-3 pt-4 border-b border-stone-100 pb-2">
@@ -188,23 +173,23 @@ export default async function Home() {
             {/* Row 2: Two columns */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               
-              {/* Card Left: Smart alerts */}
+              {/* Card Left: Offline POS */}
               <div className="bg-stone-100/80 border border-stone-200/60 rounded-3xl p-8 space-y-6">
                 <div>
                   <h3 className="text-xl font-bold tracking-tight text-stone-900">
-                    Smart notifications
+                    Offline POS & Sales
                   </h3>
                   <p className="text-xs text-stone-500 mt-2 leading-relaxed">
-                    Easily accessible from the notifications index, license alerts, or email alerts, staying close to customer events.
+                    Record sales even without an internet connection. SalesOS seamlessly syncs your data in the background once you&apos;re back online.
                   </p>
                 </div>
                 
                 {/* Mock UI controls */}
                 <div className="bg-white rounded-2xl border border-stone-200/80 p-5 space-y-3">
                   {[
-                    { label: "Low stock warnings", active: true },
-                    { label: "Daily checkout summaries", active: false },
-                    { label: "Customer debt reminders", active: true },
+                    { label: "Works without Data", active: true },
+                    { label: "Instant receipt generation", active: true },
+                    { label: "Auto-sync to cloud", active: true },
                   ].map((ctrl, i) => (
                     <div key={i} className="flex justify-between items-center text-xs">
                       <span className="text-stone-700 font-medium">{ctrl.label}</span>
@@ -222,22 +207,22 @@ export default async function Home() {
                 </div>
               </div>
 
-              {/* Card Right: Task/Debtor list */}
+              {/* Card Right: Debtor list */}
               <div className="bg-stone-100/80 border border-stone-200/60 rounded-3xl p-8 space-y-6">
                 <div>
                   <h3 className="text-xl font-bold tracking-tight text-stone-900">
-                    Debtor management
+                    Debt & Customer Management
                   </h3>
                   <p className="text-xs text-stone-500 mt-2 leading-relaxed">
-                    Keep track of pending accounts, outstanding balances, and repayment schedules to secure shop liquidity.
+                    Keep track of customers who owe you money. Log partial payments and see outstanding balances instantly.
                   </p>
                 </div>
 
                 {/* Mock list */}
                 <div className="bg-white rounded-2xl border border-stone-200/80 p-4 space-y-3">
                   {[
-                    { name: "Alhaji Ibrahim", amount: "₦25,000", status: "Overdue" },
-                    { name: "Chioma Obi", amount: "₦8,500", status: "Pending" },
+                    { name: "Alhaji Ibrahim", amount: "₦25,000", status: "Owing" },
+                    { name: "Chioma Obi", amount: "₦8,500", status: "Owing" },
                   ].map((debtor, i) => (
                     <div key={i} className="flex justify-between items-center text-xs border-b last:border-0 pb-2 last:pb-0">
                       <div>
@@ -261,62 +246,31 @@ export default async function Home() {
               INTEGRATION
             </div>
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
-              Don’t replace. Integrate.
+              Works with how you already do business
             </h2>
             <p className="text-sm text-stone-400 max-w-lg mx-auto leading-relaxed">
-              SalesOS fits right alongside the utilities you already use. From local bank transfers and instant card processing, to direct WhatsApp sharing of printable checkout slips.
+              Send receipts directly to customers on WhatsApp, and download profit sheets as PDFs or Excel files.
             </p>
 
             {/* Integration Grid icons mockup */}
-            <div className="grid grid-cols-4 sm:grid-cols-8 gap-4 pt-8">
+            <div className="flex flex-wrap items-center justify-center gap-4 pt-8 max-w-2xl mx-auto">
               {[
-                "Slack", "Notion", "Stripe", "PayPal", "Shopify", "OPay", "Paystack", "Monnify",
-                "WhatsApp", "Excel", "GPay", "Visa", "Mastercard", "GSheets", "SMS", "Vercel"
-              ].map((name, i) => (
+                { name: "WhatsApp", icon: "💬" },
+                { name: "Excel", icon: "📊" },
+                { name: "PDF", icon: "📄" },
+                { name: "POS Terminals", icon: "💳" },
+                { name: "Bank Transfers", icon: "🏦" },
+                { name: "Cash", icon: "💵" }
+              ].map((item, i) => (
                 <div
                   key={i}
-                  className="bg-stone-850 border border-stone-800 rounded-xl p-3 flex flex-col items-center justify-center text-[10px] font-bold text-stone-400 gap-1.5 shadow-sm hover:border-orange-500/50 hover:text-white transition-all"
+                  className="bg-stone-850 border border-stone-800 rounded-xl px-5 py-3 flex items-center justify-center text-xs font-bold text-stone-300 gap-2.5 shadow-sm hover:border-orange-500/50 hover:text-white transition-all"
                   style={{ background: "#262524" }}
                 >
-                  <span className="w-6 h-6 bg-stone-700/60 rounded-md flex items-center justify-center text-xs text-orange-500 font-extrabold">
-                    {name[0]}
-                  </span>
-                  <span>{name}</span>
+                  <span className="text-lg">{item.icon}</span>
+                  <span>{item.name}</span>
                 </div>
               ))}
-            </div>
-          </div>
-        </section>
-
-        {/* ── TESTIMONIALS ─────────────────────────────────────────────── */}
-        <section id="testimonials" className="max-w-4xl mx-auto px-6 py-20 text-center space-y-8">
-          {/* Quote Icon */}
-          <div className="text-5xl font-serif text-orange-500 font-extrabold leading-none">“</div>
-          
-          <blockquote className="text-lg sm:text-2xl font-semibold tracking-tight text-stone-900 max-w-3xl mx-auto leading-relaxed">
-            SalesOS changed how we track inventory. Instead of staying up past midnight counting boxes and doing math on paper, I get exact profit statements directly on my phone by the time we close the store.
-          </blockquote>
-
-          <div className="flex flex-col items-center gap-1.5 pt-4">
-            <span className="font-bold text-stone-950 text-sm">Fatima Abubakar</span>
-            <span className="text-xs text-stone-500">Owner, Fatima Provision Stores</span>
-          </div>
-        </section>
-
-        {/* ── STATS BAR ────────────────────────────────────────────────── */}
-        <section className="bg-stone-100 border-y border-stone-200/80">
-          <div className="max-w-5xl mx-auto px-6 py-12 grid grid-cols-3 gap-6 text-center">
-            <div>
-              <p className="text-2xl sm:text-4xl font-extrabold text-stone-900">2026</p>
-              <p className="text-xs text-stone-400 mt-1 uppercase tracking-wider font-semibold">SalesOS Launched</p>
-            </div>
-            <div>
-              <p className="text-2xl sm:text-4xl font-extrabold text-stone-900">10k+</p>
-              <p className="text-xs text-stone-400 mt-1 uppercase tracking-wider font-semibold">Daily Transactions</p>
-            </div>
-            <div>
-              <p className="text-2xl sm:text-4xl font-extrabold text-stone-900">500+</p>
-              <p className="text-xs text-stone-400 mt-1 uppercase tracking-wider font-semibold">Active Shop Owners</p>
             </div>
           </div>
         </section>
@@ -324,23 +278,23 @@ export default async function Home() {
         {/* ── PRE-FOOTER CTA ──────────────────────────────────────────── */}
         <section id="pricing" className="max-w-4xl mx-auto px-6 py-20 text-center space-y-6">
           <h2 className="text-3xl font-extrabold tracking-tight text-stone-900">
-            Discover the full scale of SalesOS capabilities
+            Take control of your shop today
           </h2>
           <p className="text-sm text-stone-500 max-w-md mx-auto">
-            Get started for free today. Upgrade anytime to access multi-employee management and automated client notification systems.
+            Get started for free today. Stop losing money to untracked stock and unpaid debt.
           </p>
           <div className="flex justify-center gap-3 pt-4">
             <Link
               href="/register"
               className="px-6 py-3 rounded-full text-xs font-bold text-white bg-stone-900 transition-all hover:opacity-90"
             >
-              Start for Free
+              Create a Free Account
             </Link>
             <Link
               href="/login"
               className="px-6 py-3 rounded-full text-xs font-semibold bg-white border border-stone-200 text-stone-850 hover:bg-stone-50 transition-all"
             >
-              Get a Demo
+              Sign in to your shop
             </Link>
           </div>
         </section>
@@ -363,7 +317,7 @@ export default async function Home() {
               <span className="font-bold text-white">SalesOS</span>
             </div>
             <p className="text-xs text-stone-400">
-              Smart operations client built to optimize sales, stock, and credit accounting interfaces.
+              Smart operations client built to optimize sales, stock, and credit accounting for retail shops.
             </p>
           </div>
 
@@ -372,14 +326,14 @@ export default async function Home() {
             <ul className="space-y-2 text-xs text-stone-400">
               <li><a href="#features" className="hover:text-white transition-colors">Features</a></li>
               <li><a href="#integrations" className="hover:text-white transition-colors">Integrations</a></li>
-              <li><a href="#pricing" className="hover:text-white transition-colors">Pricing</a></li>
+              <li><Link href="/register" className="hover:text-white transition-colors">Pricing</Link></li>
             </ul>
           </div>
 
           <div>
             <h4 className="font-bold text-white text-xs uppercase tracking-wider mb-3">Company</h4>
             <ul className="space-y-2 text-xs text-stone-400">
-              <li><a href="#" className="hover:text-white transition-colors">About Us</a></li>
+              <li><Link href="/waitlist" className="hover:text-white transition-colors">Waitlist</Link></li>
               <li><a href="#" className="hover:text-white transition-colors">Contact Support</a></li>
               <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
             </ul>
@@ -389,7 +343,7 @@ export default async function Home() {
             <h4 className="font-bold text-white text-xs uppercase tracking-wider mb-3">Inquiries</h4>
             <ul className="space-y-2 text-xs text-stone-400">
               <li>info@salesos.com</li>
-              <li>+234 817 999 0000</li>
+              <li>+234 808 576 4331</li>
             </ul>
           </div>
 
@@ -398,9 +352,18 @@ export default async function Home() {
         <div className="border-t border-stone-850 py-6 max-w-6xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-500 gap-4" style={{ borderColor: "#2E2A27" }}>
           <span>&copy; 2026 SalesOS App. All rights reserved.</span>
           <div className="flex gap-4">
-            <a href="#" className="hover:text-stone-300">Twitter</a>
-            <a href="#" className="hover:text-stone-300">LinkedIn</a>
-            <a href="#" className="hover:text-stone-350">GitHub</a>
+            <a href="https://wa.me/2348085764331" target="_blank" rel="noopener noreferrer" className="hover:text-stone-300 flex items-center gap-1.5">
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.888-.788-1.487-1.761-1.66-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+              WhatsApp
+            </a>
+            <a href="https://web.facebook.com/profile.php?id=61591237097787" target="_blank" rel="noopener noreferrer" className="hover:text-stone-300 flex items-center gap-1.5">
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.469h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.469h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+              Facebook
+            </a>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-stone-350 flex items-center gap-1.5">
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+              Instagram
+            </a>
           </div>
         </div>
       </footer>
