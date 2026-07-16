@@ -29,6 +29,14 @@ export function PWAInstallBanner() {
 
     const handler = (e: Event) => {
       e.preventDefault();
+      
+      // Check if dismissed within the last 24 hours before showing
+      const dismissedTime = localStorage.getItem("pwa-banner-dismissed-time");
+      if (dismissedTime) {
+        const daysSince = (Date.now() - parseInt(dismissedTime)) / (1000 * 60 * 60 * 24);
+        if (daysSince < 1) return; // Hide for 1 day
+      }
+
       setPrompt(e as BeforeInstallPromptEvent);
       // Small delay so it doesn't pop up instantly on login
       setTimeout(() => setVisible(true), 2000);
