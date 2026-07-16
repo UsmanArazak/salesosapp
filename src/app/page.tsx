@@ -33,27 +33,27 @@ export default async function Home() {
             <a href="#pricing" className="hover:text-stone-900 transition-colors">Pricing</a>
           </nav>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             {session ? (
               <Link
                 href={session.user.role === "superadmin" ? "/superadmin" : "/dashboard"}
-                className="px-5 py-2.5 rounded-full text-sm font-bold text-white transition-all hover:opacity-90 active:scale-[0.98] shadow-sm bg-stone-900"
+                className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold text-white transition-all hover:opacity-90 active:scale-[0.98] shadow-sm bg-stone-900"
               >
-                Go to Dashboard
+                Dashboard
               </Link>
             ) : (
               <>
                 <Link
                   href="/login"
-                  className="px-5 py-2.5 rounded-full text-sm font-semibold text-stone-700 transition-all hover:bg-stone-100"
+                  className="hidden sm:inline-block px-4 py-2 sm:px-5 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold text-stone-700 transition-all hover:bg-stone-100"
                 >
                   Login
                 </Link>
                 <Link
                   href="/register"
-                  className="px-5 py-2.5 rounded-full text-sm font-bold text-white transition-all hover:opacity-90 active:scale-[0.98] shadow-sm bg-stone-900"
+                  className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold text-white transition-all hover:opacity-90 active:scale-[0.98] shadow-sm bg-stone-900"
                 >
-                  Register your shop
+                  Register <span className="hidden sm:inline">your shop</span>
                 </Link>
               </>
             )}
@@ -67,13 +67,13 @@ export default async function Home() {
 
 
           {/* Heading */}
-          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-stone-900 leading-[1.1] max-w-4xl mx-auto">
+          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-stone-900 leading-[1.1] max-w-4xl mx-auto text-balance">
             SalesOS helps <span className="underline decoration-orange-500 decoration-wavy decoration-2 inline-block"><CyclingText /></span> <br className="hidden sm:inline" />
             your business
           </h1>
 
           {/* Description */}
-          <p className="text-base sm:text-xl text-stone-600 font-medium max-w-2xl mx-auto mt-6 leading-relaxed">
+          <p className="text-base sm:text-xl text-stone-600 font-medium max-w-2xl mx-auto mt-6 leading-relaxed text-balance">
             Track Every Sale. See Every Naira. Run a Better Business.
           </p>
 
@@ -111,10 +111,10 @@ export default async function Home() {
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-orange-100 text-orange-600 border border-orange-200/50">
               FEATURES
             </div>
-            <h2 className="text-3xl font-extrabold tracking-tight text-stone-900">
+            <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 text-balance">
               Everything you need to run your shop
             </h2>
-            <p className="text-sm text-stone-500 max-w-md mx-auto">
+            <p className="text-sm text-stone-500 max-w-md mx-auto text-balance">
               Stop guessing your profits and losing money to untracked debt. SalesOS gives you full control.
             </p>
           </div>
@@ -125,10 +125,10 @@ export default async function Home() {
             {/* Row 1: Large dashboard card */}
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 bg-stone-100/80 border border-stone-200/60 rounded-3xl p-8 items-center">
               <div className="md:col-span-5 space-y-4">
-                <h3 className="text-2xl font-bold tracking-tight text-stone-900">
+                <h3 className="text-2xl font-bold tracking-tight text-stone-900 text-balance">
                   Real-time Profit Analytics
                 </h3>
-                <p className="text-sm text-stone-500 leading-relaxed">
+                <p className="text-sm text-stone-500 leading-relaxed text-balance">
                   Easily track your daily, weekly, and monthly profits. SalesOS automatically calculates your true profit after removing the cost of goods, so you always know how your business is doing.
                 </p>
                 <Link
@@ -283,7 +283,7 @@ export default async function Home() {
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-stone-800 text-stone-300 border border-stone-700">
               INTEGRATION
             </div>
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-balance">
               Works with how you already do business
             </h2>
             <p className="text-sm text-stone-400 max-w-lg mx-auto leading-relaxed">
@@ -315,22 +315,22 @@ export default async function Home() {
 
         {/* ── PRE-FOOTER CTA ──────────────────────────────────────────── */}
         <section id="pricing" className="max-w-4xl mx-auto px-6 py-20 text-center space-y-6">
-          <h2 className="text-3xl font-extrabold tracking-tight text-stone-900">
+          <h2 className="text-3xl font-extrabold tracking-tight text-stone-900 text-balance">
             Take control of your shop today
           </h2>
-          <p className="text-sm text-stone-500 max-w-md mx-auto">
+          <p className="text-sm text-stone-500 max-w-md mx-auto text-balance">
             Get started for free today. Stop losing money to untracked stock and unpaid debt.
           </p>
-          <div className="flex justify-center gap-3 pt-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4">
             <Link
               href="/register"
-              className="px-6 py-3 rounded-full text-xs font-bold text-white bg-stone-900 transition-all hover:opacity-90"
+              className="w-full sm:w-auto px-6 py-3 rounded-full text-xs font-bold text-white bg-stone-900 transition-all hover:opacity-90 text-center"
             >
               Create a Free Account
             </Link>
             <Link
               href="/login"
-              className="px-6 py-3 rounded-full text-xs font-semibold bg-white border border-stone-200 text-stone-850 hover:bg-stone-50 transition-all"
+              className="w-full sm:w-auto px-6 py-3 rounded-full text-xs font-semibold bg-white border border-stone-200 text-stone-850 hover:bg-stone-50 transition-all text-center"
             >
               Sign in to your shop
             </Link>
