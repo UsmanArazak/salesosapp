@@ -10,6 +10,7 @@ export default function RegisterPage() {
   const [shopName, setShopName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [whatsappNumber, setWhatsappNumber] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [focused, setFocused] = useState<string | null>(null);
@@ -20,7 +21,7 @@ export default function RegisterPage() {
     setLoading(true);
     setError("");
 
-    const result = await registerShop({ shopName, email, password });
+    const result = await registerShop({ shopName, email, password, whatsappNumber });
 
     if ("error" in result) {
       setError(result.error);
@@ -186,6 +187,35 @@ export default function RegisterPage() {
                 )}
               </button>
             </div>
+          </div>
+
+          {/* WhatsApp Number */}
+          <div>
+            <label
+              htmlFor="reg-whatsapp"
+              className="block text-sm font-medium mb-1.5"
+              style={{ color: "var(--text-dim)" }}
+            >
+              WhatsApp number
+            </label>
+            <input
+              id="reg-whatsapp"
+              type="tel"
+              value={whatsappNumber}
+              onChange={(e) => setWhatsappNumber(e.target.value)}
+              onFocus={() => setFocused("whatsapp")}
+              onBlur={() => setFocused(null)}
+              placeholder="e.g. 08012345678"
+              className="w-full rounded-xl px-4 py-3 text-sm border transition-colors focus:outline-none"
+              style={{
+                background: "var(--bg-elevated)",
+                borderColor: borderFor("whatsapp"),
+                color: "var(--text-primary)",
+              }}
+            />
+            <p className="mt-1.5 text-xs" style={{ color: "var(--text-muted)" }}>
+              💬 We use this to send automatic WhatsApp reminders to customers who owe you money. You can add it later in your shop settings.
+            </p>
           </div>
 
           {/* Error */}

@@ -2,6 +2,8 @@
 
 import { signOut } from "next-auth/react";
 import Link from "next/link";
+import { useState } from "react";
+import { updateShopWhatsApp } from "@/app/actions/shop";
 
 type Shop = {
   id: string;
@@ -9,11 +11,28 @@ type Shop = {
   plan: string;
   address?: string | null;
   phone?: string | null;
+  whatsapp_number?: string | null;
   created_at: string;
 };
 
 export function ShopClientPage({ shop, ownerEmail }: { shop: Shop; ownerEmail: string }) {
   const isPro = shop.plan === "pro";
+  const [whatsapp, setWhatsapp] = useState(shop.whatsapp_number ?? "");
+  const [saving, setSaving] = useState(false);
+  const [saveMsg, setSaveMsg] = useState("");
+
+  async function handleSaveWhatsApp() {
+    setSaving(true);
+    setSaveMsg("");
+    const result = await updateShopWhatsApp(shop.id, whatsapp.trim());
+    setSaving(false);
+    if ("error" in result) {
+      setSaveMsg("❌ " + result.error);
+    } else {
+      setSaveMsg("✅ Saved!");
+      setTimeout(() => setSaveMsg(""), 3000);
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -65,6 +84,50 @@ export function ShopClientPage({ shop, ownerEmail }: { shop: Shop; ownerEmail: s
             </div>
           </div>
         </div>
+      </div>
+
+      {/* WhatsApp Number Card */}
+      <div
+        className="rounded-2xl border p-5 bg-white space-y-3"
+        style={{ borderColor: "var(--border-color)" }}
+      >
+        <div>
+          <h2 className="text-xs uppercase tracking-wider font-semibold mb-1" style={{ color: "var(--text-dim)" }}>
+            WhatsApp Number
+          </h2>
+          <p className="text-xs mb-3" style={{ color: "var(--text-muted)" }}>
+            💬 This number is used to send automatic WhatsApp reminders to customers who owe you money. Make sure it is the number you use on WhatsApp.
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <input
+            type="tel"
+            value={whatsapp}
+            onChange={(e) => setWhatsapp(e.target.value)}
+            placeholder="e.g. 08012345678"
+            className="flex-1 rounded-xl border px-4 py-2.5 text-sm focus:outline-none transition-colors"
+            style={{
+              background: "var(--bg-elevated)",
+              borderColor: "var(--border-color)",
+              color: "var(--text-primary)",
+            }}
+            onFocus={(e) => (e.target.style.borderColor = "var(--accent)")}
+            onBlur={(e) => (e.target.style.borderColor = "var(--border-color)")}
+          />
+          <button
+            onClick={handleSaveWhatsApp}
+            disabled={saving}
+            className="px-4 py-2.5 rounded-xl text-sm font-bold text-white transition-all active:scale-[0.97] disabled:opacity-60"
+            style={{ background: "var(--accent)" }}
+          >
+            {saving ? "Saving..." : "Save"}
+          </button>
+        </div>
+        {saveMsg && (
+          <p className="text-xs font-medium" style={{ color: saveMsg.startsWith("✅") ? "#16a34a" : "#dc2626" }}>
+            {saveMsg}
+          </p>
+        )}
       </div>
 
       {/* Navigation & Actions Card */}

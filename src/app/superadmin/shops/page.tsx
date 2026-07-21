@@ -13,7 +13,7 @@ export default async function ShopsPage() {
   const [{ data: shopsRaw }, { data: usersRaw }] = await Promise.all([
     supabase
       .from("shops")
-      .select("id, name, plan, created_at")
+      .select("id, name, plan, created_at, whatsapp_number")
       .order("created_at", { ascending: false }),
     supabase.from("users").select("id, shop_id, email").eq("role", "owner"),
   ]);
@@ -21,6 +21,7 @@ export default async function ShopsPage() {
   const shops = (shopsRaw ?? []).map((shop) => ({
     ...shop,
     ownerEmail: (usersRaw ?? []).find((u) => u.shop_id === shop.id)?.email ?? "—",
+    whatsappNumber: shop.whatsapp_number ?? undefined,
   }));
 
   return (

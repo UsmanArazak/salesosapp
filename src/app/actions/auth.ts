@@ -6,6 +6,7 @@ type RegisterInput = {
   shopName: string;
   email: string;
   password: string;
+  whatsappNumber?: string;
 };
 
 type RegisterResult =
@@ -13,7 +14,7 @@ type RegisterResult =
   | { error: string };
 
 export async function registerShop(input: RegisterInput): Promise<RegisterResult> {
-  const { shopName, email, password } = input;
+  const { shopName, email, password, whatsappNumber } = input;
 
   if (!shopName.trim() || !email.trim() || !password) {
     return { error: "All fields are required." };
@@ -48,6 +49,7 @@ export async function registerShop(input: RegisterInput): Promise<RegisterResult
       name: shopName.trim(),
       owner_id: userId,
       plan: "free",
+      ...(whatsappNumber?.trim() ? { whatsapp_number: whatsappNumber.trim() } : {}),
     })
     .select("id")
     .single();
