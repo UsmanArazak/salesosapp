@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
+import { useState } from "react";
 
 type NavItem = {
   href: string;
@@ -83,6 +84,7 @@ const navItems: NavItem[] = [
 
 export function DashboardNav() {
   const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   function isActive(href: string) {
     if (href === "/dashboard") return pathname === "/dashboard";
@@ -159,7 +161,7 @@ export function DashboardNav() {
 
       {/* ── MOBILE TOP HEADER ──────────────────────────── */}
       <header
-        className="md:hidden fixed top-0 left-0 right-0 h-14 flex items-center justify-between px-4 border-b z-30"
+        className="md:hidden fixed top-0 left-0 right-0 h-14 flex items-center justify-between px-4 border-b z-40"
         style={{ background: "var(--bg-surface)", borderColor: "var(--border-color)" }}
       >
         <div className="flex items-center gap-2">
@@ -174,18 +176,74 @@ export function DashboardNav() {
             SalesOS
           </span>
         </div>
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="w-9 h-9 rounded-xl border flex items-center justify-center transition-colors bg-white hover:bg-gray-50 shrink-0"
+          style={{ borderColor: "var(--border-color)", color: "var(--text-muted)" }}
+          aria-label="Menu"
+        >
+          {menuOpen ? (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-5 h-5">
+              <path d="M18 6L6 18M6 6l12 12" />
+            </svg>
+          ) : (
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-5 h-5">
+              <path d="M3 12h18M3 6h18M3 18h18" />
+            </svg>
+          )}
+        </button>
       </header>
+
+      {/* ── MOBILE MENU (OVERLAY) ──────────────────────── */}
+      {menuOpen && (
+        <div className="md:hidden fixed top-14 left-0 right-0 border-b z-30 shadow-lg" style={{ background: "var(--bg-surface)", borderColor: "var(--border-color)" }}>
+          <div className="p-4 space-y-2">
+            {navItems.slice(4).map((item) => {
+              const active = isActive(item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all"
+                  style={{
+                    color: active ? "var(--accent)" : "var(--text-muted)",
+                    background: active ? "var(--accent-dim)" : "var(--bg-elevated)",
+                  }}
+                >
+                  {item.icon}
+                  {item.label}
+                </Link>
+              );
+            })}
+            
+            <div className="pt-2 mt-2 border-t" style={{ borderColor: "var(--border-color)" }}>
+              <button
+                onClick={() => { setMenuOpen(false); signOut({ callbackUrl: "/login" }); }}
+                className="w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-medium transition-all bg-red-50 text-red-600"
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
+                  <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+                  <polyline points="16 17 21 12 16 7" />
+                  <line x1="21" y1="12" x2="9" y2="12" />
+                </svg>
+                Sign out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── MOBILE BOTTOM NAV ──────────────────────────── */}
       <nav
-        className="md:hidden fixed bottom-0 left-0 right-0 border-t z-30 flex items-stretch"
+        className="md:hidden fixed bottom-0 left-0 right-0 border-t z-40 flex items-stretch"
         style={{
           background: "var(--bg-surface)",
           borderColor: "var(--border-color)",
           paddingBottom: "env(safe-area-inset-bottom)",
         }}
       >
-        {navItems.map((item) => {
+        {navItems.slice(0, 4).map((item) => {
           const active = isActive(item.href);
           return (
             <Link
@@ -204,3 +262,4 @@ export function DashboardNav() {
     </>
   );
 }
+
