@@ -35,7 +35,7 @@ export default async function ReportsPage() {
   const [{ data: salesMonth }, { data: expensesMonth }, { data: customersRaw }, { data: productsRaw }] = await Promise.all([
     supabase
       .from("sales")
-      .select("id, total_amount, created_at")
+      .select("id, total_amount, created_at, payment_method, bank_name")
       .eq("shop_id", shopId)
       .gte("created_at", monthStart),
     supabase
@@ -96,6 +96,15 @@ export default async function ReportsPage() {
 
   const topSelling = [...productStats].sort((a, b) => b.qty - a.qty).slice(0, 3);
   const mostProfitable = [...productStats].sort((a, b) => b.profit - a.profit).slice(0, 3);
+
+  // Bank Transfer Breakdown
+  const transferSales = salesM.filter(s => s.payment_method === "transfer" && s.bank_name);
+  const bankBreakdown: Record<string, number> = {};
+  for (const s of transferSales) {
+    bankBreakdown[s.bank_name] = (bankBreakdown[s.bank_name] || 0) + s.total_amount;
+  }
+  const bankBreakdownEntries = Object.entries(bankBreakdown).sort((a, b) => b[1] - a[1]);
+  const totalTransfers = transferSales.reduce((sum, s) => sum + s.total_amount, 0);
 
   // -- Computations --
 
@@ -340,6 +349,40 @@ export default async function ReportsPage() {
                         </div>
                      </div>
                   ))}
+               </div>
+            </div>
+         )}
+      </div>
+
+      {/* BANK TRANSFER BREAKDOWN */}
+      <div className="rounded-2xl border p-6 bg-white space-y-5" style={{ borderColor: "var(--border-color)" }}>
+         <div>
+            <h2 className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>Bank Transfer Breakdown</h2>
+            <p className="text-xs" style={{ color: "var(--text-muted)" }}>Monthly revenue received per bank account via transfer.</p>
+         </div>
+
+         {bankBreakdownEntries.length === 0 ? (
+            <p className="text-xs py-2" style={{ color: "var(--text-muted)" }}>No bank transfers recorded this month.</p>
+         ) : (
+            <div className="space-y-3">
+               {bankBreakdownEntries.map(([bank, amount]) => {
+                  const pct = totalTransfers > 0 ? Math.round((amount / totalTransfers) * 100) : 0;
+                  return (
+                     <div key={bank}>
+                        <div className="flex justify-between items-center text-xs mb-1">
+                           <span className="font-semibold text-stone-800">🏦 {bank}</span>
+                           <span className="font-bold" style={{ color: "var(--accent)" }}>{formatNaira(amount)}</span>
+                        </div>
+                        <div className="w-full h-2 rounded-full bg-stone-100 overflow-hidden">
+                           <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, background: "var(--accent)" }} />
+                        </div>
+                        <p className="text-[10px] mt-0.5 text-stone-400">{pct}% of all transfers</p>
+                     </div>
+                  );
+               })}
+               <div className="flex justify-between items-center pt-3 border-t text-xs font-bold" style={{ borderColor: "var(--border-color)" }}>
+                  <span style={{ color: "var(--text-primary)" }}>Total Transfers This Month</span>
+                  <span style={{ color: "var(--accent)" }}>{formatNaira(totalTransfers)}</span>
                </div>
             </div>
          )}

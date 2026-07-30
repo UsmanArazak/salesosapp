@@ -10,7 +10,7 @@ async function getShopDetails(shopId: string) {
     const supabase = createServiceRoleSupabaseClient();
     const { data } = await supabase
       .from("shops")
-      .select("id, name, plan, address, phone, whatsapp_number, created_at")
+      .select("id, name, plan, address, phone, whatsapp_number, bank_accounts, created_at")
       .eq("id", shopId)
       .single();
     return data;

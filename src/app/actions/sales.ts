@@ -19,6 +19,7 @@ export type RecordSaleInput = {
   newCustomerName?: string; // if creating new inline
   newCustomerPhone?: string;
   amountPaid?: number;      // upfront payment for credit sales
+  bankName?: string;        // bank that received transfer payment
 };
 
 type ActionResult = { success: true } | { error: string };
@@ -90,7 +91,8 @@ export async function recordSale(input: RecordSaleInput): Promise<ActionResult> 
       shop_id: shopId,
       total_amount: totalAmount,
       payment_method: input.paymentMethod,
-      notes: input.notes.trim()
+      notes: input.notes.trim(),
+      bank_name: input.bankName || null,
     })
     .select("id")
     .single();

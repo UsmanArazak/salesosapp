@@ -12,6 +12,7 @@ export interface OfflineSale {
   paymentMethod: "cash" | "transfer" | "credit";
   notes: string;
   amountPaid?: number;
+  bankName?: string;
   customerData: {
     mode: "existing" | "new";
     id?: string;

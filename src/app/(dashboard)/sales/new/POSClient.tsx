@@ -23,6 +23,7 @@ export type CustomerMini = {
 type Props = {
   products: ProductMini[];
   customers: CustomerMini[];
+  bankAccounts: string[];
 };
 
 type CartItem = {
@@ -33,12 +34,13 @@ type CartItem = {
   maxStock: number;
 };
 
-export function POSClient({ products, customers }: Props) {
+export function POSClient({ products, customers, bankAccounts }: Props) {
   const router = useRouter();
 
   const [cart, setCart] = useState<CartItem[]>([]);
   const [productQuery, setProductQuery] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<"cash" | "transfer" | "credit">("cash");
+  const [selectedBank, setSelectedBank] = useState("");
   const [amountPaid, setAmountPaid] = useState("");
   const [notes, setNotes] = useState("");
   const [error, setError] = useState("");
@@ -98,6 +100,7 @@ export function POSClient({ products, customers }: Props) {
           paymentMethod: sale.paymentMethod,
           notes: sale.notes,
           amountPaid: sale.amountPaid,
+          bankName: sale.bankName,
           customerId: sale.customerData.id,
           newCustomerName: sale.customerData.name,
           newCustomerPhone: sale.customerData.phone,
@@ -170,6 +173,9 @@ export function POSClient({ products, customers }: Props) {
     setError("");
 
     if (cart.length === 0) return setError("Please add at least one product.");
+    if (paymentMethod === "transfer" && bankAccounts.length > 0 && !selectedBank) {
+      return setError("Please select which bank account received this transfer.");
+    }
     if (paymentMethod === "credit") {
       if (customerMode === "existing" && !selectedCustomerId) {
         return setError("Please select a customer for this credit sale.");
@@ -187,6 +193,7 @@ export function POSClient({ products, customers }: Props) {
         paymentMethod,
         notes,
         amountPaid: parseFloat(amountPaid) || undefined,
+        bankName: paymentMethod === "transfer" ? selectedBank : undefined,
         customerData: {
           mode: customerMode,
           id: customerMode === "existing" ? selectedCustomerId : undefined,
@@ -212,6 +219,7 @@ export function POSClient({ products, customers }: Props) {
       paymentMethod,
       notes,
       amountPaid: parseFloat(amountPaid) || undefined,
+      bankName: paymentMethod === "transfer" ? selectedBank : undefined,
       customerId: customerMode === "existing" ? selectedCustomerId : undefined,
       newCustomerName: customerMode === "new" ? newCustomerName : undefined,
       newCustomerPhone: customerMode === "new" ? newCustomerPhone : undefined,
@@ -378,6 +386,24 @@ export function POSClient({ products, customers }: Props) {
               ))}
             </div>
           </div>
+
+          {/* Bank Selector for Transfer */}
+          {paymentMethod === "transfer" && bankAccounts.length > 0 && (
+            <div className="mb-4">
+              <label className="block text-sm font-medium mb-1.5" style={{ color: "var(--text-dim)" }}>Which bank received this transfer?</label>
+              <select
+                value={selectedBank}
+                onChange={(e) => setSelectedBank(e.target.value)}
+                className="w-full rounded-xl border px-3 py-2.5 text-sm font-medium focus:outline-none transition-colors"
+                style={{ background: "var(--bg-elevated)", borderColor: selectedBank ? "var(--accent)" : "var(--border-color)", color: "var(--text-primary)" }}
+              >
+                <option value="">-- Select Bank Account --</option>
+                {bankAccounts.map((bank) => (
+                  <option key={bank} value={bank}>🏦 {bank}</option>
+                ))}
+              </select>
+            </div>
+          )}
 
           {/* Customer Selection for Credit */}
           {paymentMethod === "credit" && (
