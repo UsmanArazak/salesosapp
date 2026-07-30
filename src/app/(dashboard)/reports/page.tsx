@@ -31,9 +31,8 @@ export default async function ReportsPage() {
   // This Month
   const monthStart = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01T00:00:00.000Z`;
   const monthYMD = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`;
-
   // -- Fetch core records for the entire month --
-  const [{ data: salesMonth }, { data: expensesMonth }] = await Promise.all([
+  const [{ data: salesMonth }, { data: expensesMonth }, { data: customersRaw }, { data: productsRaw }] = await Promise.all([
     supabase
       .from("sales")
       .select("id, total_amount, created_at")
@@ -43,18 +42,60 @@ export default async function ReportsPage() {
       .from("expenses")
       .select("amount, date")
       .eq("shop_id", shopId)
-      .gte("date", monthYMD)
+      .gte("date", monthYMD),
+    supabase
+      .from("customers")
+      .select("name, total_debt, phone")
+      .eq("shop_id", shopId),
+    supabase
+      .from("products")
+      .select("id, name, stock_quantity")
+      .eq("shop_id", shopId)
+      .eq("archived", false)
   ]);
 
   const salesM = salesMonth ?? [];
   const expensesM = expensesMonth ?? [];
-
+  
   // Need sale items to calculate COGS securely from snapshots
   const saleIds = salesM.map((s) => s.id);
   const { data: saleItemsRaw } = saleIds.length > 0 
-    ? await supabase.from("sale_items").select("sale_id, unit_cost, quantity").in("sale_id", saleIds)
+    ? await supabase.from("sale_items").select("sale_id, product_id, unit_cost, unit_price, quantity").in("sale_id", saleIds)
     : { data: [] };
   const saleItems = saleItemsRaw ?? [];
+
+  // -- Advanced Performance Computations --
+  const totalUncollectedDebt = (customersRaw ?? []).reduce((sum, c) => sum + (c.total_debt || 0), 0);
+  const topDebtors = (customersRaw ?? [])
+    .filter((c) => (c.total_debt || 0) > 0)
+    .sort((a, b) => (b.total_debt || 0) - (a.total_debt || 0))
+    .slice(0, 3);
+
+  const activeProducts = productsRaw ?? [];
+  const soldProductIds = new Set(saleItems.map(i => i.product_id));
+
+  // Dead stock: active products in inventory (stock > 0) that have not been sold this month
+  const deadStock = activeProducts
+    .filter((p) => p.stock_quantity > 0 && !soldProductIds.has(p.id))
+    .slice(0, 3);
+
+  // Product sales performance
+  const productStats = activeProducts.map((p) => {
+    const itemsForProduct = saleItems.filter((item) => item.product_id === p.id);
+    const totalQty = itemsForProduct.reduce((sum, item) => sum + item.quantity, 0);
+    const revenue = itemsForProduct.reduce((sum, item) => sum + (item.quantity * item.unit_price), 0);
+    const cost = itemsForProduct.reduce((sum, item) => sum + (item.quantity * item.unit_cost), 0);
+    const profit = revenue - cost;
+    return {
+      name: p.name,
+      qty: totalQty,
+      revenue,
+      profit,
+    };
+  }).filter(stat => stat.qty > 0);
+
+  const topSelling = [...productStats].sort((a, b) => b.qty - a.qty).slice(0, 3);
+  const mostProfitable = [...productStats].sort((a, b) => b.profit - a.profit).slice(0, 3);
 
   // -- Computations --
 
@@ -103,10 +144,10 @@ export default async function ReportsPage() {
         </Link>
         <div>
           <h1 className="text-xl font-bold" style={{ color: "var(--text-primary)" }}>
-            Financial Reports
+            Business Performance
           </h1>
           <p className="text-sm" style={{ color: "var(--text-muted)" }}>
-            Your real profit mapped out
+            Track your true profit and cash flow health
           </p>
         </div>
       </div>
@@ -194,6 +235,114 @@ export default async function ReportsPage() {
                </div>
             </div>
          </div>
+      </div>
+
+      {/* PRODUCT PERFORMANCE INSIGHTS */}
+      <div className="rounded-2xl border p-6 bg-white space-y-6" style={{ borderColor: "var(--border-color)" }}>
+         <div>
+            <h2 className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>Product Insights</h2>
+            <p className="text-xs" style={{ color: "var(--text-muted)" }}>Decisions to make on stock buying and selling.</p>
+         </div>
+
+         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Top Selling */}
+            <div className="space-y-3">
+               <h3 className="text-xs font-bold uppercase tracking-wider text-stone-600">🏆 Top Selling (Qty)</h3>
+               {topSelling.length === 0 ? (
+                  <p className="text-xs text-stone-500">No sales recorded yet.</p>
+               ) : (
+                  <ul className="space-y-2 text-xs">
+                     {topSelling.map((p, idx) => (
+                        <li key={idx} className="flex justify-between border-b pb-1">
+                           <span className="truncate max-w-[120px] font-medium text-stone-800">{p.name}</span>
+                           <span className="font-bold text-stone-900">{p.qty} sold</span>
+                        </li>
+                     ))}
+                  </ul>
+               )}
+            </div>
+
+            {/* Most Profitable */}
+            <div className="space-y-3">
+               <h3 className="text-xs font-bold uppercase tracking-wider text-stone-600">💰 Most Profitable</h3>
+               {mostProfitable.length === 0 ? (
+                  <p className="text-xs text-stone-500">No sales recorded yet.</p>
+               ) : (
+                  <ul className="space-y-2 text-xs">
+                     {mostProfitable.map((p, idx) => (
+                        <li key={idx} className="flex justify-between border-b pb-1">
+                           <span className="truncate max-w-[120px] font-medium text-stone-800">{p.name}</span>
+                           <span className="font-bold text-green-600">{formatNaira(p.profit)}</span>
+                        </li>
+                     ))}
+                  </ul>
+               )}
+            </div>
+
+            {/* Dead Stock */}
+            <div className="space-y-3">
+               <h3 className="text-xs font-bold uppercase tracking-wider text-red-600">📉 Dead Stock</h3>
+               {deadStock.length === 0 ? (
+                  <p className="text-xs text-stone-500">All items are active.</p>
+               ) : (
+                  <ul className="space-y-2 text-xs">
+                     {deadStock.map((p, idx) => (
+                        <li key={idx} className="flex justify-between border-b pb-1">
+                           <span className="truncate max-w-[120px] font-medium text-stone-800">{p.name}</span>
+                           <span className="font-bold text-red-600">{p.stock_quantity} left</span>
+                        </li>
+                     ))}
+                  </ul>
+               )}
+            </div>
+         </div>
+      </div>
+
+      {/* CASH FLOW HEALTH CARD */}
+      <div className="rounded-2xl border p-6 bg-white space-y-6" style={{ borderColor: "var(--border-color)" }}>
+         <div>
+            <h2 className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>Cash Flow Health</h2>
+            <p className="text-xs" style={{ color: "var(--text-muted)" }}>Total amount of money currently owed to you by customers.</p>
+         </div>
+         
+         <div className="p-4 rounded-xl border flex items-center justify-between" style={{ borderColor: "var(--warning-border)", background: "var(--warning-dim)" }}>
+            <div className="flex items-center gap-3">
+               <span className="text-2xl">⚠️</span>
+               <span className="font-semibold text-sm" style={{ color: "var(--warning)" }}>Uncollected Debt</span>
+            </div>
+            <div className="font-black text-lg" style={{ color: "var(--warning)" }}>
+               {formatNaira(totalUncollectedDebt)}
+            </div>
+         </div>
+
+         {topDebtors.length > 0 && (
+            <div className="space-y-3">
+               <h3 className="text-xs font-bold uppercase tracking-wider text-stone-700">Top Outstanding Debtors</h3>
+               <div className="space-y-2">
+                  {topDebtors.map((debtor, idx) => (
+                     <div key={idx} className="flex justify-between items-center text-xs border-b pb-2">
+                        <div>
+                           <p className="font-semibold text-stone-800">{debtor.name}</p>
+                           <p className="text-[10px] text-stone-500">{debtor.phone || "No phone"}</p>
+                        </div>
+                        <div className="flex items-center gap-3">
+                           <span className="font-bold text-red-600">{formatNaira(debtor.total_debt)}</span>
+                           {debtor.phone && (
+                              <a
+                                 href={`https://wa.me/${debtor.phone.replace(/\D/g, "")}?text=${encodeURIComponent(`Hello ${debtor.name}, a friendly reminder from your shop regarding the outstanding balance of ${formatNaira(debtor.total_debt)}.`)}`}
+                                 target="_blank"
+                                 rel="noopener noreferrer"
+                                 className="px-2.5 py-1 bg-green-500 text-white rounded text-[10px] font-bold hover:bg-green-600"
+                              >
+                                 Remind 💬
+                              </a>
+                           )}
+                        </div>
+                     </div>
+                  ))}
+               </div>
+            </div>
+         )}
       </div>
       
     </div>

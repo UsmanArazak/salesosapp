@@ -147,7 +147,7 @@ export function ShopClientPage({ shop, ownerEmail }: { shop: Shop; ownerEmail: s
         >
           <div className="flex items-center gap-2.5">
             <span className="text-base">📊</span>
-            <span>View Reports</span>
+            <span>Business Performance</span>
           </div>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4 text-stone-400">
             <polyline points="9 18 15 12 9 6" />
