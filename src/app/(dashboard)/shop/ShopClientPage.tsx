@@ -1,6 +1,5 @@
 "use client";
 
-import { signOut } from "next-auth/react";
 import { useState } from "react";
 import { updateShopProfile } from "@/app/actions/shop";
 
@@ -314,20 +313,6 @@ export function ShopClientPage({ shop, ownerEmail }: { shop: Shop; ownerEmail: s
             <polyline points="9 18 15 12 9 6" />
           </svg>
         </a>
-
-        {/* Logout */}
-        <button
-          onClick={() => signOut({ callbackUrl: "/login" })}
-          className="w-full flex items-center justify-between p-3 rounded-xl border border-red-200 text-red-600 hover:bg-red-50 transition-all active:scale-[0.98] text-sm font-semibold"
-        >
-          <div className="flex items-center gap-2.5">
-            <span className="text-base">🚪</span>
-            <span>Sign Out from Shop</span>
-          </div>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4">
-            <polyline points="9 18 15 12 9 6" />
-          </svg>
-        </button>
       </div>
 
     </div>

@@ -58,6 +58,27 @@ const navItems: NavItem[] = [
       </svg>
     ),
   },
+  {
+    href: "/reports",
+    label: "Business Performance",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
+        <path d="M18 20V10" />
+        <path d="M12 20V4" />
+        <path d="M6 20v-6" />
+      </svg>
+    ),
+  },
+  {
+    href: "/shop",
+    label: "Shop Profile",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+        <polyline points="9 22 9 12 15 12 15 22" />
+      </svg>
+    ),
+  },
 ];
 
 export function DashboardNav() {
@@ -94,17 +115,6 @@ export function DashboardNav() {
               </p>
             </div>
           </div>
-          <Link
-            href="/shop"
-            className="w-8 h-8 rounded-lg border flex items-center justify-center transition-colors bg-white hover:bg-gray-50 shrink-0"
-            style={{ borderColor: "var(--border-color)", color: "var(--text-muted)" }}
-            title="Shop Settings"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-4.5 h-4.5">
-              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-              <polyline points="9 22 9 12 15 12 15 22" />
-            </svg>
-          </Link>
         </div>
 
         {/* Nav links */}
@@ -164,17 +174,6 @@ export function DashboardNav() {
             SalesOS
           </span>
         </div>
-        <Link
-          href="/shop"
-          className="w-9 h-9 rounded-xl border flex items-center justify-center transition-colors bg-white hover:bg-gray-50 shrink-0"
-          style={{ borderColor: "var(--border-color)", color: "var(--text-muted)" }}
-          aria-label="Shop Settings"
-        >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-            <polyline points="9 22 9 12 15 12 15 22" />
-          </svg>
-        </Link>
       </header>
 
       {/* ── MOBILE BOTTOM NAV ──────────────────────────── */}
