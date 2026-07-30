@@ -9,7 +9,8 @@ type Shop = {
   plan: string;
   created_at: string;
   ownerEmail: string;
-  whatsappNumber?: string;
+  phone?: string;
+  address?: string;
 };
 
 function formatDate(iso: string): string {
@@ -122,7 +123,8 @@ export function ShopTable({ shops }: { shops: Shop[] }) {
                 >
                   <th className="text-left px-5 py-3">Shop Name</th>
                   <th className="text-left px-5 py-3">Owner Email</th>
-                  <th className="text-left px-5 py-3">WhatsApp</th>
+                  <th className="text-left px-5 py-3">Phone</th>
+                  <th className="text-left px-5 py-3">Address</th>
                   <th className="text-left px-5 py-3">Plan</th>
                   <th className="text-left px-5 py-3">Registered</th>
                   <th className="text-left px-5 py-3"></th>
@@ -144,19 +146,11 @@ export function ShopTable({ shops }: { shops: Shop[] }) {
                     <td className="px-5 py-3.5" style={{ color: "var(--text-muted)" }}>
                       {shop.ownerEmail}
                     </td>
-                    <td className="px-5 py-3.5">
-                      {shop.whatsappNumber ? (
-                        <a
-                          href={`https://wa.me/${shop.whatsappNumber.replace(/\D/g, "")}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-xs font-semibold text-green-600 hover:underline flex items-center gap-1"
-                        >
-                          💬 {shop.whatsappNumber}
-                        </a>
-                      ) : (
-                        <span className="text-xs" style={{ color: "var(--text-muted)" }}>—</span>
-                      )}
+                    <td className="px-5 py-3.5" style={{ color: "var(--text-muted)" }}>
+                      {shop.phone || "—"}
+                    </td>
+                    <td className="px-5 py-3.5 max-w-[200px] truncate" style={{ color: "var(--text-muted)" }} title={shop.address || ""}>
+                      {shop.address || "—"}
                     </td>
                     <td className="px-5 py-3.5">
                       <PlanBadge plan={shop.plan} />

@@ -22,7 +22,6 @@ export function ShopClientPage({ shop, ownerEmail }: { shop: Shop; ownerEmail: s
   const [name, setName] = useState(shop.name);
   const [phone, setPhone] = useState(shop.phone ?? "");
   const [address, setAddress] = useState(shop.address ?? "");
-  const [whatsapp, setWhatsapp] = useState(shop.whatsapp_number ?? "");
   const [bankAccounts, setBankAccounts] = useState<string[]>(shop.bank_accounts ?? []);
   
   // Bank Account Input
@@ -64,7 +63,6 @@ export function ShopClientPage({ shop, ownerEmail }: { shop: Shop; ownerEmail: s
       name: name.trim(),
       phone: phone.trim(),
       address: address.trim(),
-      whatsappNumber: whatsapp.trim(),
       bankAccounts: bankAccounts,
     });
     
@@ -164,30 +162,6 @@ export function ShopClientPage({ shop, ownerEmail }: { shop: Shop; ownerEmail: s
                 color: "var(--text-primary)",
               }}
             />
-          </div>
-
-          {/* WhatsApp Number */}
-          <div>
-            <label className="block text-xs font-semibold mb-1" style={{ color: "var(--text-muted)" }}>
-              WhatsApp Number (For Customer Reminders)
-            </label>
-            <input
-              type="tel"
-              value={whatsapp}
-              onChange={(e) => setWhatsapp(e.target.value)}
-              onFocus={() => setFocused("whatsapp")}
-              onBlur={() => setFocused(null)}
-              placeholder="e.g. 08012345678"
-              className="w-full rounded-xl border px-3 py-2 text-sm focus:outline-none transition-colors"
-              style={{
-                background: "var(--bg-elevated)",
-                borderColor: borderFor("whatsapp"),
-                color: "var(--text-primary)",
-              }}
-            />
-            <p className="text-[10px] mt-1" style={{ color: "var(--text-muted)" }}>
-              💬 Used to send automatic debt reminders.
-            </p>
           </div>
 
           {/* Address */}

@@ -9,7 +9,6 @@ export type UpdateShopProfileInput = {
   name: string;
   phone: string;
   address: string;
-  whatsappNumber: string;
   bankAccounts: string[];
 };
 
@@ -33,7 +32,6 @@ export async function updateShopProfile(
       name: input.name.trim(),
       phone: input.phone.trim() || null,
       address: input.address.trim() || null,
-      whatsapp_number: input.whatsappNumber.trim() || null,
       bank_accounts: input.bankAccounts.filter(b => b.trim() !== ""),
     })
     .eq("id", shopId);
