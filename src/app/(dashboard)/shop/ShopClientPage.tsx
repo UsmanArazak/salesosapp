@@ -58,11 +58,19 @@ export function ShopClientPage({ shop, ownerEmail }: { shop: Shop; ownerEmail: s
     setSaving(true);
     setSaveMsg("");
     
+    let currentBanks = [...bankAccounts];
+    const pendingBank = newBankName.trim();
+    if (pendingBank && !currentBanks.includes(pendingBank)) {
+      currentBanks.push(pendingBank);
+      setBankAccounts(currentBanks);
+      setNewBankName("");
+    }
+
     const result = await updateShopProfile(shop.id, {
       name: name.trim(),
       phone: phone.trim(),
       address: address.trim(),
-      bankAccounts: bankAccounts,
+      bankAccounts: currentBanks,
     });
     
     setSaving(false);
