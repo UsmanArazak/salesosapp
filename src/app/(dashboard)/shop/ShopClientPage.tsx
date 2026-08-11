@@ -58,7 +58,7 @@ export function ShopClientPage({ shop, ownerEmail }: { shop: Shop; ownerEmail: s
     setSaving(true);
     setSaveMsg("");
     
-    let currentBanks = [...bankAccounts];
+    const currentBanks = [...bankAccounts];
     const pendingBank = newBankName.trim();
     if (pendingBank && !currentBanks.includes(pendingBank)) {
       currentBanks.push(pendingBank);
