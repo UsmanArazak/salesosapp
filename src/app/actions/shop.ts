@@ -35,8 +35,8 @@ export async function updateShopProfile(
     .from("shops")
     .update({
       name: input.name.trim(),
-      phone: input.phone.trim() || null,
-      address: input.address.trim() || null,
+      phone: input.phone.trim(),
+      address: input.address.trim(),
       bank_accounts: filteredBanks,
     })
     .eq("id", shopId)
