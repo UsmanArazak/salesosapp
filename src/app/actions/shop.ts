@@ -26,19 +26,33 @@ export async function updateShopProfile(
   }
 
   const supabase = createServiceRoleSupabaseClient();
-  const { error } = await supabase
+  const filteredBanks = input.bankAccounts.filter(b => b.trim() !== "");
+  
+  console.log("[updateShopProfile] Saving for shopId:", shopId);
+  console.log("[updateShopProfile] Bank accounts to save:", JSON.stringify(filteredBanks));
+
+  const { data, error } = await supabase
     .from("shops")
     .update({
       name: input.name.trim(),
       phone: input.phone.trim() || null,
       address: input.address.trim() || null,
-      bank_accounts: input.bankAccounts.filter(b => b.trim() !== ""),
+      bank_accounts: filteredBanks,
     })
-    .eq("id", shopId);
+    .eq("id", shopId)
+    .select("id, bank_accounts");
+
+  console.log("[updateShopProfile] Supabase response data:", JSON.stringify(data));
+  console.log("[updateShopProfile] Supabase response error:", error ? JSON.stringify(error) : "none");
 
   if (error) {
     console.error("Failed to save shop profile details:", error.message);
-    return { error: "Failed to save profile. Please try again." };
+    return { error: `Failed to save profile: ${error.message}` };
+  }
+
+  if (!data || data.length === 0) {
+    console.error("[updateShopProfile] No rows updated! shopId may not exist:", shopId);
+    return { error: "No shop found to update. Please try again." };
   }
 
   revalidatePath("/", "layout");
