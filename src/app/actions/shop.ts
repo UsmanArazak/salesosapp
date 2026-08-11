@@ -41,8 +41,7 @@ export async function updateShopProfile(
     return { error: "Failed to save profile. Please try again." };
   }
 
-  revalidatePath("/shop");
-  revalidatePath("/dashboard");
+  revalidatePath("/", "layout");
   return { success: true };
 }
 

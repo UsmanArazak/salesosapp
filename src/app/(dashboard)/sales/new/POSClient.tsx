@@ -388,20 +388,26 @@ export function POSClient({ products, customers, bankAccounts }: Props) {
           </div>
 
           {/* Bank Selector for Transfer */}
-          {paymentMethod === "transfer" && bankAccounts.length > 0 && (
+          {paymentMethod === "transfer" && (
             <div className="mb-4">
               <label className="block text-sm font-medium mb-1.5" style={{ color: "var(--text-dim)" }}>Which bank received this transfer?</label>
-              <select
-                value={selectedBank}
-                onChange={(e) => setSelectedBank(e.target.value)}
-                className="w-full rounded-xl border px-3 py-2.5 text-sm font-medium focus:outline-none transition-colors"
-                style={{ background: "var(--bg-elevated)", borderColor: selectedBank ? "var(--accent)" : "var(--border-color)", color: "var(--text-primary)" }}
-              >
-                <option value="">-- Select Bank Account --</option>
-                {bankAccounts.map((bank) => (
-                  <option key={bank} value={bank}>🏦 {bank}</option>
-                ))}
-              </select>
+              {bankAccounts && bankAccounts.length > 0 ? (
+                <select
+                  value={selectedBank}
+                  onChange={(e) => setSelectedBank(e.target.value)}
+                  className="w-full rounded-xl border px-3 py-2.5 text-sm font-medium focus:outline-none transition-colors"
+                  style={{ background: "var(--bg-elevated)", borderColor: selectedBank ? "var(--accent)" : "var(--border-color)", color: "var(--text-primary)" }}
+                >
+                  <option value="">-- Select Bank Account --</option>
+                  {bankAccounts.map((bank) => (
+                    <option key={bank} value={bank}>🏦 {bank}</option>
+                  ))}
+                </select>
+              ) : (
+                <div className="p-3 border rounded-xl text-sm" style={{ borderColor: "var(--border-color)", background: "var(--bg-elevated)", color: "var(--text-muted)" }}>
+                  No bank accounts added yet. <Link href="/shop" className="font-semibold" style={{ color: "var(--accent)" }}>Add one in your Shop Profile</Link> to track transfers.
+                </div>
+              )}
             </div>
           )}
 
