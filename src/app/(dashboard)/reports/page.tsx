@@ -37,6 +37,7 @@ export default async function ReportsPage() {
       .from("sales")
       .select("id, total_amount, created_at, payment_method, bank_name")
       .eq("shop_id", shopId)
+      .neq("status", "voided")
       .gte("created_at", monthStart),
     supabase
       .from("expenses")

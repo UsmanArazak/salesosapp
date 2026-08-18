@@ -169,3 +169,128 @@ export async function recordSale(input: RecordSaleInput): Promise<ActionResult> 
   
   return { success: true };
 }
+
+export async function voidSale(saleId: string): Promise<ActionResult> {
+  const session = await getServerSession(authOptions);
+  if (!session) return { error: "Not authenticated." };
+
+  const shopId = session.user.shopId;
+  const supabase = createServiceRoleSupabaseClient();
+
+  // 1. Fetch the sale
+  const { data: sale, error: saleErr } = await supabase
+    .from("sales")
+    .select("id, shop_id, status, created_at, payment_method, total_amount")
+    .eq("id", saleId)
+    .eq("shop_id", shopId)
+    .single();
+
+  if (saleErr || !sale) {
+    return { error: "Sale record not found." };
+  }
+
+  if (sale.status === "voided") {
+    return { error: "This sale has already been voided." };
+  }
+
+  // 2. Verify same-day in Africa/Lagos (WAT) timezone
+  const formatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Africa/Lagos",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  const todayDateStr = formatter.format(new Date());
+  const saleDateStr = formatter.format(new Date(sale.created_at));
+
+  if (todayDateStr !== saleDateStr) {
+    return { error: "Only sales recorded today can be voided." };
+  }
+
+  // 3. Mark sale as voided
+  const { error: updateErr } = await supabase
+    .from("sales")
+    .update({
+      status: "voided",
+      voided_at: new Date().toISOString(),
+    })
+    .eq("id", saleId)
+    .eq("shop_id", shopId);
+
+  if (updateErr) {
+    return { error: "Failed to void sale. Please try again." };
+  }
+
+  // 4. Restore product stock quantities
+  const { data: items } = await supabase
+    .from("sale_items")
+    .select("product_id, quantity")
+    .eq("sale_id", saleId);
+
+  if (items && items.length > 0) {
+    for (const item of items) {
+      if (!item.product_id) continue;
+      const { data: product } = await supabase
+        .from("products")
+        .select("stock_quantity")
+        .eq("id", item.product_id)
+        .eq("shop_id", shopId)
+        .single();
+
+      if (product) {
+        await supabase
+          .from("products")
+          .update({ stock_quantity: product.stock_quantity + item.quantity })
+          .eq("id", item.product_id)
+          .eq("shop_id", shopId);
+      }
+    }
+  }
+
+  // 5. Handle credit sale reversal if applicable
+  if (sale.payment_method === "credit") {
+    const { data: creditRecord } = await supabase
+      .from("credit_sales")
+      .select("id, customer_id, amount, amount_paid, status")
+      .eq("sale_id", saleId)
+      .eq("shop_id", shopId)
+      .maybeSingle();
+
+    if (creditRecord) {
+      const unpaidCredit = (creditRecord.amount ?? 0) - (creditRecord.amount_paid ?? 0);
+      
+      await supabase
+        .from("credit_sales")
+        .update({ status: "voided" })
+        .eq("id", creditRecord.id)
+        .eq("shop_id", shopId);
+
+      if (unpaidCredit > 0 && creditRecord.customer_id) {
+        const { data: customer } = await supabase
+          .from("customers")
+          .select("total_debt")
+          .eq("id", creditRecord.customer_id)
+          .eq("shop_id", shopId)
+          .single();
+
+        if (customer) {
+          const newDebt = Math.max(0, customer.total_debt - unpaidCredit);
+          await supabase
+            .from("customers")
+            .update({ total_debt: newDebt })
+            .eq("id", creditRecord.customer_id)
+            .eq("shop_id", shopId);
+        }
+      }
+    }
+  }
+
+  // 6. Revalidate caches
+  revalidatePath("/sales");
+  revalidatePath("/inventory");
+  revalidatePath("/customers");
+  revalidatePath("/dashboard");
+  revalidatePath("/reports");
+
+  return { success: true };
+}

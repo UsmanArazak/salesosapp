@@ -53,7 +53,7 @@ async function getDashboardStats(shopId: string) {
     { count: allSalesCount },
     { count: customerCount },
   ] = await Promise.all([
-    supabase.from("sales").select("id, total_amount").eq("shop_id", shopId).gte("created_at", todayStart),
+    supabase.from("sales").select("id, total_amount").eq("shop_id", shopId).neq("status", "voided").gte("created_at", todayStart),
     supabase.from("products").select("buying_price, stock_quantity, low_stock_threshold").eq("shop_id", shopId).eq("archived", false),
     supabase.from("credit_sales").select("amount, amount_paid").eq("shop_id", shopId).neq("status", "paid"),
     supabase.from("expenses").select("amount").eq("shop_id", shopId).gte("date", monthStart),
