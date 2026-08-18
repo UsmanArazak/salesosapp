@@ -225,20 +225,25 @@ export function POSClient({ products, customers, bankAccounts }: Props) {
       newCustomerPhone: customerMode === "new" ? newCustomerPhone : undefined,
     };
 
-    // Optimistic update: fire and forget
-    recordSale(payload).then((result) => {
-      if (!("error" in result)) {
-        router.refresh();
-      } else {
-        console.error("Background sale failed:", result.error);
-      }
-    });
+    try {
+      const result = await recordSale(payload);
+      setLoading(false);
 
-    setLoading(false);
-    setCart([]);
-    setNotes("");
-    setAmountPaid("");
-    router.push("/sales");
+      if ("error" in result) {
+        setError(result.error);
+        return;
+      }
+
+      setCart([]);
+      setNotes("");
+      setAmountPaid("");
+      setSelectedBank("");
+      router.refresh();
+      router.push("/sales");
+    } catch (err: unknown) {
+      setLoading(false);
+      setError(err instanceof Error ? err.message : "Failed to record sale. Please try again.");
+    }
   }
 
   return (

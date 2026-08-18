@@ -15,6 +15,7 @@ function formatNaira(amount: number): string {
 
 function todayLabel(): string {
   return new Date().toLocaleDateString("en-NG", {
+    timeZone: "Africa/Lagos",
     weekday: "long",
     year: "numeric",
     month: "long",
@@ -22,15 +23,26 @@ function todayLabel(): string {
   });
 }
 
+function getLagosDates() {
+  const formatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Africa/Lagos",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+  const todayISO = formatter.format(new Date()); // "YYYY-MM-DD"
+  const [year, month] = todayISO.split("-");
+  const monthStart = `${year}-${month}-01`;
+  const todayStart = `${todayISO}T00:00:00+01:00`;
+  return { todayISO, monthStart, todayStart };
+}
+
 // ─── Data Fetching ────────────────────────────────────────────────────────────
 
 async function getDashboardStats(shopId: string) {
   const supabase = createServiceRoleSupabaseClient();
 
-  const now = new Date();
-  const todayISO = now.toISOString().split("T")[0];
-  const todayStart = `${todayISO}T00:00:00.000Z`;
-  const monthStart = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`;
+  const { todayISO, monthStart, todayStart } = getLagosDates();
 
   const [
     { data: todaySalesRaw },
@@ -59,7 +71,7 @@ async function getDashboardStats(shopId: string) {
   const salesToday = (todaySalesRaw ?? []).reduce((s, r) => s + (r.total_amount ?? 0), 0);
   const cogsSold = (todaySaleItems ?? []).reduce((s, i) => s + i.unit_cost * i.quantity, 0);
   const expensesToday = (todayExpensesRaw ?? []).reduce((s, e) => s + (e.amount ?? 0), 0);
-  const grossProfit = salesToday - cogsSold - expensesToday;
+  const netProfit = salesToday - cogsSold - expensesToday;
   const stockValue = (products ?? []).reduce((s, p) => s + p.buying_price * p.stock_quantity, 0);
   const outstandingCredit = (openCredit ?? []).reduce((s, c) => s + ((c.amount ?? 0) - (c.amount_paid ?? 0)), 0);
   const monthExpenses = (monthExpensesRaw ?? []).reduce((s, e) => s + (e.amount ?? 0), 0);
@@ -69,7 +81,7 @@ async function getDashboardStats(shopId: string) {
   const hasSales = (allSalesCount ?? 0) > 0;
   const hasCustomers = (customerCount ?? 0) > 0;
 
-  return { salesToday, grossProfit, stockValue, outstandingCredit, monthExpenses, lowStockCount, hasProducts, hasSales, hasCustomers };
+  return { salesToday, netProfit, cogsSold, expensesToday, stockValue, outstandingCredit, monthExpenses, lowStockCount, hasProducts, hasSales, hasCustomers };
 }
 
 // ─── Stat Card ────────────────────────────────────────────────────────────────
@@ -133,7 +145,7 @@ export default async function DashboardPage() {
   if (!session) redirect("/login");
 
   const stats = await getDashboardStats(session.user.shopId);
-  const isProfit = stats.grossProfit >= 0;
+  const isProfit = stats.netProfit >= 0;
 
   const onboardingSteps = [
     {
@@ -193,7 +205,7 @@ export default async function DashboardPage() {
       {/* Onboarding Checklist — only shows until all 3 steps done */}
       <OnboardingChecklist steps={onboardingSteps} />
 
-      {/* ── Featured: Gross Profit Card ─── */}
+      {/* ── Featured: Net Profit Card ─── */}
       <div
         className="rounded-2xl border p-5 mb-4"
         style={{
@@ -209,13 +221,13 @@ export default async function DashboardPage() {
               className="text-xs font-semibold uppercase tracking-wider mb-2"
               style={{ color: isProfit ? "var(--accent)" : "#dc2626" }}
             >
-              Gross Profit Today
+              Net Profit Today
             </p>
             <p
               className="text-4xl font-bold tracking-tight"
               style={{ color: isProfit ? "var(--accent)" : "#dc2626" }}
             >
-              {formatNaira(stats.grossProfit)}
+              {formatNaira(stats.netProfit)}
             </p>
             <p className="text-xs mt-2" style={{ color: "var(--text-muted)" }}>
               Revenue - Cost of goods sold - Today&apos;s expenses
@@ -246,7 +258,7 @@ export default async function DashboardPage() {
 
         {/* Breakdown row */}
         <div
-          className="flex gap-4 mt-4 pt-4 border-t text-xs"
+          className="flex flex-wrap gap-4 mt-4 pt-4 border-t text-xs"
           style={{ borderColor: isProfit ? "rgba(255,83,71,0.15)" : "rgba(239,68,68,0.15)" }}
         >
           <div>
@@ -258,7 +270,13 @@ export default async function DashboardPage() {
           <div>
             <span style={{ color: "var(--text-muted)" }}>COGS</span>
             <span className="ml-1.5 font-semibold" style={{ color: "#dc2626" }}>
-              -{formatNaira(stats.salesToday - stats.grossProfit > 0 ? stats.salesToday - stats.grossProfit : 0)}
+              -{formatNaira(stats.cogsSold)}
+            </span>
+          </div>
+          <div>
+            <span style={{ color: "var(--text-muted)" }}>Expenses</span>
+            <span className="ml-1.5 font-semibold" style={{ color: "#dc2626" }}>
+              -{formatNaira(stats.expensesToday)}
             </span>
           </div>
         </div>

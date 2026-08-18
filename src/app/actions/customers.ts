@@ -80,7 +80,8 @@ export async function recordRepayment(customerId: string, amountToPay: number): 
         amount_paid: newAmountPaid,
         status: newStatus
       })
-      .eq("id", record.id);
+      .eq("id", record.id)
+      .eq("shop_id", shopId);
 
     remainingPayment -= amountToApplyToThisRecord;
   }
@@ -90,7 +91,8 @@ export async function recordRepayment(customerId: string, amountToPay: number): 
   await supabase
     .from("customers")
     .update({ total_debt: newTotalDebt })
-    .eq("id", customerId);
+    .eq("id", customerId)
+    .eq("shop_id", shopId);
 
   revalidatePath(`/dashboard/customers/${customerId}`);
   revalidatePath("/dashboard/customers");
