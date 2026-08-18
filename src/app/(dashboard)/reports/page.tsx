@@ -35,9 +35,8 @@ export default async function ReportsPage() {
   const [{ data: salesMonth }, { data: expensesMonth }, { data: customersRaw }, { data: productsRaw }] = await Promise.all([
     supabase
       .from("sales")
-      .select("id, total_amount, created_at, payment_method, bank_name")
+      .select("id, total_amount, created_at, payment_method, bank_name, notes")
       .eq("shop_id", shopId)
-      .neq("status", "voided")
       .gte("created_at", monthStart),
     supabase
       .from("expenses")
@@ -55,7 +54,7 @@ export default async function ReportsPage() {
       .eq("archived", false)
   ]);
 
-  const salesM = salesMonth ?? [];
+  const salesM = (salesMonth ?? []).filter((s) => !s.notes?.startsWith("[VOIDED]"));
   const expensesM = expensesMonth ?? [];
   
   // Need sale items to calculate COGS securely from snapshots

@@ -200,8 +200,9 @@ export function SalesList({ sales }: { sales: SaleRow[] }) {
         <div className="space-y-3">
           {filtered.map((sale) => {
             const customerName = sale.credit_sales?.[0]?.customers?.name;
-            const isVoided = sale.status === "voided";
+            const isVoided = sale.status === "voided" || Boolean(sale.notes?.startsWith("[VOIDED]"));
             const canVoid = !isVoided && isTodayInLagos(sale.created_at);
+            const cleanNotes = sale.notes ? sale.notes.replace(/^\[VOIDED\]\s*/, "").trim() : "";
 
             return (
               <div
@@ -262,9 +263,9 @@ export function SalesList({ sales }: { sales: SaleRow[] }) {
                       </li>
                     ))}
                   </ul>
-                  {sale.notes && (
+                  {cleanNotes && (
                     <p className="text-xs mt-1.5 italic" style={{ color: "var(--text-muted)" }}>
-                      Note: {sale.notes}
+                      Note: {cleanNotes}
                     </p>
                   )}
                 </div>

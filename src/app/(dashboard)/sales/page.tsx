@@ -15,10 +15,9 @@ export default async function SalesPage() {
       id,
       total_amount,
       payment_method,
-      status,
-      voided_at,
       created_at,
       notes,
+      bank_name,
       sale_items (
         quantity,
         unit_price,

@@ -180,7 +180,7 @@ export async function voidSale(saleId: string): Promise<ActionResult> {
   // 1. Fetch the sale
   const { data: sale, error: saleErr } = await supabase
     .from("sales")
-    .select("id, shop_id, status, created_at, payment_method, total_amount")
+    .select("id, shop_id, notes, created_at, payment_method, total_amount")
     .eq("id", saleId)
     .eq("shop_id", shopId)
     .single();
@@ -189,7 +189,7 @@ export async function voidSale(saleId: string): Promise<ActionResult> {
     return { error: "Sale record not found." };
   }
 
-  if (sale.status === "voided") {
+  if (sale.notes?.startsWith("[VOIDED]")) {
     return { error: "This sale has already been voided." };
   }
 
@@ -207,12 +207,12 @@ export async function voidSale(saleId: string): Promise<ActionResult> {
     return { error: "Only sales recorded today can be voided." };
   }
 
-  // 3. Mark sale as voided
+  // 3. Mark sale as voided via notes
+  const updatedNotes = `[VOIDED] ${sale.notes || ""}`.trim();
   const { error: updateErr } = await supabase
     .from("sales")
     .update({
-      status: "voided",
-      voided_at: new Date().toISOString(),
+      notes: updatedNotes,
     })
     .eq("id", saleId)
     .eq("shop_id", shopId);
