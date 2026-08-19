@@ -150,3 +150,35 @@ export async function deleteCustomer(customerId: string): Promise<ActionResult> 
   return { success: true };
 }
 
+export async function updateCustomer(
+  customerId: string,
+  data: { name: string; phone?: string }
+): Promise<ActionResult> {
+  const session = await getServerSession(authOptions);
+  if (!session) return { error: "Not authenticated" };
+
+  if (!data.name.trim()) return { error: "Customer name is required" };
+
+  const shopId = session.user.shopId;
+  const supabase = createServiceRoleSupabaseClient();
+
+  const { error } = await supabase
+    .from("customers")
+    .update({
+      name: data.name.trim(),
+      phone: data.phone?.trim() || "",
+    })
+    .eq("id", customerId)
+    .eq("shop_id", shopId);
+
+  if (error) {
+    console.error("Failed to update customer:", error.message);
+    return { error: "Failed to update customer details. Please try again." };
+  }
+
+  revalidatePath(`/customers/${customerId}`);
+  revalidatePath("/customers");
+  revalidatePath("/dashboard");
+  return { success: true };
+}
+

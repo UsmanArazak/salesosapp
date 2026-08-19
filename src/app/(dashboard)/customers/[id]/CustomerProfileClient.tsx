@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { RepaymentModal } from "./RepaymentModal";
-import { deleteCustomer } from "@/app/actions/customers";
+import { deleteCustomer, updateCustomer } from "@/app/actions/customers";
 
 type Customer = {
   id: string;
@@ -41,15 +41,55 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 export function CustomerProfileClient({
-  customer,
+  customer: initialCustomer,
   creditHistory,
 }: {
   customer: Customer;
   creditHistory: CreditRecord[];
 }) {
   const router = useRouter();
+  const [customer, setCustomer] = useState(initialCustomer);
   const [modalOpen, setModalOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+
+  // Edit Modal State
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editName, setEditName] = useState(customer.name);
+  const [editPhone, setEditPhone] = useState(customer.phone || "");
+  const [editLoading, setEditLoading] = useState(false);
+  const [editError, setEditError] = useState("");
+
+  async function handleSaveCustomer(e: React.FormEvent) {
+    e.preventDefault();
+    if (!editName.trim()) return;
+
+    setEditLoading(true);
+    setEditError("");
+
+    try {
+      const res = await updateCustomer(customer.id, {
+        name: editName.trim(),
+        phone: editPhone.trim(),
+      });
+      setEditLoading(false);
+
+      if ("error" in res) {
+        setEditError(res.error);
+        return;
+      }
+
+      setCustomer((prev) => ({
+        ...prev,
+        name: editName.trim(),
+        phone: editPhone.trim(),
+      }));
+      setEditModalOpen(false);
+      router.refresh();
+    } catch (err: unknown) {
+      setEditLoading(false);
+      setEditError(err instanceof Error ? err.message : "Failed to update customer.");
+    }
+  }
 
   async function handleDelete() {
     if (!confirm(`Are you sure you want to delete ${customer.name}? This cannot be undone.`)) {
@@ -78,6 +118,82 @@ export function CustomerProfileClient({
         />
       )}
 
+      {/* Edit Customer Modal */}
+      {editModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
+          <div className="bg-white rounded-2xl max-w-sm w-full p-5 border shadow-xl space-y-4" style={{ borderColor: "var(--border-color)" }}>
+            <div className="flex items-center justify-between">
+              <h3 className="font-bold text-base" style={{ color: "var(--text-primary)" }}>
+                Edit Customer Details
+              </h3>
+              <button
+                type="button"
+                onClick={() => setEditModalOpen(false)}
+                className="text-stone-400 hover:text-stone-600 text-lg leading-none"
+              >
+                &times;
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveCustomer} className="space-y-3">
+              <div>
+                <label className="block text-xs font-semibold mb-1" style={{ color: "var(--text-dim)" }}>
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  className="w-full rounded-xl border px-3 py-2 text-sm focus:outline-none transition-colors"
+                  style={{ background: "var(--bg-surface)", borderColor: "var(--border-color)", color: "var(--text-primary)" }}
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold mb-1" style={{ color: "var(--text-dim)" }}>
+                  Phone Number
+                </label>
+                <input
+                  type="tel"
+                  value={editPhone}
+                  onChange={(e) => setEditPhone(e.target.value)}
+                  placeholder="08012345678"
+                  className="w-full rounded-xl border px-3 py-2 text-sm focus:outline-none transition-colors"
+                  style={{ background: "var(--bg-surface)", borderColor: "var(--border-color)", color: "var(--text-primary)" }}
+                />
+              </div>
+
+              {editError && (
+                <div className="text-xs font-semibold p-2.5 rounded-xl bg-red-50 border border-red-200 text-red-600">
+                  {editError}
+                </div>
+              )}
+
+              <div className="flex gap-2.5 pt-2">
+                <button
+                  type="button"
+                  disabled={editLoading}
+                  onClick={() => setEditModalOpen(false)}
+                  className="flex-1 py-2.5 rounded-xl text-xs font-semibold border bg-stone-50 hover:bg-stone-100 transition-colors"
+                  style={{ borderColor: "var(--border-color)", color: "var(--text-primary)" }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={editLoading || !editName.trim()}
+                  className="flex-1 py-2.5 rounded-xl text-xs font-bold text-white transition-all active:scale-[0.98] disabled:opacity-50 shadow-sm"
+                  style={{ background: "var(--accent)" }}
+                >
+                  {editLoading ? "Saving..." : "Save Changes"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3">
@@ -100,24 +216,44 @@ export function CustomerProfileClient({
           </div>
         </div>
 
-        {/* Delete Button */}
-        <button
-          onClick={handleDelete}
-          disabled={deleting}
-          className="p-2.5 rounded-xl border text-red-600 hover:bg-red-50 border-red-200 transition-colors disabled:opacity-50"
-          title="Delete Customer"
-        >
-          {deleting ? (
-            <span className="text-xs font-bold">Deleting...</span>
-          ) : (
+        {/* Action Buttons */}
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              setEditName(customer.name);
+              setEditPhone(customer.phone || "");
+              setEditError("");
+              setEditModalOpen(true);
+            }}
+            className="p-2.5 rounded-xl border bg-white hover:bg-stone-50 transition-colors text-stone-700 shadow-2xs"
+            style={{ borderColor: "var(--border-color)" }}
+            title="Edit Customer"
+          >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4">
-              <polyline points="3 6 5 6 21 6" />
-              <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
-              <line x1="10" y1="11" x2="10" y2="17" />
-              <line x1="14" y1="11" x2="14" y2="17" />
+              <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />
+              <path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z" />
             </svg>
-          )}
-        </button>
+          </button>
+
+          <button
+            onClick={handleDelete}
+            disabled={deleting}
+            className="p-2.5 rounded-xl border text-red-600 hover:bg-red-50 border-red-200 transition-colors disabled:opacity-50"
+            title="Delete Customer"
+          >
+            {deleting ? (
+              <span className="text-xs font-bold">...</span>
+            ) : (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4">
+                <polyline points="3 6 5 6 21 6" />
+                <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+                <line x1="10" y1="11" x2="10" y2="17" />
+                <line x1="14" y1="11" x2="14" y2="17" />
+              </svg>
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Debt Card */}

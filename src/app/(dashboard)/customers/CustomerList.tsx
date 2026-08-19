@@ -13,6 +13,9 @@ type CustomerRow = {
 export function CustomerList({ customers }: { customers: CustomerRow[] }) {
   const [query, setQuery] = useState("");
 
+  const totalOutstandingDebt = customers.reduce((sum, c) => sum + (c.total_debt || 0), 0);
+  const debtorsCount = customers.filter((c) => (c.total_debt || 0) > 0).length;
+
   const filtered = customers.filter(
     (c) =>
       c.name.toLowerCase().includes(query.toLowerCase()) ||
@@ -43,6 +46,54 @@ export function CustomerList({ customers }: { customers: CustomerRow[] }) {
           Add Customer
         </Link>
       </div>
+
+      {/* ── Total Debt Summary Card ── */}
+      {customers.length > 0 && (
+        <div
+          className="rounded-2xl border p-4 mb-5 flex items-center justify-between gap-4 bg-white"
+          style={{
+            background:
+              totalOutstandingDebt > 0
+                ? "linear-gradient(135deg, rgba(234,88,12,0.06) 0%, rgba(234,88,12,0.02) 100%)"
+                : "linear-gradient(135deg, rgba(22,163,74,0.06) 0%, rgba(22,163,74,0.02) 100%)",
+            borderColor: totalOutstandingDebt > 0 ? "var(--warning-border)" : "rgba(22,163,74,0.25)",
+          }}
+        >
+          <div>
+            <p
+              className="text-[11px] font-bold uppercase tracking-wider mb-1"
+              style={{ color: totalOutstandingDebt > 0 ? "var(--warning)" : "var(--success)" }}
+            >
+              Total Uncollected Debt
+            </p>
+            <p
+              className="text-2xl font-black tracking-tight"
+              style={{ color: totalOutstandingDebt > 0 ? "var(--warning)" : "var(--success)" }}
+            >
+              ₦{totalOutstandingDebt.toLocaleString("en-US")}
+            </p>
+            <p className="text-xs mt-1" style={{ color: "var(--text-muted)" }}>
+              {debtorsCount > 0
+                ? `${debtorsCount} customer${debtorsCount !== 1 ? "s" : ""} owe you money`
+                : "All customer debts are cleared!"}
+            </p>
+          </div>
+          <div
+            className="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0"
+            style={{
+              background: totalOutstandingDebt > 0 ? "rgba(234,88,12,0.12)" : "rgba(22,163,74,0.12)",
+              color: totalOutstandingDebt > 0 ? "var(--warning)" : "var(--success)",
+            }}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-5 h-5">
+              <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <path d="M23 21v-2a4 4 0 00-3-3.87" />
+              <path d="M16 3.13a4 4 0 010 7.75" />
+            </svg>
+          </div>
+        </div>
+      )}
 
       {/* ── Search Bar ── */}
       <div className="relative mb-5">
