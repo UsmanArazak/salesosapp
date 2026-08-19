@@ -24,10 +24,24 @@ export default async function CustomerProfilePage({
 
   if (!customer) notFound();
 
-  // 2. Fetch Credit History (most recent first)
+  // 2. Fetch Credit History with purchased items (most recent first)
   const { data: creditHistory } = await supabase
     .from("credit_sales")
-    .select("id, amount, amount_paid, status, created_at, sales(notes)")
+    .select(`
+      id,
+      amount,
+      amount_paid,
+      status,
+      created_at,
+      sales (
+        notes,
+        sale_items (
+          quantity,
+          unit_price,
+          products ( name )
+        )
+      )
+    `)
     .eq("customer_id", customer.id)
     .eq("shop_id", session.user.shopId)
     .order("created_at", { ascending: false });

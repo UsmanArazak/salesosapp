@@ -19,7 +19,14 @@ type CreditRecord = {
   amount_paid: number;
   status: string;
   created_at: string;
-  sales?: { notes: string } | null;
+  sales?: {
+    notes?: string | null;
+    sale_items?: {
+      quantity: number;
+      unit_price: number;
+      products?: { name: string } | null;
+    }[];
+  } | null;
 };
 
 function formatDate(iso: string) {
@@ -51,6 +58,11 @@ export function CustomerProfileClient({
   const [customer, setCustomer] = useState(initialCustomer);
   const [modalOpen, setModalOpen] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({});
+
+  function toggleExpand(id: string) {
+    setExpandedIds((prev) => ({ ...prev, [id]: !prev[id] }));
+  }
 
   // Edit Modal State
   const [editModalOpen, setEditModalOpen] = useState(false);
@@ -275,33 +287,96 @@ export function CustomerProfileClient({
 
       {/* Credit History Log */}
       <div>
-        <h3 className="text-sm font-bold mb-3 px-1" style={{ color: "var(--text-primary)" }}>Credit Purchase History</h3>
+        <div className="flex items-center justify-between mb-3 px-1">
+          <h3 className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>
+            Credit Purchase History
+          </h3>
+          <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+            Tap card to view purchased items
+          </p>
+        </div>
         
         {creditHistory.length === 0 ? (
-           <p className="text-sm text-center py-6 py-10 rounded-2xl border bg-white" style={{ borderColor: "var(--border-color)", color: "var(--text-muted)" }}>
+           <p className="text-sm text-center py-10 rounded-2xl border bg-white" style={{ borderColor: "var(--border-color)", color: "var(--text-muted)" }}>
              No credit history found.
            </p>
         ) : (
            <div className="space-y-3">
-             {creditHistory.map((record) => (
-                <div key={record.id} className="p-4 rounded-xl border bg-white flex justify-between items-start gap-4" style={{ borderColor: "var(--border-color)" }}>
-                   <div className="min-w-0">
-                     <p className="font-bold text-sm">₦{record.amount.toLocaleString()}</p>
-                     <p className="text-xs mt-1" style={{ color: "var(--text-muted)" }}>{formatDate(record.created_at)}</p>
-                     {record.sales?.notes && (
-                       <p className="text-xs mt-1.5 italic truncate" style={{ color: "var(--text-dim)" }}>
-                         &ldquo;{record.sales.notes}&rdquo;
+             {creditHistory.map((record) => {
+               const isExpanded = Boolean(expandedIds[record.id]);
+               const items = record.sales?.sale_items ?? [];
+               const remainingDebt = Math.max(0, record.amount - record.amount_paid);
+
+               return (
+                 <div
+                   key={record.id}
+                   onClick={() => toggleExpand(record.id)}
+                   className="p-4 rounded-2xl border bg-white cursor-pointer hover:border-orange-300 transition-all select-none"
+                   style={{ borderColor: "var(--border-color)" }}
+                 >
+                   <div className="flex justify-between items-start gap-4">
+                     <div className="min-w-0">
+                       <div className="flex items-center gap-2">
+                         <p className="font-bold text-base" style={{ color: "var(--text-primary)" }}>
+                           ₦{record.amount.toLocaleString("en-US")}
+                         </p>
+                         <span className="text-xs" style={{ color: "var(--text-muted)" }}>
+                           {isExpanded ? "▲" : "▼"}
+                         </span>
+                       </div>
+                       <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
+                         {formatDate(record.created_at)}
                        </p>
-                     )}
+                     </div>
+                     <div className="flex flex-col items-end flex-shrink-0 gap-1.5">
+                       <StatusBadge status={record.status} />
+                       <span className="text-[11px] font-semibold" style={{ color: "var(--text-muted)" }}>
+                         Paid: ₦{record.amount_paid.toLocaleString("en-US")}
+                       </span>
+                     </div>
                    </div>
-                   <div className="flex flex-col items-end flex-shrink-0 gap-1.5">
-                      <StatusBadge status={record.status} />
-                      <span className="text-[10px] font-medium" style={{ color: "var(--text-dim)" }}>
-                         Paid: ₦{record.amount_paid.toLocaleString()}
-                      </span>
-                   </div>
-                </div>
-             ))}
+
+                   {/* Expanded Items Breakdown */}
+                   {isExpanded && (
+                     <div className="mt-3 pt-3 border-t space-y-2.5 animate-fadeIn" style={{ borderColor: "var(--border-color)" }}>
+                       <p className="text-[10px] font-bold uppercase tracking-wider text-stone-500">
+                         Items in this Purchase:
+                       </p>
+                       {items.length === 0 ? (
+                         <p className="text-xs italic text-stone-400">No item details recorded for this purchase.</p>
+                       ) : (
+                         <ul className="space-y-1.5 bg-stone-50 p-3 rounded-xl border border-stone-100">
+                           {items.map((item, idx) => (
+                             <li key={idx} className="text-xs flex justify-between items-center text-stone-700">
+                               <span className="truncate pr-2 font-medium">
+                                 {item.quantity}x {item.products?.name || "Product"}
+                               </span>
+                               <span className="font-semibold text-stone-900 flex-shrink-0">
+                                 ₦{(item.unit_price * item.quantity).toLocaleString("en-US")}
+                               </span>
+                             </li>
+                           ))}
+                         </ul>
+                       )}
+
+                       {/* Balance Breakdown */}
+                       <div className="flex justify-between items-center text-xs pt-2 border-t border-dashed" style={{ borderColor: "var(--border-color)" }}>
+                         <span className="text-stone-500 font-medium">Remaining on this Bill:</span>
+                         <span className="font-bold" style={{ color: remainingDebt > 0 ? "var(--warning)" : "var(--success)" }}>
+                           ₦{remainingDebt.toLocaleString("en-US")}
+                         </span>
+                       </div>
+
+                       {record.sales?.notes && (
+                         <p className="text-xs italic text-stone-500">
+                           Note: {record.sales.notes}
+                         </p>
+                       )}
+                     </div>
+                   )}
+                 </div>
+               );
+             })}
            </div>
         )}
       </div>
