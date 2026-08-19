@@ -13,6 +13,12 @@ type Customer = {
   total_debt: number;
 };
 
+type PurchasedItem = {
+  quantity: number;
+  unit_price: number;
+  products?: { name: string } | null;
+};
+
 type CreditRecord = {
   id: string;
   amount: number;
@@ -21,12 +27,11 @@ type CreditRecord = {
   created_at: string;
   sales?: {
     notes?: string | null;
-    sale_items?: {
-      quantity: number;
-      unit_price: number;
-      products?: { name: string } | null;
-    }[];
-  } | null;
+    sale_items?: PurchasedItem[];
+  } | {
+    notes?: string | null;
+    sale_items?: PurchasedItem[];
+  }[] | null;
 };
 
 function formatDate(iso: string) {
@@ -304,8 +309,13 @@ export function CustomerProfileClient({
            <div className="space-y-3">
              {creditHistory.map((record) => {
                const isExpanded = Boolean(expandedIds[record.id]);
-               const items = record.sales?.sale_items ?? [];
-               const remainingDebt = Math.max(0, record.amount - record.amount_paid);
+               // PostgREST may return single joined relation as object or 1-element array
+                const saleObj = (Array.isArray(record.sales) ? record.sales[0] : record.sales) as {
+                  notes?: string | null;
+                  sale_items?: PurchasedItem[];
+                } | undefined | null;
+                const items: PurchasedItem[] = saleObj?.sale_items ?? [];
+                const remainingDebt = Math.max(0, record.amount - record.amount_paid);
 
                return (
                  <div
@@ -367,9 +377,9 @@ export function CustomerProfileClient({
                          </span>
                        </div>
 
-                       {record.sales?.notes && (
+                       {saleObj?.notes && (
                          <p className="text-xs italic text-stone-500">
-                           Note: {record.sales.notes}
+                           Note: {saleObj.notes}
                          </p>
                        )}
                      </div>
