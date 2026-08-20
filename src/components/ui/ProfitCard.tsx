@@ -3,13 +3,13 @@
 import { useState } from "react";
 
 interface ProfitCardProps {
-  netProfit: string;
+  grossProfit: string;
   cogsSold: string;
   expensesToday: string;
   isProfit: boolean;
 }
 
-export function ProfitCard({ netProfit, cogsSold, expensesToday, isProfit }: ProfitCardProps) {
+export function ProfitCard({ grossProfit, cogsSold, expensesToday, isProfit }: ProfitCardProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
 
@@ -26,13 +26,13 @@ export function ProfitCard({ netProfit, cogsSold, expensesToday, isProfit }: Pro
             className="text-xs font-bold uppercase tracking-wider mb-2"
             style={{ color: isProfit ? "var(--accent)" : "var(--danger)" }}
           >
-            Net Profit Today
+            Gross Profit Today
           </p>
           <p
             className="text-4xl font-bold tracking-tight"
             style={{ color: isProfit ? "var(--accent)" : "var(--danger)" }}
           >
-            {netProfit}
+            {grossProfit}
           </p>
         </div>
       </div>
@@ -66,7 +66,7 @@ export function ProfitCard({ netProfit, cogsSold, expensesToday, isProfit }: Pro
         <div className="mt-5 pt-4 border-t" style={{ borderColor: isProfit ? "var(--accent-border)" : "var(--danger-border)" }}>
           <div className="flex items-center justify-between mb-4">
             <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
-              Deductions
+              Deductions from Revenue
             </span>
             <button
               onClick={() => setShowInfo(!showInfo)}
@@ -89,12 +89,12 @@ export function ProfitCard({ netProfit, cogsSold, expensesToday, isProfit }: Pro
                 className="absolute left-0 top-0 bottom-0 w-1"
                 style={{ background: isProfit ? "var(--accent)" : "var(--danger)" }}
               ></div>
-              <div className="space-y-2" style={{ color: "var(--text-primary)" }}>
+              <div className="space-y-2 pl-2" style={{ color: "var(--text-primary)" }}>
                 <p>
-                  <span className="font-semibold">COGS (Cost of Goods):</span> The original buying price of all items sold today.
+                  <span className="font-semibold">COGS (Cost of Goods):</span> The buying price of everything you sold today. Deducted to show your true trading profit.
                 </p>
                 <p>
-                  <span className="font-semibold">Expenses:</span> Money spent today on daily shop operations.
+                  <span className="font-semibold">Expenses:</span> Other costs logged today — wages, transport, etc. Not deducted from your profit figure above.
                 </p>
               </div>
             </div>
@@ -105,9 +105,14 @@ export function ProfitCard({ netProfit, cogsSold, expensesToday, isProfit }: Pro
               <span className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>Cost of Goods (COGS)</span>
               <span className="text-sm font-semibold" style={{ color: "var(--danger)" }}>−{cogsSold}</span>
             </div>
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>Expenses</span>
-              <span className="text-sm font-semibold" style={{ color: "var(--danger)" }}>−{expensesToday}</span>
+            <div
+              className="flex items-center justify-between pt-3 border-t"
+              style={{ borderColor: isProfit ? "var(--accent-border)" : "var(--danger-border)" }}
+            >
+              <span className="text-sm font-medium" style={{ color: "var(--text-muted)" }}>
+                Expenses <span className="text-[10px] font-normal">(not deducted)</span>
+              </span>
+              <span className="text-sm font-semibold" style={{ color: "var(--text-muted)" }}>{expensesToday}</span>
             </div>
           </div>
         </div>

@@ -87,7 +87,7 @@ async function getDashboardStats(shopId: string) {
   const salesToday = activeTodaySales.reduce((s, r) => s + (r.total_amount ?? 0), 0);
   const cogsSold = (todaySaleItems ?? []).reduce((s, i) => s + i.unit_cost * i.quantity, 0);
   const expensesToday = (todayExpensesRaw ?? []).reduce((s, e) => s + (e.amount ?? 0), 0);
-  const netProfit = salesToday - cogsSold - expensesToday;
+  const grossProfit = salesToday - cogsSold;
   const stockValue = (products ?? []).reduce((s, p) => s + p.buying_price * p.stock_quantity, 0);
   const outstandingCredit = (openCredit ?? []).reduce((s, c) => s + ((c.amount ?? 0) - (c.amount_paid ?? 0)), 0);
   const monthExpenses = (monthExpensesRaw ?? []).reduce((s, e) => s + (e.amount ?? 0), 0);
@@ -122,7 +122,7 @@ async function getDashboardStats(shopId: string) {
       };
     });
 
-  return { salesToday, netProfit, cogsSold, expensesToday, stockValue, outstandingCredit, monthExpenses, lowStockCount, hasProducts, hasSales, hasCustomers, recentSales };
+  return { salesToday, grossProfit, cogsSold, expensesToday, stockValue, outstandingCredit, monthExpenses, lowStockCount, hasProducts, hasSales, hasCustomers, recentSales };
 }
 
 // ─── Stat Card Component ──────────────────────────────────────────────────────
@@ -187,7 +187,7 @@ export default async function DashboardPage() {
   if (!session) redirect("/login");
 
   const stats = await getDashboardStats(session.user.shopId);
-  const isProfit = stats.netProfit >= 0;
+  const isProfit = stats.grossProfit >= 0;
 
   const onboardingSteps = [
     {
@@ -247,9 +247,9 @@ export default async function DashboardPage() {
       {/* ── Onboarding ── */}
       <OnboardingChecklist steps={onboardingSteps} />
 
-      {/* ── Hero: Net Profit Card ── */}
+      {/* ── Hero: Gross Profit Card ── */}
       <ProfitCard
-        netProfit={formatNaira(stats.netProfit)}
+        grossProfit={formatNaira(stats.grossProfit)}
         cogsSold={formatNaira(stats.cogsSold)}
         expensesToday={formatNaira(stats.expensesToday)}
         isProfit={isProfit}
