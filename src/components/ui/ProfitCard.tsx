@@ -64,36 +64,52 @@ export function ProfitCard({ netProfit, salesToday, cogsSold, expensesToday, isP
 
       {/* Expanded Breakdown */}
       {isOpen && (
-        <div className="mt-4 pt-4 border-t space-y-3" style={{ borderColor: isProfit ? "var(--accent-border)" : "var(--danger-border)" }}>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Revenue</span>
-              <button
-                onClick={() => setShowInfo(!showInfo)}
-                className="w-4 h-4 rounded-full border flex items-center justify-center text-[9px] font-bold"
-                style={{ borderColor: "var(--accent-border)", color: "var(--accent)" }}
-              >
-                i
-              </button>
-            </div>
-            <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>{salesToday}</span>
+        <div className="mt-5 pt-4 border-t" style={{ borderColor: isProfit ? "var(--accent-border)" : "var(--danger-border)" }}>
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
+              Deductions
+            </span>
+            <button
+              onClick={() => setShowInfo(!showInfo)}
+              className="w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold transition-all"
+              style={{
+                background: showInfo ? "var(--accent)" : "rgba(255,255,255,0.6)",
+                color: showInfo ? "#ffffff" : "var(--accent)",
+              }}
+            >
+              i
+            </button>
           </div>
 
           {showInfo && (
-            <div className="p-3 rounded-xl text-xs mb-2" style={{ background: "rgba(255,255,255,0.6)", color: "var(--text-primary)" }}>
-              <strong>Revenue:</strong> Total money received from sales today.<br/>
-              <strong>COGS:</strong> Cost price of the items sold.<br/>
-              <strong>Expenses:</strong> Daily running costs logged today.
+            <div
+              className="mb-4 p-3.5 rounded-xl text-xs relative overflow-hidden transition-all"
+              style={{ background: "rgba(255,255,255,0.6)", boxShadow: "0 2px 8px rgba(0,0,0,0.02)" }}
+            >
+              <div
+                className="absolute left-0 top-0 bottom-0 w-1"
+                style={{ background: isProfit ? "var(--accent)" : "var(--danger)" }}
+              ></div>
+              <div className="space-y-2" style={{ color: "var(--text-primary)" }}>
+                <p>
+                  <span className="font-semibold">COGS (Cost of Goods):</span> The original buying price of all items sold today.
+                </p>
+                <p>
+                  <span className="font-semibold">Expenses:</span> Money spent today on daily shop operations.
+                </p>
+              </div>
             </div>
           )}
 
-          <div className="flex items-center justify-between">
-            <span className="text-sm" style={{ color: "var(--text-muted)" }}>Cost of Goods (COGS)</span>
-            <span className="text-sm font-semibold" style={{ color: "var(--danger)" }}>−{cogsSold}</span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm" style={{ color: "var(--text-muted)" }}>Expenses</span>
-            <span className="text-sm font-semibold" style={{ color: "var(--danger)" }}>−{expensesToday}</span>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>Cost of Goods (COGS)</span>
+              <span className="text-sm font-semibold" style={{ color: "var(--danger)" }}>−{cogsSold}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>Expenses</span>
+              <span className="text-sm font-semibold" style={{ color: "var(--danger)" }}>−{expensesToday}</span>
+            </div>
           </div>
         </div>
       )}

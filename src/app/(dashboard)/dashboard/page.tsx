@@ -256,34 +256,22 @@ export default async function DashboardPage() {
         isProfit={isProfit}
       />
 
-      {/* ── 5 Stat Cards ── */}
+      {/* ── 3 Core Stat Cards ── */}
       <div className="grid grid-cols-2 gap-4">
-        <StatCard
-          label="Sales Today"
-          value={formatNaira(stats.salesToday)}
-          description="Total revenue recorded"
-          iconBg="var(--icon-accent-bg)"
-          iconColor="var(--icon-accent-text)"
-          icon={
-            <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-              <path d="M2.25 4.5c0-.83.67-1.5 1.5-1.5h16.5c.83 0 1.5.67 1.5 1.5v15c0 .83-.67 1.5-1.5 1.5H3.75c-.83 0-1.5-.67-1.5-1.5v-15zM3.75 6v3h16.5V6H3.75zm16.5 6H3.75v7.5h16.5V12z" />
-            </svg>
-          }
-        />
-
-        <StatCard
-          label="Stock Value"
-          value={formatNaira(stats.stockValue)}
-          description="Buying cost of all stock"
-          iconBg="var(--icon-neutral-bg)"
-          iconColor="var(--icon-neutral-text)"
-          icon={
-            <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-              <path d="M3.375 3C2.339 3 1.5 3.84 1.5 4.875v.75c0 1.036.84 1.875 1.875 1.875h17.25c1.035 0 1.875-.84 1.875-1.875v-.75C22.5 3.839 21.66 3 20.625 3H3.375z" />
-              <path fillRule="evenodd" d="M3.087 9l.54 9.176A3 3 0 006.62 21h10.757a3 3 0 002.995-2.824L20.913 9H3.087zm6.163 3.75A.75.75 0 0110 12h4a.75.75 0 010 1.5h-4a.75.75 0 01-.75-.75z" clipRule="evenodd" />
-            </svg>
-          }
-        />
+        <div className="col-span-2">
+          <StatCard
+            label="Sales Today"
+            value={formatNaira(stats.salesToday)}
+            description="Total revenue recorded"
+            iconBg="var(--icon-accent-bg)"
+            iconColor="var(--icon-accent-text)"
+            icon={
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                <path d="M2.25 4.5c0-.83.67-1.5 1.5-1.5h16.5c.83 0 1.5.67 1.5 1.5v15c0 .83-.67 1.5-1.5 1.5H3.75c-.83 0-1.5-.67-1.5-1.5v-15zM3.75 6v3h16.5V6H3.75zm16.5 6H3.75v7.5h16.5V12z" />
+              </svg>
+            }
+          />
+        </div>
 
         <StatCard
           label="Customer Debt"
@@ -295,19 +283,6 @@ export default async function DashboardPage() {
           icon={
             <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
               <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
-            </svg>
-          }
-        />
-
-        <StatCard
-          label="Monthly Expenses"
-          value={formatNaira(stats.monthExpenses)}
-          description="Total logged this month"
-          iconBg="var(--icon-danger-bg)"
-          iconColor="var(--icon-danger-text)"
-          icon={
-            <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-              <path d="M12 4l-4 4h3v7h2V8h3l-4-4zm0 16l4-4h-3v-7h-2v7H8l4 4z" />
             </svg>
           }
         />
@@ -412,14 +387,13 @@ export default async function DashboardPage() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
             {
-              label: "Add Product",
-              href: "/inventory/new",
-              iconBg: "var(--icon-neutral-bg)",
-              iconColor: "var(--icon-neutral-text)",
+              label: "Record Sale",
+              href: "/sales/new",
+              iconBg: "var(--icon-success-bg)",
+              iconColor: "var(--icon-success-text)",
               icon: (
                 <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
-                  <path d="M3.375 3C2.339 3 1.5 3.84 1.5 4.875v.75c0 1.036.84 1.875 1.875 1.875h17.25c1.035 0 1.875-.84 1.875-1.875v-.75C22.5 3.839 21.66 3 20.625 3H3.375z" />
-                  <path fillRule="evenodd" d="M3.087 9l.54 9.176A3 3 0 006.62 21h10.757a3 3 0 002.995-2.824L20.913 9H3.087zm6.163 3.75A.75.75 0 0110 12h4a.75.75 0 010 1.5h-4a.75.75 0 01-.75-.75z" clipRule="evenodd" />
+                  <path d="M2.25 4.5c0-.83.67-1.5 1.5-1.5h16.5c.83 0 1.5.67 1.5 1.5v15c0 .83-.67 1.5-1.5 1.5H3.75c-.83 0-1.5-.67-1.5-1.5v-15zM3.75 6v3h16.5V6H3.75zm16.5 6H3.75v7.5h16.5V12z" />
                 </svg>
               ),
             },
