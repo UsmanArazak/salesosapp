@@ -4,13 +4,12 @@ import { useState } from "react";
 
 interface ProfitCardProps {
   netProfit: string;
-  salesToday: string;
   cogsSold: string;
   expensesToday: string;
   isProfit: boolean;
 }
 
-export function ProfitCard({ netProfit, salesToday, cogsSold, expensesToday, isProfit }: ProfitCardProps) {
+export function ProfitCard({ netProfit, cogsSold, expensesToday, isProfit }: ProfitCardProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
 
