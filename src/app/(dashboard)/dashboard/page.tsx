@@ -345,10 +345,8 @@ export default async function DashboardPage() {
           iconBg="var(--icon-accent-bg)"
           iconColor="var(--icon-accent-text)"
           icon={
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
-              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <path d="M16 10a4 4 0 01-8 0" />
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+              <path d="M2.25 4.5c0-.83.67-1.5 1.5-1.5h16.5c.83 0 1.5.67 1.5 1.5v15c0 .83-.67 1.5-1.5 1.5H3.75c-.83 0-1.5-.67-1.5-1.5v-15zM3.75 6v3h16.5V6H3.75zm16.5 6H3.75v7.5h16.5V12z" />
             </svg>
           }
         />
@@ -360,10 +358,9 @@ export default async function DashboardPage() {
           iconBg="var(--icon-neutral-bg)"
           iconColor="var(--icon-neutral-text)"
           icon={
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
-              <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
-              <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-              <line x1="12" y1="22.08" x2="12" y2="12" />
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+              <path d="M3.375 3C2.339 3 1.5 3.84 1.5 4.875v.75c0 1.036.84 1.875 1.875 1.875h17.25c1.035 0 1.875-.84 1.875-1.875v-.75C22.5 3.839 21.66 3 20.625 3H3.375z" />
+              <path fillRule="evenodd" d="M3.087 9l.54 9.176A3 3 0 006.62 21h10.757a3 3 0 002.995-2.824L20.913 9H3.087zm6.163 3.75A.75.75 0 0110 12h4a.75.75 0 010 1.5h-4a.75.75 0 01-.75-.75z" clipRule="evenodd" />
             </svg>
           }
         />
@@ -376,11 +373,8 @@ export default async function DashboardPage() {
           iconBg={stats.outstandingCredit > 0 ? "var(--icon-warning-bg)" : "var(--icon-neutral-bg)"}
           iconColor={stats.outstandingCredit > 0 ? "var(--icon-warning-text)" : "var(--icon-neutral-text)"}
           icon={
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
-              <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-              <circle cx="9" cy="7" r="4" />
-              <path d="M23 21v-2a4 4 0 00-3-3.87" />
-              <path d="M16 3.13a4 4 0 010 7.75" />
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+              <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
             </svg>
           }
         />
@@ -392,9 +386,8 @@ export default async function DashboardPage() {
           iconBg="var(--icon-danger-bg)"
           iconColor="var(--icon-danger-text)"
           icon={
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
-              <line x1="12" y1="1" x2="12" y2="23" />
-              <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+              <path d="M12 4l-4 4h3v7h2V8h3l-4-4zm0 16l4-4h-3v-7h-2v7H8l4 4z" />
             </svg>
           }
         />
@@ -407,22 +400,17 @@ export default async function DashboardPage() {
           iconBg={stats.lowStockCount > 0 ? "var(--icon-danger-bg)" : "var(--icon-success-bg)"}
           iconColor={stats.lowStockCount > 0 ? "var(--icon-danger-text)" : "var(--icon-success-text)"}
           icon={
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
-              <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-              <line x1="12" y1="9" x2="12" y2="13" />
-              <line x1="12" y1="17" x2="12.01" y2="17" />
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+              <path fillRule="evenodd" d="M9.401 3.003c1.155-2 4.043-2 5.197 0l7.355 12.748c1.154 2-.29 4.5-2.599 4.5H4.645c-2.309 0-3.752-2.5-2.598-4.5L9.4 3.003zM12 8.25a.75.75 0 01.75.75v3.75a.75.75 0 01-1.5 0V9a.75.75 0 01.75-.75zm0 8.25a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" clipRule="evenodd" />
             </svg>
           }
         />
       </div>
 
       {/* ── Recent Sales Block ── */}
-      <div
-        className="rounded-[20px] p-5 bg-white"
-        style={{ boxShadow: "var(--card-shadow)" }}
-      >
+      <div>
         {/* Section header */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-4 px-1">
           <p className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>
             Recent Sales
           </p>
@@ -436,7 +424,7 @@ export default async function DashboardPage() {
         </div>
 
         {stats.recentSales.length === 0 ? (
-          <div className="py-8 text-center">
+          <div className="py-8 text-center rounded-[20px]" style={{ background: "var(--bg-card)" }}>
             <p className="text-sm" style={{ color: "var(--text-muted)" }}>No sales recorded yet.</p>
             <Link
               href="/sales/new"
@@ -449,7 +437,11 @@ export default async function DashboardPage() {
         ) : (
           <div className="space-y-3">
             {stats.recentSales.map((sale) => (
-              <div key={sale.id} className="flex items-center gap-3">
+              <div
+                key={sale.id}
+                className="flex items-center gap-3 rounded-[24px] p-4 transition-all"
+                style={{ background: "var(--bg-card)", boxShadow: "var(--card-shadow)" }}
+              >
                 {/* Avatar circle */}
                 <div
                   className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold"
@@ -466,11 +458,11 @@ export default async function DashboardPage() {
                   <p className="text-sm font-semibold truncate" style={{ color: "var(--text-primary)" }}>
                     {sale.customerName}
                   </p>
-                  <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+                  <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
                     {sale.time}
                     {sale.isCredit && (
                       <span
-                        className="ml-2 text-[10px] font-bold uppercase px-1.5 py-0.5 rounded-full"
+                        className="ml-2 text-[10px] font-bold uppercase px-1.5 py-0.5 rounded-md"
                         style={{ background: "var(--icon-warning-bg)", color: "var(--icon-warning-text)" }}
                       >
                         Credit
@@ -505,10 +497,9 @@ export default async function DashboardPage() {
               iconBg: "var(--icon-neutral-bg)",
               iconColor: "var(--icon-neutral-text)",
               icon: (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
-                  <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
-                  <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-                  <line x1="12" y1="22.08" x2="12" y2="12" />
+                <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                  <path d="M3.375 3C2.339 3 1.5 3.84 1.5 4.875v.75c0 1.036.84 1.875 1.875 1.875h17.25c1.035 0 1.875-.84 1.875-1.875v-.75C22.5 3.839 21.66 3 20.625 3H3.375z" />
+                  <path fillRule="evenodd" d="M3.087 9l.54 9.176A3 3 0 006.62 21h10.757a3 3 0 002.995-2.824L20.913 9H3.087zm6.163 3.75A.75.75 0 0110 12h4a.75.75 0 010 1.5h-4a.75.75 0 01-.75-.75z" clipRule="evenodd" />
                 </svg>
               ),
             },
@@ -518,11 +509,8 @@ export default async function DashboardPage() {
               iconBg: "var(--icon-neutral-bg)",
               iconColor: "var(--icon-neutral-text)",
               icon: (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
-                  <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-                  <circle cx="9" cy="7" r="4" />
-                  <line x1="19" y1="8" x2="19" y2="14" />
-                  <line x1="16" y1="11" x2="22" y2="11" />
+                <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                  <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
                 </svg>
               ),
             },
@@ -532,10 +520,8 @@ export default async function DashboardPage() {
               iconBg: "var(--icon-accent-bg)",
               iconColor: "var(--icon-accent-text)",
               icon: (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
-                  <path d="M18 20V10" />
-                  <path d="M12 20V4" />
-                  <path d="M6 20v-6" />
+                <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                  <path d="M18 4h-2v16h2V4zM12 9h-2v11h2V9zM6 14H4v6h2v-6z" />
                 </svg>
               ),
             },
@@ -545,9 +531,8 @@ export default async function DashboardPage() {
               iconBg: "var(--icon-danger-bg)",
               iconColor: "var(--icon-danger-text)",
               icon: (
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
-                  <line x1="12" y1="1" x2="12" y2="23" />
-                  <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
+                <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                  <path d="M12 4l-4 4h3v7h2V8h3l-4-4zm0 16l4-4h-3v-7h-2v7H8l4 4z" />
                 </svg>
               ),
             },

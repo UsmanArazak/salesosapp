@@ -5,9 +5,9 @@
 :root {
   /* ── Surfaces ──────────────────────────────────── */
   --bg-base:     #ffffff;
-  --bg-surface:  #ffffff;
-  --bg-elevated: #f5f4f2;
-  --bg-card:     #ffffff;
+  --bg-surface:  #f4f5f7; /* Cards are now a soft modern grey, not plain white */
+  --bg-elevated: #eaeaec;
+  --bg-card:     #f4f5f7;
 
   /* ── Borders ───────────────────────────────────── */
   --border-color: #e6e4e3;
