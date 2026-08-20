@@ -71,7 +71,7 @@ async function getDashboardStats(shopId: string) {
     supabase.from("customers").select("*", { count: "exact", head: true }).eq("shop_id", shopId),
     supabase
       .from("sales")
-      .select("id, total_amount, payment_method, notes, created_at, credit_sales(customer_id, customers(name))")
+      .select("id, total_amount, payment_method, notes, created_at, credit_sales(customer_id, customers(name)), sale_items(quantity, products(name))")
       .eq("shop_id", shopId)
       .order("created_at", { ascending: false })
       .limit(5),
@@ -104,7 +104,7 @@ async function getDashboardStats(shopId: string) {
     .map((s) => {
       // PostgREST returns joined relation as object or array
       const creditArr = Array.isArray(s.credit_sales) ? s.credit_sales : s.credit_sales ? [s.credit_sales] : [];
-      const firstCredit = creditArr[0] as { customer_id: string; customers?: { name: string } | { name: string }[] | null } | undefined;
+      const firstCredit = creditArr[0] as { customer_id?: string; customers?: { name: string } | { name: string }[] | null } | undefined;
       const customersVal = firstCredit?.customers;
       const customerName = customersVal
         ? Array.isArray(customersVal)
@@ -112,13 +112,37 @@ async function getDashboardStats(shopId: string) {
           : (customersVal as { name: string }).name
         : null;
 
+      const itemsArr = Array.isArray(s.sale_items) ? s.sale_items : [];
+      const itemSummaries = itemsArr
+        .map((item: { quantity: number; products?: { name: string } | { name: string }[] | null }) => {
+          const prodName = Array.isArray(item.products) ? item.products[0]?.name : item.products?.name;
+          return prodName ? `${item.quantity}x ${prodName}` : null;
+        })
+        .filter(Boolean) as string[];
+
+      let itemsText = "";
+      if (itemSummaries.length === 1) {
+        itemsText = itemSummaries[0];
+      } else if (itemSummaries.length === 2) {
+        itemsText = itemSummaries.join(", ");
+      } else if (itemSummaries.length > 2) {
+        itemsText = `${itemSummaries.slice(0, 2).join(", ")} +${itemSummaries.length - 2} more`;
+      }
+
+      const primaryTitle = customerName || itemsText || "Direct Sale";
+      const secondaryInfo = customerName && itemsText ? itemsText : null;
       const isCredit = s.payment_method === "credit";
+      const paymentMethod = s.payment_method ?? "cash";
+
       return {
         id: s.id,
         amount: s.total_amount ?? 0,
         time: formatTime(s.created_at),
         isCredit,
-        customerName: customerName ?? (isCredit ? "Credit Customer" : "Walk-in"),
+        paymentMethod,
+        primaryTitle,
+        secondaryInfo,
+        customerName,
       };
     });
 
@@ -336,31 +360,55 @@ export default async function DashboardPage() {
                 className="flex items-center gap-3 rounded-[24px] p-4 transition-all"
                 style={{ background: "var(--bg-card)", boxShadow: "var(--card-shadow)" }}
               >
-                {/* Avatar circle */}
+                {/* Avatar / Icon circle */}
                 <div
                   className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold"
                   style={{
-                    background: sale.isCredit ? "var(--icon-warning-bg)" : "var(--icon-success-bg)",
-                    color: sale.isCredit ? "var(--icon-warning-text)" : "var(--icon-success-text)",
+                    background:
+                      sale.paymentMethod === "credit"
+                        ? "var(--icon-warning-bg)"
+                        : sale.paymentMethod === "transfer"
+                        ? "rgba(59, 130, 246, 0.12)"
+                        : "var(--icon-success-bg)",
+                    color:
+                      sale.paymentMethod === "credit"
+                        ? "var(--icon-warning-text)"
+                        : sale.paymentMethod === "transfer"
+                        ? "#2563eb"
+                        : "var(--icon-success-text)",
                   }}
                 >
-                  {sale.customerName.charAt(0).toUpperCase()}
+                  {sale.customerName ? (
+                    sale.customerName.charAt(0).toUpperCase()
+                  ) : sale.paymentMethod === "transfer" ? (
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                      <path d="M11.584 2.257a.75.75 0 01.832 0l9 6A.75.75 0 0121 9.5v.75H3V9.5a.75.75 0 01.584-.743l9-6zM3.75 11.75h16.5V18H3.75v-6.25zM2 19.5a.75.75 0 01.75-.75h18.5a.75.75 0 010 1.5H2.75A.75.75 0 012 19.5z" />
+                    </svg>
+                  ) : sale.paymentMethod === "credit" ? (
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                      <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
+                    </svg>
+                  ) : (
+                    <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                      <path d="M2.25 4.5c0-.83.67-1.5 1.5-1.5h16.5c.83 0 1.5.67 1.5 1.5v15c0 .83-.67 1.5-1.5 1.5H3.75c-.83 0-1.5-.67-1.5-1.5v-15zM3.75 6v3h16.5V6H3.75zm16.5 6H3.75v7.5h16.5V12z" />
+                    </svg>
+                  )}
                 </div>
 
-                {/* Name + time */}
+                {/* Primary Title + Time & Details Subtext */}
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold truncate" style={{ color: "var(--text-primary)" }}>
-                    {sale.customerName}
+                    {sale.primaryTitle}
                   </p>
-                  <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
-                    {sale.time}
-                    {sale.isCredit && (
-                      <span
-                        className="ml-2 text-[10px] font-bold uppercase px-1.5 py-0.5 rounded-md"
-                        style={{ background: "var(--icon-warning-bg)", color: "var(--icon-warning-text)" }}
-                      >
-                        Credit
-                      </span>
+                  <p className="text-xs mt-0.5 truncate flex items-center gap-1.5" style={{ color: "var(--text-muted)" }}>
+                    <span>{sale.time}</span>
+                    <span>•</span>
+                    <span className="capitalize">{sale.paymentMethod}</span>
+                    {sale.secondaryInfo && (
+                      <>
+                        <span>•</span>
+                        <span className="truncate">{sale.secondaryInfo}</span>
+                      </>
                     )}
                   </p>
                 </div>
@@ -368,7 +416,12 @@ export default async function DashboardPage() {
                 {/* Amount */}
                 <p
                   className="text-sm font-bold flex-shrink-0"
-                  style={{ color: sale.isCredit ? "var(--icon-warning-text)" : "var(--icon-success-text)" }}
+                  style={{
+                    color:
+                      sale.paymentMethod === "credit"
+                        ? "var(--icon-warning-text)"
+                        : "var(--icon-success-text)",
+                  }}
                 >
                   +{formatNaira(sale.amount)}
                 </p>
