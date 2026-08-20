@@ -118,7 +118,7 @@ export default async function ReportsPage() {
   const revenueToday = salesTodayRows.reduce((sum, s) => sum + s.total_amount, 0);
   const cogsToday = saleItems.filter(i => idsToday.includes(i.sale_id)).reduce((sum, i) => sum + (i.unit_cost * i.quantity), 0);
   const expToday = expensesM.filter(e => isTodayDate(e.date)).reduce((sum, e) => sum + e.amount, 0);
-  const profitToday = revenueToday - cogsToday - expToday;
+  const profitToday = revenueToday - cogsToday;
 
   // YESTERDAY
   const salesYestRows = salesM.filter(s => isYesterdayDate(s.created_at));
@@ -126,13 +126,13 @@ export default async function ReportsPage() {
   const revenueYest = salesYestRows.reduce((sum, s) => sum + s.total_amount, 0);
   const cogsYest = saleItems.filter(i => idsYest.includes(i.sale_id)).reduce((sum, i) => sum + (i.unit_cost * i.quantity), 0);
   const expYest = expensesM.filter(e => isYesterdayDate(e.date)).reduce((sum, e) => sum + e.amount, 0);
-  const profitYest = revenueYest - cogsYest - expYest;
+  const profitYest = revenueYest - cogsYest;
 
   // MONTH TOTALS
   const revenueMonth = salesM.reduce((sum, s) => sum + s.total_amount, 0);
   const cogsMonth = saleItems.reduce((sum, i) => sum + (i.unit_cost * i.quantity), 0);
   const expMonth = expensesM.reduce((sum, e) => sum + e.amount, 0);
-  const profitMonth = revenueMonth - cogsMonth - expMonth;
+  const profitMonth = revenueMonth - cogsMonth;
 
   // Trend comparison
   const profitDiff = profitToday - profitYest;
@@ -165,7 +165,7 @@ export default async function ReportsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* TODAY */}
         <div className="rounded-2xl border p-5" style={{ background: profitToday >= 0 ? "var(--success-surface)" : "var(--danger-surface)", borderColor: profitToday >= 0 ? "var(--success-border)" : "var(--danger-border)" }}>
-           <h2 className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: profitToday >= 0 ? "var(--success)" : "var(--danger)" }}>Today&apos;s Profit</h2>
+           <h2 className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: profitToday >= 0 ? "var(--success)" : "var(--danger)" }}>Today&apos;s Gross Profit</h2>
            <p className="text-4xl font-black mb-1" style={{ color: profitToday >= 0 ? "var(--success)" : "var(--danger)" }}>{formatNaira(profitToday)}</p>
            
            <div className="flex items-center gap-1.5 mt-2 text-xs font-medium" style={{ color: isProfitUp ? "var(--success)" : "var(--danger)" }}>
@@ -191,16 +191,16 @@ export default async function ReportsPage() {
                  <span>COGS</span>
                  <span>-{formatNaira(cogsToday)}</span>
               </div>
-              <div className="flex justify-between text-xs text-red-700">
-                 <span>Expenses</span>
-                 <span>-{formatNaira(expToday)}</span>
+              <div className="flex justify-between text-xs text-stone-500">
+                 <span>Expenses (not deducted)</span>
+                 <span>{formatNaira(expToday)}</span>
               </div>
            </div>
         </div>
 
         {/* YESTERDAY */}
         <div className="rounded-2xl border p-5 bg-white" style={{ borderColor: "var(--border-color)" }}>
-           <h2 className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: "var(--text-dim)" }}>Yesterday&apos;s Profit</h2>
+           <h2 className="text-xs font-bold uppercase tracking-wider mb-2" style={{ color: "var(--text-dim)" }}>Yesterday&apos;s Gross Profit</h2>
            <p className="text-3xl font-bold mb-1" style={{ color: "var(--text-primary)" }}>{formatNaira(profitYest)}</p>
            
            <div className="mt-4 pt-4 border-t" style={{ borderColor: "var(--border-color)" }}>
@@ -213,8 +213,8 @@ export default async function ReportsPage() {
                  <span className="font-medium">-{formatNaira(cogsYest)}</span>
               </div>
               <div className="flex justify-between text-xs" style={{ color: "var(--text-muted)" }}>
-                 <span>Expenses</span>
-                 <span className="font-medium">-{formatNaira(expYest)}</span>
+                 <span>Expenses (not deducted)</span>
+                 <span className="font-medium">{formatNaira(expYest)}</span>
               </div>
            </div>
         </div>
@@ -234,11 +234,11 @@ export default async function ReportsPage() {
                <div className="font-medium text-red-600">-{formatNaira(cogsMonth)}</div>
             </div>
             <div className="flex justify-between items-center pb-4 border-b" style={{ borderColor: "var(--border-color)" }}>
-               <div className="font-medium" style={{ color: "var(--text-muted)" }}>Total Monthly Expenses</div>
-               <div className="font-medium text-red-600">-{formatNaira(expMonth)}</div>
+               <div className="font-medium" style={{ color: "var(--text-muted)" }}>Total Monthly Expenses <span className="text-xs font-normal text-stone-400">(not deducted)</span></div>
+               <div className="font-medium text-stone-500">{formatNaira(expMonth)}</div>
             </div>
             <div className="flex justify-between items-center pt-2">
-               <div className="font-bold text-sm tracking-wide uppercase" style={{ color: "var(--text-primary)" }}>Net Monthly Profit</div>
+               <div className="font-bold text-sm tracking-wide uppercase" style={{ color: "var(--text-primary)" }}>Gross Monthly Profit</div>
                <div className="font-black text-xl" style={{ color: profitMonth >= 0 ? "var(--success)" : "var(--danger)" }}>
                   {formatNaira(profitMonth)}
                </div>
