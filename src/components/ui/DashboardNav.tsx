@@ -189,13 +189,13 @@ export function DashboardNav() {
               href={item.href}
               prefetch={true}
               className="flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 px-1 transition-colors relative"
-              style={{ color: active ? "#ffffff" : "var(--text-muted)" }}
+              style={{ color: active ? "var(--accent)" : "var(--text-muted)" }}
             >
               {/* Active pill bg */}
               {active && (
                 <span
                   className="absolute inset-x-1.5 inset-y-1 rounded-xl"
-                  style={{ background: "var(--accent)" }}
+                  style={{ background: "var(--accent-dim)" }}
                 />
               )}
               <span className="relative z-10">

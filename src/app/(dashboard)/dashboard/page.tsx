@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { createServiceRoleSupabaseClient } from "@/lib/supabase";
 import Link from "next/link";
 import { OnboardingChecklist } from "@/components/ui/OnboardingChecklist";
+import { ProfitCard } from "@/components/ui/ProfitCard";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -247,94 +248,13 @@ export default async function DashboardPage() {
       <OnboardingChecklist steps={onboardingSteps} />
 
       {/* ── Hero: Net Profit Card ── */}
-      <div
-        className="rounded-[20px] p-6"
-        style={{
-          background: "#ffffff",
-          boxShadow: "var(--card-shadow)",
-        }}
-      >
-        <div className="flex items-start justify-between gap-4">
-          <div className="min-w-0">
-            <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "var(--text-muted)" }}>
-              Net Profit Today
-            </p>
-            <p
-              className="text-4xl font-bold tracking-tight"
-              style={{ color: isProfit ? "var(--text-primary)" : "var(--danger)" }}
-            >
-              {formatNaira(stats.netProfit)}
-            </p>
-            <p className="text-xs mt-2" style={{ color: "var(--text-muted)" }}>
-              Revenue − Cost of goods sold − Today&apos;s expenses
-            </p>
-          </div>
-          <div
-            className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
-            style={{
-              background: isProfit ? "var(--icon-accent-bg)" : "var(--icon-danger-bg)",
-              color: isProfit ? "var(--accent)" : "var(--icon-danger-text)",
-            }}
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-6 h-6">
-              {isProfit ? (
-                <>
-                  <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
-                  <polyline points="16 7 22 7 22 13" />
-                </>
-              ) : (
-                <>
-                  <polyline points="22 17 13.5 8.5 8.5 13.5 2 7" />
-                  <polyline points="16 17 22 17 22 11" />
-                </>
-              )}
-            </svg>
-          </div>
-        </div>
-
-        {/* Breakdown chips */}
-        <div
-          className="flex flex-wrap gap-4 mt-5 pt-4 border-t text-xs"
-          style={{ borderColor: "var(--border-color)" }}
-        >
-          <div className="flex items-center gap-1.5">
-            <span
-              className="w-5 h-5 rounded-full flex items-center justify-center"
-              style={{ background: "var(--icon-success-bg)", color: "var(--icon-success-text)" }}
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-3 h-3">
-                <polyline points="20 6 9 17 4 12" />
-              </svg>
-            </span>
-            <span style={{ color: "var(--text-muted)" }}>Revenue</span>
-            <span className="font-semibold" style={{ color: "var(--text-primary)" }}>{formatNaira(stats.salesToday)}</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span
-              className="w-5 h-5 rounded-full flex items-center justify-center"
-              style={{ background: "var(--icon-danger-bg)", color: "var(--icon-danger-text)" }}
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-3 h-3">
-                <line x1="5" y1="12" x2="19" y2="12" />
-              </svg>
-            </span>
-            <span style={{ color: "var(--text-muted)" }}>COGS</span>
-            <span className="font-semibold" style={{ color: "var(--danger)" }}>−{formatNaira(stats.cogsSold)}</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span
-              className="w-5 h-5 rounded-full flex items-center justify-center"
-              style={{ background: "var(--icon-danger-bg)", color: "var(--icon-danger-text)" }}
-            >
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-3 h-3">
-                <line x1="5" y1="12" x2="19" y2="12" />
-              </svg>
-            </span>
-            <span style={{ color: "var(--text-muted)" }}>Expenses</span>
-            <span className="font-semibold" style={{ color: "var(--danger)" }}>−{formatNaira(stats.expensesToday)}</span>
-          </div>
-        </div>
-      </div>
+      <ProfitCard
+        netProfit={formatNaira(stats.netProfit)}
+        salesToday={formatNaira(stats.salesToday)}
+        cogsSold={formatNaira(stats.cogsSold)}
+        expensesToday={formatNaira(stats.expensesToday)}
+        isProfit={isProfit}
+      />
 
       {/* ── 5 Stat Cards ── */}
       <div className="grid grid-cols-2 gap-4">
