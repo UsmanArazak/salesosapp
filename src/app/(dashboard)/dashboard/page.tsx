@@ -30,18 +30,25 @@ function getLagosDates() {
     month: "2-digit",
     day: "2-digit",
   });
-  const todayISO = formatter.format(new Date()); // "YYYY-MM-DD"
+  const todayISO = formatter.format(new Date());
   const [year, month] = todayISO.split("-");
   const monthStart = `${year}-${month}-01`;
   const todayStart = `${todayISO}T00:00:00+01:00`;
   return { todayISO, monthStart, todayStart };
 }
 
+function formatTime(iso: string): string {
+  return new Date(iso).toLocaleTimeString("en-NG", {
+    timeZone: "Africa/Lagos",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 // ─── Data Fetching ────────────────────────────────────────────────────────────
 
 async function getDashboardStats(shopId: string) {
   const supabase = createServiceRoleSupabaseClient();
-
   const { todayISO, monthStart, todayStart } = getLagosDates();
 
   const [
@@ -52,6 +59,7 @@ async function getDashboardStats(shopId: string) {
     { data: todayExpensesRaw },
     { count: allSalesCount },
     { count: customerCount },
+    { data: recentSalesRaw },
   ] = await Promise.all([
     supabase.from("sales").select("id, total_amount, notes").eq("shop_id", shopId).gte("created_at", todayStart),
     supabase.from("products").select("buying_price, stock_quantity, low_stock_threshold").eq("shop_id", shopId).eq("archived", false),
@@ -60,6 +68,12 @@ async function getDashboardStats(shopId: string) {
     supabase.from("expenses").select("amount").eq("shop_id", shopId).eq("date", todayISO),
     supabase.from("sales").select("*", { count: "exact", head: true }).eq("shop_id", shopId),
     supabase.from("customers").select("*", { count: "exact", head: true }).eq("shop_id", shopId),
+    supabase
+      .from("sales")
+      .select("id, total_amount, payment_method, notes, created_at, credit_sales(customer_id, customers(name))")
+      .eq("shop_id", shopId)
+      .order("created_at", { ascending: false })
+      .limit(5),
   ]);
 
   const activeTodaySales = (todaySalesRaw ?? []).filter((s) => !s.notes?.startsWith("[VOIDED]"));
@@ -82,50 +96,76 @@ async function getDashboardStats(shopId: string) {
   const hasSales = (allSalesCount ?? 0) > 0;
   const hasCustomers = (customerCount ?? 0) > 0;
 
-  return { salesToday, netProfit, cogsSold, expensesToday, stockValue, outstandingCredit, monthExpenses, lowStockCount, hasProducts, hasSales, hasCustomers };
+  // Build recent sales rows (exclude voided)
+  const recentSales = (recentSalesRaw ?? [])
+    .filter((s) => !s.notes?.startsWith("[VOIDED]"))
+    .slice(0, 5)
+    .map((s) => {
+      // PostgREST returns joined relation as object or array
+      const creditArr = Array.isArray(s.credit_sales) ? s.credit_sales : s.credit_sales ? [s.credit_sales] : [];
+      const firstCredit = creditArr[0] as { customer_id: string; customers?: { name: string } | { name: string }[] | null } | undefined;
+      const customersVal = firstCredit?.customers;
+      const customerName = customersVal
+        ? Array.isArray(customersVal)
+          ? (customersVal[0] as { name: string })?.name
+          : (customersVal as { name: string }).name
+        : null;
+
+      const isCredit = s.payment_method === "credit";
+      return {
+        id: s.id,
+        amount: s.total_amount ?? 0,
+        time: formatTime(s.created_at),
+        isCredit,
+        customerName: customerName ?? (isCredit ? "Credit Customer" : "Walk-in"),
+      };
+    });
+
+  return { salesToday, netProfit, cogsSold, expensesToday, stockValue, outstandingCredit, monthExpenses, lowStockCount, hasProducts, hasSales, hasCustomers, recentSales };
 }
 
-// ─── Stat Card ────────────────────────────────────────────────────────────────
+// ─── Stat Card Component ──────────────────────────────────────────────────────
 
 function StatCard({
   label,
   value,
   description,
   icon,
-  warning = false,
+  iconBg,
+  iconColor,
   href,
 }: {
   label: string;
   value: string;
   description: string;
   icon: React.ReactNode;
-  warning?: boolean;
+  iconBg: string;
+  iconColor: string;
   href?: string;
 }) {
-  const iconBg = warning ? "var(--warning-dim)" : "var(--bg-elevated)";
-  const iconColor = warning ? "var(--warning)" : "var(--text-muted)";
-  const borderColor = warning ? "var(--warning-border)" : "var(--border-color)";
-
   const inner = (
     <div
-      className="rounded-2xl border p-4 h-full bg-white transition-all"
-      style={{ borderColor }}
+      className="rounded-[20px] p-5 h-full bg-white flex flex-col gap-3 transition-all"
+      style={{ boxShadow: "var(--card-shadow)" }}
     >
+      {/* Icon circle */}
       <div
-        className="w-8 h-8 rounded-lg flex items-center justify-center mb-3"
+        className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
         style={{ background: iconBg, color: iconColor }}
       >
         {icon}
       </div>
-      <p className="text-xs font-medium mb-1" style={{ color: "var(--text-muted)" }}>
-        {label}
-      </p>
-      <p className="text-lg font-bold leading-tight truncate" style={{ color: "var(--text-primary)" }}>
-        {value}
-      </p>
-      <p className="text-xs mt-1" style={{ color: "var(--text-muted)" }}>
-        {description}
-      </p>
+      <div>
+        <p className="text-xs font-medium mb-1" style={{ color: "var(--text-muted)" }}>
+          {label}
+        </p>
+        <p className="text-xl font-bold leading-tight truncate" style={{ color: "var(--text-primary)" }}>
+          {value}
+        </p>
+        <p className="text-xs mt-1" style={{ color: "var(--text-muted)" }}>
+          {description}
+        </p>
+      </div>
     </div>
   );
 
@@ -179,9 +219,9 @@ export default async function DashboardPage() {
   ];
 
   return (
-    <div>
-      {/* Header */}
-      <div className="mb-6 flex items-center justify-between gap-4">
+    <div className="space-y-6 pb-24 md:pb-6">
+      {/* ── Header ── */}
+      <div className="flex items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold" style={{ color: "var(--text-primary)" }}>
             Dashboard
@@ -192,7 +232,7 @@ export default async function DashboardPage() {
         </div>
         <Link
           href="/sales/new"
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-all active:scale-[0.97] shadow-sm flex-shrink-0"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-semibold text-white transition-all active:scale-[0.97] shadow-sm flex-shrink-0"
           style={{ background: "var(--accent)" }}
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} className="w-4 h-4">
@@ -203,42 +243,37 @@ export default async function DashboardPage() {
         </Link>
       </div>
 
-      {/* Onboarding Checklist — only shows until all 3 steps done */}
+      {/* ── Onboarding ── */}
       <OnboardingChecklist steps={onboardingSteps} />
 
-      {/* ── Featured: Net Profit Card ─── */}
+      {/* ── Hero: Net Profit Card ── */}
       <div
-        className="rounded-2xl border p-5 mb-4"
+        className="rounded-[20px] p-6"
         style={{
-          background: isProfit
-            ? "linear-gradient(135deg, rgba(255,83,71,0.07) 0%, rgba(255,83,71,0.02) 100%)"
-            : "linear-gradient(135deg, rgba(239,68,68,0.07) 0%, rgba(239,68,68,0.02) 100%)",
-          borderColor: isProfit ? "var(--accent-border)" : "rgba(239,68,68,0.25)",
+          background: "#ffffff",
+          boxShadow: "var(--card-shadow)",
         }}
       >
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
-            <p
-              className="text-xs font-semibold uppercase tracking-wider mb-2"
-              style={{ color: isProfit ? "var(--accent)" : "#dc2626" }}
-            >
+            <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "var(--text-muted)" }}>
               Net Profit Today
             </p>
             <p
               className="text-4xl font-bold tracking-tight"
-              style={{ color: isProfit ? "var(--accent)" : "#dc2626" }}
+              style={{ color: isProfit ? "var(--text-primary)" : "var(--danger)" }}
             >
               {formatNaira(stats.netProfit)}
             </p>
             <p className="text-xs mt-2" style={{ color: "var(--text-muted)" }}>
-              Revenue - Cost of goods sold - Today&apos;s expenses
+              Revenue − Cost of goods sold − Today&apos;s expenses
             </p>
           </div>
           <div
-            className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
+            className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
             style={{
-              background: isProfit ? "rgba(255,83,71,0.1)" : "rgba(239,68,68,0.1)",
-              color: isProfit ? "var(--accent)" : "#dc2626",
+              background: isProfit ? "var(--icon-accent-bg)" : "var(--icon-danger-bg)",
+              color: isProfit ? "var(--accent)" : "var(--icon-danger-text)",
             }}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-6 h-6">
@@ -257,38 +292,58 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        {/* Breakdown row */}
+        {/* Breakdown chips */}
         <div
-          className="flex flex-wrap gap-4 mt-4 pt-4 border-t text-xs"
-          style={{ borderColor: isProfit ? "rgba(255,83,71,0.15)" : "rgba(239,68,68,0.15)" }}
+          className="flex flex-wrap gap-4 mt-5 pt-4 border-t text-xs"
+          style={{ borderColor: "var(--border-color)" }}
         >
-          <div>
+          <div className="flex items-center gap-1.5">
+            <span
+              className="w-5 h-5 rounded-full flex items-center justify-center"
+              style={{ background: "var(--icon-success-bg)", color: "var(--icon-success-text)" }}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-3 h-3">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            </span>
             <span style={{ color: "var(--text-muted)" }}>Revenue</span>
-            <span className="ml-1.5 font-semibold" style={{ color: "var(--text-primary)" }}>
-              {formatNaira(stats.salesToday)}
-            </span>
+            <span className="font-semibold" style={{ color: "var(--text-primary)" }}>{formatNaira(stats.salesToday)}</span>
           </div>
-          <div>
+          <div className="flex items-center gap-1.5">
+            <span
+              className="w-5 h-5 rounded-full flex items-center justify-center"
+              style={{ background: "var(--icon-danger-bg)", color: "var(--icon-danger-text)" }}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-3 h-3">
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+            </span>
             <span style={{ color: "var(--text-muted)" }}>COGS</span>
-            <span className="ml-1.5 font-semibold" style={{ color: "#dc2626" }}>
-              -{formatNaira(stats.cogsSold)}
-            </span>
+            <span className="font-semibold" style={{ color: "var(--danger)" }}>−{formatNaira(stats.cogsSold)}</span>
           </div>
-          <div>
-            <span style={{ color: "var(--text-muted)" }}>Expenses</span>
-            <span className="ml-1.5 font-semibold" style={{ color: "#dc2626" }}>
-              -{formatNaira(stats.expensesToday)}
+          <div className="flex items-center gap-1.5">
+            <span
+              className="w-5 h-5 rounded-full flex items-center justify-center"
+              style={{ background: "var(--icon-danger-bg)", color: "var(--icon-danger-text)" }}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-3 h-3">
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
             </span>
+            <span style={{ color: "var(--text-muted)" }}>Expenses</span>
+            <span className="font-semibold" style={{ color: "var(--danger)" }}>−{formatNaira(stats.expensesToday)}</span>
           </div>
         </div>
       </div>
 
-      {/* ── 5 Stat Cards ─── */}
-      <div className="grid grid-cols-2 gap-3 mb-8">
+      {/* ── 5 Stat Cards ── */}
+      <div className="grid grid-cols-2 gap-4">
         <StatCard
           label="Sales Today"
           value={formatNaira(stats.salesToday)}
           description="Total revenue recorded"
+          iconBg="var(--icon-accent-bg)"
+          iconColor="var(--icon-accent-text)"
           icon={
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
               <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" />
@@ -302,6 +357,8 @@ export default async function DashboardPage() {
           label="Stock Value"
           value={formatNaira(stats.stockValue)}
           description="Buying cost of all stock"
+          iconBg="var(--icon-neutral-bg)"
+          iconColor="var(--icon-neutral-text)"
           icon={
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
               <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
@@ -316,7 +373,8 @@ export default async function DashboardPage() {
           value={formatNaira(stats.outstandingCredit)}
           description="Total owed to your shop"
           href="/customers"
-          warning={stats.outstandingCredit > 0}
+          iconBg={stats.outstandingCredit > 0 ? "var(--icon-warning-bg)" : "var(--icon-neutral-bg)"}
+          iconColor={stats.outstandingCredit > 0 ? "var(--icon-warning-text)" : "var(--icon-neutral-text)"}
           icon={
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
               <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
@@ -331,6 +389,8 @@ export default async function DashboardPage() {
           label="Monthly Expenses"
           value={formatNaira(stats.monthExpenses)}
           description="Total logged this month"
+          iconBg="var(--icon-danger-bg)"
+          iconColor="var(--icon-danger-text)"
           icon={
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
               <line x1="12" y1="1" x2="12" y2="23" />
@@ -344,7 +404,8 @@ export default async function DashboardPage() {
           value={`${stats.lowStockCount} product${stats.lowStockCount !== 1 ? "s" : ""}`}
           description={stats.lowStockCount > 0 ? "Tap to view & restock" : "All stock levels OK"}
           href="/inventory/alerts"
-          warning={stats.lowStockCount > 0}
+          iconBg={stats.lowStockCount > 0 ? "var(--icon-danger-bg)" : "var(--icon-success-bg)"}
+          iconColor={stats.lowStockCount > 0 ? "var(--icon-danger-text)" : "var(--icon-success-text)"}
           icon={
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
               <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
@@ -353,35 +414,159 @@ export default async function DashboardPage() {
             </svg>
           }
         />
-
-
       </div>
 
-      {/* ── Quick Actions ─── */}
+      {/* ── Recent Sales Block ── */}
+      <div
+        className="rounded-[20px] p-5 bg-white"
+        style={{ boxShadow: "var(--card-shadow)" }}
+      >
+        {/* Section header */}
+        <div className="flex items-center justify-between mb-4">
+          <p className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>
+            Recent Sales
+          </p>
+          <Link
+            href="/sales"
+            className="text-xs font-semibold transition-colors"
+            style={{ color: "var(--accent)" }}
+          >
+            View all →
+          </Link>
+        </div>
+
+        {stats.recentSales.length === 0 ? (
+          <div className="py-8 text-center">
+            <p className="text-sm" style={{ color: "var(--text-muted)" }}>No sales recorded yet.</p>
+            <Link
+              href="/sales/new"
+              className="inline-block mt-3 text-xs font-semibold"
+              style={{ color: "var(--accent)" }}
+            >
+              + Record first sale
+            </Link>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {stats.recentSales.map((sale) => (
+              <div key={sale.id} className="flex items-center gap-3">
+                {/* Avatar circle */}
+                <div
+                  className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold"
+                  style={{
+                    background: sale.isCredit ? "var(--icon-warning-bg)" : "var(--icon-success-bg)",
+                    color: sale.isCredit ? "var(--icon-warning-text)" : "var(--icon-success-text)",
+                  }}
+                >
+                  {sale.customerName.charAt(0).toUpperCase()}
+                </div>
+
+                {/* Name + time */}
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold truncate" style={{ color: "var(--text-primary)" }}>
+                    {sale.customerName}
+                  </p>
+                  <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+                    {sale.time}
+                    {sale.isCredit && (
+                      <span
+                        className="ml-2 text-[10px] font-bold uppercase px-1.5 py-0.5 rounded-full"
+                        style={{ background: "var(--icon-warning-bg)", color: "var(--icon-warning-text)" }}
+                      >
+                        Credit
+                      </span>
+                    )}
+                  </p>
+                </div>
+
+                {/* Amount */}
+                <p
+                  className="text-sm font-bold flex-shrink-0"
+                  style={{ color: sale.isCredit ? "var(--icon-warning-text)" : "var(--icon-success-text)" }}
+                >
+                  +{formatNaira(sale.amount)}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* ── Quick Actions ── */}
       <div>
-        <p
-          className="text-xs font-semibold uppercase tracking-wider mb-3"
-          style={{ color: "var(--text-muted)" }}
-        >
+        <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "var(--text-muted)" }}>
           Quick Actions
         </p>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           {[
-            { label: "Add Product", href: "/inventory/new", emoji: "📦" },
-            { label: "Add Customer", href: "/customers/new", emoji: "👤" },
-            { label: "View Reports", href: "/reports", emoji: "📊" },
-            { label: "Expenses", href: "/expenses", emoji: "💸" },
+            {
+              label: "Add Product",
+              href: "/inventory/new",
+              iconBg: "var(--icon-neutral-bg)",
+              iconColor: "var(--icon-neutral-text)",
+              icon: (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
+                  <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
+                  <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                  <line x1="12" y1="22.08" x2="12" y2="12" />
+                </svg>
+              ),
+            },
+            {
+              label: "Add Customer",
+              href: "/customers/new",
+              iconBg: "var(--icon-neutral-bg)",
+              iconColor: "var(--icon-neutral-text)",
+              icon: (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
+                  <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
+                  <circle cx="9" cy="7" r="4" />
+                  <line x1="19" y1="8" x2="19" y2="14" />
+                  <line x1="16" y1="11" x2="22" y2="11" />
+                </svg>
+              ),
+            },
+            {
+              label: "View Reports",
+              href: "/reports",
+              iconBg: "var(--icon-accent-bg)",
+              iconColor: "var(--icon-accent-text)",
+              icon: (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
+                  <path d="M18 20V10" />
+                  <path d="M12 20V4" />
+                  <path d="M6 20v-6" />
+                </svg>
+              ),
+            },
+            {
+              label: "Expenses",
+              href: "/expenses",
+              iconBg: "var(--icon-danger-bg)",
+              iconColor: "var(--icon-danger-text)",
+              icon: (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
+                  <line x1="12" y1="1" x2="12" y2="23" />
+                  <path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
+                </svg>
+              ),
+            },
           ].map((action) => (
             <Link
               key={action.href}
               href={action.href}
-              className="flex items-center justify-center gap-2.5 rounded-xl border px-3.5 py-3 text-sm font-medium transition-all active:scale-[0.98] bg-white text-center flex-col sm:flex-row"
+              className="flex flex-col items-center gap-2.5 rounded-[20px] px-3 py-4 text-sm font-semibold transition-all active:scale-[0.97] bg-white text-center"
               style={{
-                borderColor: "var(--border-color)",
+                boxShadow: "var(--card-shadow)",
                 color: "var(--text-primary)",
               }}
             >
-              <span className="text-base">{action.emoji}</span>
+              <span
+                className="w-10 h-10 rounded-full flex items-center justify-center"
+                style={{ background: action.iconBg, color: action.iconColor }}
+              >
+                {action.icon}
+              </span>
               {action.label}
             </Link>
           ))}

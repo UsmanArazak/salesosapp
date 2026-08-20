@@ -60,7 +60,7 @@ const navItems: NavItem[] = [
   },
   {
     href: "/reports",
-    label: "Business Performance",
+    label: "Performance",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
         <path d="M18 20V10" />
@@ -81,6 +81,9 @@ const navItems: NavItem[] = [
   },
 ];
 
+// Mobile nav shows first 5 items
+const mobileNavItems = navItems.slice(0, 5);
+
 export function DashboardNav() {
   const pathname = usePathname();
 
@@ -93,32 +96,19 @@ export function DashboardNav() {
     <>
       {/* ── DESKTOP SIDEBAR ─────────────────────────────── */}
       <aside
-        className="hidden md:flex fixed left-0 top-0 h-full w-56 flex-col border-r z-30"
-        style={{ background: "var(--bg-surface)", borderColor: "var(--border-color)" }}
+        className="hidden md:flex fixed left-0 top-0 h-full w-56 flex-col z-30"
+        style={{ background: "var(--bg-surface)", borderRight: "1px solid var(--border-color)" }}
       >
         {/* Brand */}
-        <div
-          className="flex items-center justify-between gap-2.5 px-5 py-5 border-b"
-          style={{ borderColor: "var(--border-color)" }}
-        >
-          <div className="flex items-center gap-2.5 min-w-0">
-            <Image
-              src="/logo.png"
-              alt="SalesOS Logo"
-              width={32}
-              height={32}
-              className="rounded-lg flex-shrink-0"
-            />
-            <div className="min-w-0">
-              <p className="font-bold text-sm leading-tight truncate" style={{ color: "var(--text-primary)" }}>
-                SalesOS
-              </p>
-            </div>
-          </div>
+        <div className="flex items-center gap-2.5 px-5 py-5" style={{ borderBottom: "1px solid var(--border-color)" }}>
+          <Image src="/logo.png" alt="SalesOS Logo" width={32} height={32} className="rounded-xl flex-shrink-0" />
+          <p className="font-bold text-sm leading-tight truncate" style={{ color: "var(--text-primary)" }}>
+            SalesOS
+          </p>
         </div>
 
         {/* Nav links */}
-        <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
           {navItems.map((item) => {
             const active = isActive(item.href);
             return (
@@ -126,13 +116,23 @@ export function DashboardNav() {
                 key={item.href}
                 href={item.href}
                 prefetch={true}
-                className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all"
+                className="flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm transition-all"
                 style={{
-                  color: active ? "var(--accent)" : "var(--text-muted)",
-                  background: active ? "var(--accent-dim)" : "transparent",
+                  color: active ? "#ffffff" : "var(--text-muted)",
+                  background: active ? "var(--accent)" : "transparent",
+                  fontWeight: active ? 600 : 500,
                 }}
               >
-                {item.icon}
+                {/* Icon circle */}
+                <span
+                  className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-all"
+                  style={{
+                    background: active ? "rgba(255,255,255,0.2)" : "transparent",
+                    color: active ? "#ffffff" : "var(--text-muted)",
+                  }}
+                >
+                  {item.icon}
+                </span>
                 {item.label}
               </Link>
             );
@@ -140,18 +140,23 @@ export function DashboardNav() {
         </nav>
 
         {/* Sign out */}
-        <div className="px-3 py-4 border-t" style={{ borderColor: "var(--border-color)" }}>
+        <div className="px-3 py-4" style={{ borderTop: "1px solid var(--border-color)" }}>
           <button
             id="signout-btn"
             onClick={() => signOut({ callbackUrl: "/login" })}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all hover:bg-gray-50"
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-2xl text-sm font-medium transition-all hover:bg-stone-50"
             style={{ color: "var(--text-muted)" }}
           >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
-              <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
-              <polyline points="16 17 21 12 16 7" />
-              <line x1="21" y1="12" x2="9" y2="12" />
-            </svg>
+            <span
+              className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+              style={{ background: "var(--icon-neutral-bg)", color: "var(--icon-neutral-text)" }}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} className="w-5 h-5">
+                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+            </span>
             Sign out
           </button>
         </div>
@@ -159,20 +164,12 @@ export function DashboardNav() {
 
       {/* ── MOBILE TOP HEADER ──────────────────────────── */}
       <header
-        className="md:hidden fixed top-0 left-0 right-0 h-14 flex items-center justify-between px-4 border-b z-40"
-        style={{ background: "var(--bg-surface)", borderColor: "var(--border-color)" }}
+        className="md:hidden fixed top-0 left-0 right-0 h-14 flex items-center justify-between px-4 z-40"
+        style={{ background: "var(--bg-surface)", borderBottom: "1px solid var(--border-color)" }}
       >
         <div className="flex items-center gap-2">
-          <Image
-            src="/logo.png"
-            alt="SalesOS Logo"
-            width={28}
-            height={28}
-            className="rounded-lg"
-          />
-          <span className="font-bold text-base" style={{ color: "var(--text-primary)" }}>
-            SalesOS
-          </span>
+          <Image src="/logo.png" alt="SalesOS Logo" width={28} height={28} className="rounded-xl" />
+          <span className="font-bold text-base" style={{ color: "var(--text-primary)" }}>SalesOS</span>
         </div>
         <Link
           href="/menu"
@@ -186,27 +183,38 @@ export function DashboardNav() {
         </Link>
       </header>
 
-      {/* ── MOBILE BOTTOM NAV ──────────────────────────── */}
+      {/* ── MOBILE BOTTOM NAV — floating pill bar ──────── */}
       <nav
-        className="md:hidden fixed bottom-0 left-0 right-0 border-t z-40 flex items-stretch"
+        className="md:hidden fixed bottom-4 left-4 right-4 z-40 flex items-stretch rounded-2xl overflow-hidden"
         style={{
           background: "var(--bg-surface)",
-          borderColor: "var(--border-color)",
+          boxShadow: "0 4px 24px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06)",
           paddingBottom: "env(safe-area-inset-bottom)",
         }}
       >
-        {navItems.slice(0, 4).map((item) => {
+        {mobileNavItems.map((item) => {
           const active = isActive(item.href);
           return (
             <Link
               key={item.href}
               href={item.href}
               prefetch={true}
-              className="flex-1 flex flex-col items-center justify-center gap-1 py-2 text-[10px] font-medium transition-colors"
-              style={{ color: active ? "var(--accent)" : "var(--text-muted)" }}
+              className="flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 px-1 transition-colors relative"
+              style={{ color: active ? "#ffffff" : "var(--text-muted)" }}
             >
-              {item.icon}
-              {item.label}
+              {/* Active pill bg */}
+              {active && (
+                <span
+                  className="absolute inset-x-1.5 inset-y-1 rounded-xl"
+                  style={{ background: "var(--accent)" }}
+                />
+              )}
+              <span className="relative z-10">
+                {item.icon}
+              </span>
+              <span className="relative z-10 text-[9px] font-semibold tracking-tight leading-none">
+                {item.label}
+              </span>
             </Link>
           );
         })}
@@ -214,4 +222,3 @@ export function DashboardNav() {
     </>
   );
 }
-

@@ -3,31 +3,67 @@
 @tailwind utilities;
 
 :root {
-  --bg-base: #f4f4f5;
-  --bg-surface: #ffffff;
-  --bg-elevated: #f9fafb;
-  --border-color: #e4e4e7;
-  --border-focus: #ff5347;
-  --text-primary: #18181b;
-  --text-muted: #71717a;
-  --text-dim: #52525b;
-  --accent: #ff5347;
-  --accent-hover: #e8443a;
-  --accent-dim: rgba(255, 83, 71, 0.08);
-  --accent-border: rgba(255, 83, 71, 0.25);
-  --danger: #ef4444;
-  --danger-dim: rgba(239, 68, 68, 0.08);
-  --danger-border: rgba(239, 68, 68, 0.25);
-  --danger-surface: rgba(239, 68, 68, 0.05);
-  --warning: #f59e0b;
-  --warning-dim: rgba(245, 158, 11, 0.1);
-  --warning-border: rgba(245, 158, 11, 0.3);
-  --success: #16a34a;
-  --success-dim: rgba(22, 163, 74, 0.08);
-  --success-border: rgba(22, 163, 74, 0.25);
-  --success-surface: rgba(22, 163, 74, 0.05);
+  /* ── Surfaces ──────────────────────────────────── */
+  --bg-base:     #ffffff;
+  --bg-surface:  #ffffff;
+  --bg-elevated: #f5f4f2;
+  --bg-card:     #ffffff;
 
-  /* ── Admin Panel Tokens (indigo) ─────────────── */
+  /* ── Borders ───────────────────────────────────── */
+  --border-color: #e6e4e3;
+  --border-focus: #fd6701;
+
+  /* ── Typography ─────────────────────────────────── */
+  --text-primary: #373435;
+  --text-muted:   #736f70;
+  --text-dim:     #918d8e;
+
+  /* ── Brand / Accent (orange) ────────────────────── */
+  --accent:        #fd6701;
+  --accent-hover:  #e05a00;
+  --accent-dim:    #fdece2;
+  --accent-border: rgba(253, 103, 1, 0.28);
+
+  /* ── Semantic: success / green ──────────────────── */
+  --success:         #16a34a;
+  --success-dim:     rgba(22, 163, 74, 0.10);
+  --success-border:  rgba(22, 163, 74, 0.25);
+  --success-surface: rgba(22, 163, 74, 0.06);
+  /* icon tint */
+  --icon-success-bg:   rgba(22, 163, 74, 0.10);
+  --icon-success-text: #15803d;
+
+  /* ── Semantic: warning / amber (derived from primary) ── */
+  --warning:        #fd6701; 
+  --warning-dim:    #fdece2;
+  --warning-border: rgba(253, 103, 1, 0.28);
+  /* icon tint */
+  --icon-warning-bg:   #fdece2;
+  --icon-warning-text: #a34419;
+
+  /* ── Semantic: danger / red ─────────────────────── */
+  --danger:         #ef4444;
+  --danger-dim:     rgba(239, 68, 68, 0.08);
+  --danger-border:  rgba(239, 68, 68, 0.25);
+  --danger-surface: rgba(239, 68, 68, 0.05);
+  /* icon tint */
+  --icon-danger-bg:   rgba(239, 68, 68, 0.10);
+  --icon-danger-text: #dc2626;
+
+  /* ── Semantic: neutral ──────────────────────────── */
+  --icon-neutral-bg:   #f5f4f2;
+  --icon-neutral-text: #736f70;
+
+  /* ── Semantic: accent/orange icon ───────────────── */
+  --icon-accent-bg:   #fdece2;
+  --icon-accent-text: #a34419;
+
+  /* ── Card / Shadow ──────────────────────────────── */
+  --card-radius:  20px;
+  --card-shadow:  0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --card-shadow-hover: 0 4px 12px rgba(0,0,0,0.08);
+
+  /* ── Admin Panel Tokens (indigo) ─────────────────── */
   --admin-accent:        #4f46e5;
   --admin-accent-hover:  #4338ca;
   --admin-accent-dim:    rgba(79, 70, 229, 0.08);
@@ -39,6 +75,7 @@
   --admin-text-primary:  #1e1b4b;
   --admin-text-muted:    #6b7280;
 }
+
 
 * {
   box-sizing: border-box;

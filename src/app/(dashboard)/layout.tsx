@@ -16,7 +16,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
 
       {/* Main content — offset for sidebar (desktop) and header+bottom-nav (mobile) */}
       <main
-        className="md:ml-56 pt-14 md:pt-0 pb-20 md:pb-0 min-h-dvh"
+        className="md:ml-56 pt-14 md:pt-0 pb-28 md:pb-0 min-h-dvh"
         style={{ background: "var(--bg-base)" }}>
         <div className="max-w-5xl mx-auto px-4 py-6">
           {children}
