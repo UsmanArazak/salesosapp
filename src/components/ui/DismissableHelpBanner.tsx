@@ -26,27 +26,35 @@ export function DismissableHelpBanner({ storageKey, message }: Props) {
 
   return (
     <div
-      className="mb-6 p-4 rounded-2xl border flex items-start gap-3 relative transition-all"
+      className="mb-5 p-3.5 rounded-[20px] flex items-center gap-3 relative transition-all"
       style={{
-        background: "linear-gradient(135deg, rgba(249,115,22,0.06) 0%, rgba(249,115,22,0.02) 100%)",
-        borderColor: "rgba(249,115,22,0.25)",
+        background: "var(--icon-warning-bg)",
+        border: "1px solid var(--icon-warning-bg)",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.02)",
       }}
     >
-      {/* Lightbulb Emoji Icon */}
-      <span className="text-lg shrink-0 mt-0.5">💡</span>
+      {/* Lightbulb Icon Circle */}
+      <div
+        className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-sm shadow-xs bg-white"
+        style={{ color: "var(--icon-warning-text)" }}
+      >
+        💡
+      </div>
 
       {/* Message */}
-      <div className="flex-grow pr-6">
-        <p className="text-sm font-medium leading-relaxed" style={{ color: "var(--text-primary)" }}>
+      <div className="flex-1 min-w-0 pr-6">
+        <p className="text-xs font-semibold leading-relaxed" style={{ color: "var(--icon-warning-text)" }}>
           {message}
         </p>
       </div>
 
       {/* Close button */}
       <button
+        type="button"
         onClick={handleDismiss}
-        className="absolute top-3.5 right-3.5 w-6 h-6 rounded-full flex items-center justify-center text-stone-400 hover:text-stone-600 transition-colors hover:bg-stone-100"
-        aria-label="Dismiss message"
+        className="absolute top-3 right-3 w-6 h-6 rounded-full flex items-center justify-center transition-colors hover:bg-black/5"
+        style={{ color: "var(--icon-warning-text)" }}
+        aria-label="Dismiss tip"
       >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} className="w-3.5 h-3.5">
           <line x1="18" y1="6" x2="6" y2="18" />

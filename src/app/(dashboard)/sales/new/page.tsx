@@ -11,11 +11,12 @@ export default async function NewSalePage() {
 
   const supabase = createServiceRoleSupabaseClient();
 
-  // Fetch products, customers, and shop bank accounts in parallel
+  // Fetch products, customers, shop bank accounts, and sales count in parallel
   const [
     { data: products },
     { data: customers },
-    { data: shop }
+    { data: shop },
+    { count: salesCount }
   ] = await Promise.all([
     supabase
       .from("products")
@@ -33,7 +34,11 @@ export default async function NewSalePage() {
       .from("shops")
       .select("bank_accounts")
       .eq("id", session.user.shopId)
-      .single()
+      .single(),
+    supabase
+      .from("sales")
+      .select("*", { count: "exact", head: true })
+      .eq("shop_id", session.user.shopId)
   ]);
 
   return (
@@ -63,6 +68,7 @@ export default async function NewSalePage() {
         products={products ?? []} 
         customers={customers ?? []} 
         bankAccounts={shop?.bank_accounts ?? []}
+        hasSales={(salesCount ?? 0) > 0}
       />
     </div>
   );

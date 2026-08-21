@@ -24,6 +24,7 @@ type Props = {
   products: ProductMini[];
   customers: CustomerMini[];
   bankAccounts: string[];
+  hasSales?: boolean;
 };
 
 type CartItem = {
@@ -38,7 +39,7 @@ function formatNaira(n: number) {
   return "₦" + new Intl.NumberFormat("en-US").format(Math.round(n));
 }
 
-export function POSClient({ products, customers, bankAccounts }: Props) {
+export function POSClient({ products, customers, bankAccounts, hasSales = false }: Props) {
   const router = useRouter();
 
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -275,10 +276,12 @@ export function POSClient({ products, customers, bankAccounts }: Props) {
 
   return (
     <div className="space-y-6">
-      <DismissableHelpBanner
-        storageKey="new-sale"
-        message="Record a sale: pick products, choose how they paid (cash, transfer, or credit), and track your profit instantly."
-      />
+      {!hasSales && (
+        <DismissableHelpBanner
+          storageKey="new-sale"
+          message="Record a sale: pick products, choose how they paid (cash, transfer, or credit), and track your profit instantly."
+        />
+      )}
 
       {/* Offline Status Bar */}
       {(!isOnline || queuedSalesCount > 0) && (
