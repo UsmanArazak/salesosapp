@@ -112,7 +112,11 @@ export function InventoryList({
             color: activeTab === "active" ? "var(--accent)" : "var(--text-muted)",
           }}
         >
-          <span>📦 Active Inventory</span>
+          {/* Solid Package SVG */}
+          <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5">
+            <path d="M12.378 1.602a1 1 0 00-.756 0L3.3 5.3A1 1 0 002.7 6.22v11.56a1 1 0 00.6 0.92l8.322 3.698a1 1 0 00.756 0l8.322-3.698a1 1 0 00.6-.92V6.22a1 1 0 00-.6-.92l-8.322-3.698zM12 3.328l6.837 3.039L12 9.387 5.163 6.367 12 3.328zM4.7 8.016l6.3 2.8v8.664l-6.3-2.8V8.016zm8.3 11.464v-8.664l6.3-2.8v8.664l-6.3 2.8z" />
+          </svg>
+          <span>Active Inventory</span>
           <span
             className="text-[10px] px-1.5 py-0.2 rounded-md font-bold"
             style={{
@@ -135,7 +139,11 @@ export function InventoryList({
             color: activeTab === "archived" ? "var(--text-primary)" : "var(--text-muted)",
           }}
         >
-          <span>📁 Archived</span>
+          {/* Solid Archive Folder SVG */}
+          <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5">
+            <path d="M3 3h18v4H3V3zm1 6h16v12H4V9zm6 3v2h4v-2h-4z" />
+          </svg>
+          <span>Archived</span>
           <span
             className="text-[10px] px-1.5 py-0.2 rounded-md font-bold"
             style={{
@@ -161,7 +169,10 @@ export function InventoryList({
                 color: "var(--icon-danger-text)",
               }}
             >
-              <span>🔴 {outOfStockCount} Out of Stock</span>
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse"></span>
+                <span>{outOfStockCount} Out of Stock</span>
+              </div>
               <span>Restock →</span>
             </Link>
           )}
@@ -175,7 +186,10 @@ export function InventoryList({
                 color: "var(--icon-warning-text)",
               }}
             >
-              <span>⚠️ {lowStockCount} Low Stock</span>
+              <div className="flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-amber-600"></span>
+                <span>{lowStockCount} Low Stock</span>
+              </div>
               <span>View →</span>
             </Link>
           )}
@@ -219,11 +233,14 @@ export function InventoryList({
         >
           {currentList.length === 0 ? (
             <>
+              {/* Soft Tinted Circle for Empty State */}
               <div
-                className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 text-2xl"
+                className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 text-xl shadow-xs"
                 style={{ background: "var(--icon-neutral-bg)", color: "var(--icon-neutral-text)" }}
               >
-                {activeTab === "active" ? "📦" : "📁"}
+                <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                  <path d="M12.378 1.602a1 1 0 00-.756 0L3.3 5.3A1 1 0 002.7 6.22v11.56a1 1 0 00.6 0.92l8.322 3.698a1 1 0 00.756 0l8.322-3.698a1 1 0 00.6-.92V6.22a1 1 0 00-.6-.92l-8.322-3.698zM12 3.328l6.837 3.039L12 9.387 5.163 6.367 12 3.328zM4.7 8.016l6.3 2.8v8.664l-6.3-2.8V8.016zm8.3 11.464v-8.664l6.3-2.8v8.664l-6.3 2.8z" />
+                </svg>
               </div>
               <p className="font-bold text-sm mb-1" style={{ color: "var(--text-primary)" }}>
                 {activeTab === "active" ? "No products in stock yet" : "No archived products"}
@@ -245,7 +262,14 @@ export function InventoryList({
             </>
           ) : (
             <>
-              <p className="text-2xl mb-2">🔍</p>
+              <div
+                className="w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 shadow-xs"
+                style={{ background: "var(--icon-neutral-bg)", color: "var(--icon-neutral-text)" }}
+              >
+                <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                  <path fillRule="evenodd" d="M10.5 3.75a6.75 6.75 0 100 13.5 6.75 6.75 0 000-13.5zM2.25 10.5a8.25 8.25 0 1114.59 5.28l4.69 4.69a.75.75 0 11-1.06 1.06l-4.69-4.69A8.25 8.25 0 012.25 10.5z" clipRule="evenodd" />
+                </svg>
+              </div>
               <p className="font-semibold text-xs" style={{ color: "var(--text-primary)" }}>
                 No results for &ldquo;{query}&rdquo;
               </p>
@@ -277,47 +301,69 @@ export function InventoryList({
                 }}
               >
                 <div className="flex items-start justify-between gap-3 mb-3">
-                  {/* Name & Stock status badge */}
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <p className="font-bold text-sm truncate" style={{ color: "var(--text-primary)" }}>
-                        {product.name}
-                      </p>
-                      {activeTab === "active" && (
-                        <>
-                          {isOutOfStock ? (
-                            <span
-                              className="text-[10px] font-bold px-2 py-0.5 rounded-md uppercase"
-                              style={{ background: "var(--icon-danger-bg)", color: "var(--icon-danger-text)" }}
-                            >
-                              OUT OF STOCK
-                            </span>
-                          ) : isLow ? (
-                            <span
-                              className="text-[10px] font-bold px-2 py-0.5 rounded-md uppercase"
-                              style={{ background: "var(--icon-warning-bg)", color: "var(--icon-warning-text)" }}
-                            >
-                              LOW STOCK ({product.stock_quantity} left)
-                            </span>
-                          ) : (
-                            <span
-                              className="text-[10px] font-bold px-2 py-0.5 rounded-md uppercase"
-                              style={{ background: "var(--icon-success-bg)", color: "var(--icon-success-text)" }}
-                            >
-                              IN STOCK ({product.stock_quantity})
-                            </span>
-                          )}
-                        </>
-                      )}
+                  {/* Left Avatar Icon & Product Name */}
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    <div
+                      className="w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-xs"
+                      style={{
+                        background: isOutOfStock
+                          ? "var(--icon-danger-bg)"
+                          : isLow
+                          ? "var(--icon-warning-bg)"
+                          : "var(--icon-neutral-bg)",
+                        color: isOutOfStock
+                          ? "var(--icon-danger-text)"
+                          : isLow
+                          ? "var(--icon-warning-text)"
+                          : "var(--icon-neutral-text)",
+                      }}
+                    >
+                      <svg viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                        <path d="M12.378 1.602a1 1 0 00-.756 0L3.3 5.3A1 1 0 002.7 6.22v11.56a1 1 0 00.6 0.92l8.322 3.698a1 1 0 00.756 0l8.322-3.698a1 1 0 00.6-.92V6.22a1 1 0 00-.6-.92l-8.322-3.698zM12 3.328l6.837 3.039L12 9.387 5.163 6.367 12 3.328zM4.7 8.016l6.3 2.8v8.664l-6.3-2.8V8.016zm8.3 11.464v-8.664l6.3-2.8v8.664l-6.3 2.8z" />
+                      </svg>
+                    </div>
 
-                      {activeTab === "archived" && (
-                        <span
-                          className="text-[10px] font-bold px-2 py-0.5 rounded-md uppercase"
-                          style={{ background: "var(--icon-neutral-bg)", color: "var(--icon-neutral-text)" }}
-                        >
-                          ARCHIVED
-                        </span>
-                      )}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <p className="font-bold text-sm truncate" style={{ color: "var(--text-primary)" }}>
+                          {product.name}
+                        </p>
+                        {activeTab === "active" && (
+                          <>
+                            {isOutOfStock ? (
+                              <span
+                                className="text-[10px] font-bold px-2 py-0.5 rounded-md uppercase"
+                                style={{ background: "var(--icon-danger-bg)", color: "var(--icon-danger-text)" }}
+                              >
+                                OUT OF STOCK
+                              </span>
+                            ) : isLow ? (
+                              <span
+                                className="text-[10px] font-bold px-2 py-0.5 rounded-md uppercase"
+                                style={{ background: "var(--icon-warning-bg)", color: "var(--icon-warning-text)" }}
+                              >
+                                LOW STOCK ({product.stock_quantity} left)
+                              </span>
+                            ) : (
+                              <span
+                                className="text-[10px] font-bold px-2 py-0.5 rounded-md uppercase"
+                                style={{ background: "var(--icon-success-bg)", color: "var(--icon-success-text)" }}
+                              >
+                                IN STOCK ({product.stock_quantity})
+                              </span>
+                            )}
+                          </>
+                        )}
+
+                        {activeTab === "archived" && (
+                          <span
+                            className="text-[10px] font-bold px-2 py-0.5 rounded-md uppercase"
+                            style={{ background: "var(--icon-neutral-bg)", color: "var(--icon-neutral-text)" }}
+                          >
+                            ARCHIVED
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
 
@@ -352,10 +398,13 @@ export function InventoryList({
                         type="button"
                         onClick={() => handleRestore(product.id)}
                         disabled={isWorking}
-                        className="px-3 py-1.5 rounded-xl text-xs font-bold text-white transition-all active:scale-95 shadow-xs"
+                        className="px-3 py-1.5 rounded-xl text-xs font-bold text-white transition-all active:scale-95 shadow-xs flex items-center gap-1.5"
                         style={{ background: "var(--accent)" }}
                       >
-                        {isWorking ? "Restoring..." : "♻️ Restore"}
+                        <svg viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5">
+                          <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0020 12c0-4.42-3.58-8-8-8zm-6 8c0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 004 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3c-3.31 0-6-2.69-6-6z" />
+                        </svg>
+                        <span>{isWorking ? "Restoring..." : "Restore"}</span>
                       </button>
                     )}
                   </div>

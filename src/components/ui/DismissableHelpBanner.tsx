@@ -33,12 +33,14 @@ export function DismissableHelpBanner({ storageKey, message }: Props) {
         boxShadow: "0 2px 8px rgba(0,0,0,0.02)",
       }}
     >
-      {/* Lightbulb Icon Circle */}
+      {/* Lightbulb Solid SVG Circle */}
       <div
-        className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-sm shadow-xs bg-white"
+        className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 shadow-xs bg-white"
         style={{ color: "var(--icon-warning-text)" }}
       >
-        💡
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+          <path d="M12 2a7 7 0 00-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 001 1h6a1 1 0 001-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 00-7-7zM9 21a1 1 0 001 1h4a1 1 0 001-1v-1H9v1z" />
+        </svg>
       </div>
 
       {/* Message */}
