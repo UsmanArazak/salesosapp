@@ -124,6 +124,91 @@ export function InventoryList({
         </Link>
       </div>
 
+      {/* ── Inventory Summary Stats ── */}
+      {products.length > 0 && (() => {
+        const stockValue = products.reduce((s, p) => s + p.selling_price * p.stock_quantity, 0);
+        const costValue = products.reduce((s, p) => s + p.buying_price * p.stock_quantity, 0);
+        const potentialProfit = stockValue - costValue;
+
+        return (
+          <div className="grid grid-cols-3 gap-2">
+            {/* Stock Value */}
+            <div
+              className="rounded-2xl p-3 space-y-2 border bg-white"
+              style={{ borderColor: "var(--border-color)", boxShadow: "var(--card-shadow)" }}
+            >
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center"
+                style={{ background: "var(--icon-blue-bg, rgba(59,130,246,0.10))", color: "#2563eb" }}
+              >
+                <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                  <path d="M3.375 3C2.339 3 1.5 3.84 1.5 4.875v.75c0 1.036.84 1.875 1.875 1.875h17.25c1.035 0 1.875-.84 1.875-1.875v-.75C22.5 3.839 21.66 3 20.625 3H3.375z" />
+                  <path fillRule="evenodd" d="M3.087 9l.54 9.176A3 3 0 006.62 21h10.757a3 3 0 002.995-2.824L20.913 9H3.087zm6.163 3.75A.75.75 0 0110 12h4a.75.75 0 010 1.5h-4a.75.75 0 01-.75-.75z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
+                  Stock Value
+                </p>
+                <p className="text-sm font-bold leading-tight mt-0.5" style={{ color: "var(--text-primary)" }}>
+                  {formatNaira(stockValue)}
+                </p>
+              </div>
+            </div>
+
+            {/* Capital Tied Up */}
+            <div
+              className="rounded-2xl p-3 space-y-2 border bg-white"
+              style={{ borderColor: "var(--border-color)", boxShadow: "var(--card-shadow)" }}
+            >
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center"
+                style={{ background: "var(--icon-warning-bg)", color: "var(--icon-warning-text)" }}
+              >
+                <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                  <path d="M12 1.5a.75.75 0 01.75.75V7.5h-1.5V2.25A.75.75 0 0112 1.5zM11.25 7.5v5.69l-1.72-1.72a.75.75 0 00-1.06 1.06l3 3a.75.75 0 001.06 0l3-3a.75.75 0 10-1.06-1.06l-1.72 1.72V7.5h-1.5z" />
+                  <path d="M3 16.5a.75.75 0 000 1.5h18a.75.75 0 000-1.5H3zM3 13.5a.75.75 0 000 1.5h18a.75.75 0 000-1.5H3zM3 10.5a.75.75 0 000 1.5h18a.75.75 0 000-1.5H3z" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
+                  Capital Tied Up
+                </p>
+                <p className="text-sm font-bold leading-tight mt-0.5" style={{ color: "var(--text-primary)" }}>
+                  {formatNaira(costValue)}
+                </p>
+              </div>
+            </div>
+
+            {/* Potential Profit */}
+            <div
+              className="rounded-2xl p-3 space-y-2 border bg-white"
+              style={{ borderColor: "var(--border-color)", boxShadow: "var(--card-shadow)" }}
+            >
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center"
+                style={{ background: "var(--icon-success-bg)", color: "var(--icon-success-text)" }}
+              >
+                <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
+                  <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm.53 5.47a.75.75 0 00-1.06 0l-3 3a.75.75 0 101.06 1.06l1.72-1.72v5.69a.75.75 0 001.5 0v-5.69l1.72 1.72a.75.75 0 101.06-1.06l-3-3z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
+                  Potential Profit
+                </p>
+                <p
+                  className="text-sm font-bold leading-tight mt-0.5"
+                  style={{ color: potentialProfit >= 0 ? "var(--icon-success-text)" : "var(--icon-danger-text)" }}
+                >
+                  {formatNaira(potentialProfit)}
+                </p>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
       {/* ── Segmented Tab Switcher (Active vs Archived) ── */}
       <div
         className="p-1 rounded-2xl flex items-center gap-1 border bg-white"
