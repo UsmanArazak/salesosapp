@@ -19,14 +19,13 @@ export function EditProductClient({ product }: { product: ProductRow }) {
   }
 
   return (
-    <div className="max-w-lg mx-auto">
+    <div className="max-w-2xl mx-auto space-y-5">
       {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
+      <div className="flex items-center gap-3">
         <Link
           href="/inventory"
-          className="w-9 h-9 rounded-xl border flex items-center justify-center transition-colors"
+          className="w-9 h-9 rounded-2xl border flex items-center justify-center transition-colors bg-white"
           style={{
-            background: "var(--bg-surface)",
             borderColor: "var(--border-color)",
             color: "var(--text-muted)",
           }}
@@ -39,31 +38,25 @@ export function EditProductClient({ product }: { product: ProductRow }) {
           <h1 className="text-xl font-bold" style={{ color: "var(--text-primary)" }}>
             Edit Product
           </h1>
-          <p className="text-sm truncate" style={{ color: "var(--text-muted)" }}>
-            {product.name}
+          <p className="text-xs truncate" style={{ color: "var(--text-muted)" }}>
+            Update product details &amp; stock levels for {product.name}
           </p>
         </div>
       </div>
 
-      {/* Form Card */}
-      <div
-        className="rounded-2xl border p-5 bg-white"
-        style={{ borderColor: "var(--border-color)" }}
-      >
-        <ProductForm
-          initial={{
-            name: product.name,
-            category: product.category,
-            buyingPrice: String(product.buying_price),
-            sellingPrice: String(product.selling_price),
-            stockQuantity: String(product.stock_quantity),
-            lowStockThreshold: String(product.low_stock_threshold),
-          }}
-          onSubmit={handleSubmit}
-          submitLabel="Save Changes"
-          backHref="/inventory"
-        />
-      </div>
+      <ProductForm
+        initial={{
+          name: product.name,
+          category: product.category,
+          buyingPrice: String(product.buying_price),
+          sellingPrice: String(product.selling_price),
+          stockQuantity: String(product.stock_quantity),
+          lowStockThreshold: String(product.low_stock_threshold),
+        }}
+        onSubmit={handleSubmit}
+        submitLabel="Save Changes"
+        backHref="/inventory"
+      />
     </div>
   );
 }

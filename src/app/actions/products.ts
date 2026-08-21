@@ -95,3 +95,19 @@ export async function archiveProduct(id: string): Promise<ActionResult> {
   revalidateInventory();
   return { success: true };
 }
+
+export async function restoreProduct(id: string): Promise<ActionResult> {
+  const session = await getServerSession(authOptions);
+  if (!session) return { error: "Not authenticated." };
+
+  const supabase = createServiceRoleSupabaseClient();
+  const { error } = await supabase
+    .from("products")
+    .update({ archived: false })
+    .eq("id", id)
+    .eq("shop_id", session.user.shopId); // ownership check
+
+  if (error) return { error: error.message };
+  revalidateInventory();
+  return { success: true };
+}

@@ -20,14 +20,13 @@ export default function NewProductPage() {
   }
 
   return (
-    <div className="max-w-lg mx-auto">
+    <div className="max-w-2xl mx-auto space-y-5">
       {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
+      <div className="flex items-center gap-3">
         <Link
           href="/inventory"
-          className="w-9 h-9 rounded-xl border flex items-center justify-center transition-colors"
+          className="w-9 h-9 rounded-2xl border flex items-center justify-center transition-colors bg-white"
           style={{
-            background: "var(--bg-surface)",
             borderColor: "var(--border-color)",
             color: "var(--text-muted)",
           }}
@@ -40,8 +39,8 @@ export default function NewProductPage() {
           <h1 className="text-xl font-bold" style={{ color: "var(--text-primary)" }}>
             Add Product
           </h1>
-          <p className="text-sm" style={{ color: "var(--text-muted)" }}>
-            Add a new item to your inventory
+          <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+            Add a new item to your shop inventory
           </p>
         </div>
       </div>
@@ -51,17 +50,11 @@ export default function NewProductPage() {
         message="Add the products you sell: their name, how much you buy them, how much you sell them, and how many you buy."
       />
 
-      {/* Form Card */}
-      <div
-        className="rounded-2xl border p-5 bg-white"
-        style={{ borderColor: "var(--border-color)" }}
-      >
-        <ProductForm
-          onSubmit={handleSubmit}
-          submitLabel="Add Product"
-          backHref="/inventory"
-        />
-      </div>
+      <ProductForm
+        onSubmit={handleSubmit}
+        submitLabel="Add Product"
+        backHref="/inventory"
+      />
     </div>
   );
 }
