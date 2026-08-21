@@ -461,20 +461,22 @@ export function POSClient({ products, customers, bankAccounts }: Props) {
               {cart.map((item) => (
                 <div
                   key={item.productId}
-                  className="rounded-[20px] p-3 flex items-center justify-between gap-2.5 transition-all"
+                  className="rounded-[20px] p-3.5 space-y-2 transition-all"
                   style={{ background: "var(--bg-card)", boxShadow: "var(--card-shadow)" }}
                 >
-                  {/* Name & Unit Price Editor */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-2">
-                      <p className="font-semibold text-xs truncate" style={{ color: "var(--text-primary)" }}>
-                        {item.name}
-                      </p>
-                      <p className="text-xs font-bold flex-shrink-0" style={{ color: "var(--text-primary)" }}>
-                        {formatNaira(item.quantity * item.unitPrice)}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-1 mt-1">
+                  {/* Top Row: Item Name & Line Subtotal */}
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="font-semibold text-xs truncate" style={{ color: "var(--text-primary)" }}>
+                      {item.name}
+                    </p>
+                    <p className="text-xs font-bold flex-shrink-0" style={{ color: "var(--text-primary)" }}>
+                      {formatNaira(item.quantity * item.unitPrice)}
+                    </p>
+                  </div>
+
+                  {/* Bottom Row: Price Editor (Left) & Quantity Controls + Delete (Right) */}
+                  <div className="flex items-center justify-between gap-2 pt-2 border-t" style={{ borderColor: "rgba(0,0,0,0.05)" }}>
+                    <div className="flex items-center gap-1">
                       <span className="text-[11px]" style={{ color: "var(--text-muted)" }}>
                         Price: ₦
                       </span>
@@ -490,43 +492,42 @@ export function POSClient({ products, customers, bankAccounts }: Props) {
                         }}
                       />
                     </div>
-                  </div>
 
-                  {/* Compact Quantity controls & Remove */}
-                  <div className="flex items-center gap-2 flex-shrink-0">
-                    <div className="flex items-center rounded-xl p-0.5 bg-white border" style={{ borderColor: "var(--border-color)" }}>
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <div className="flex items-center rounded-xl p-0.5 bg-white border" style={{ borderColor: "var(--border-color)" }}>
+                        <button
+                          type="button"
+                          onClick={() => updateQuantity(item.productId, -1)}
+                          className="w-6 h-6 rounded-lg flex items-center justify-center font-bold text-xs transition-all hover:bg-stone-100 active:scale-95"
+                          style={{ color: "var(--text-primary)" }}
+                        >
+                          −
+                        </button>
+                        <span className="w-5 text-center font-bold text-xs" style={{ color: "var(--text-primary)" }}>
+                          {item.quantity}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => updateQuantity(item.productId, 1)}
+                          className="w-6 h-6 rounded-lg flex items-center justify-center font-bold text-xs transition-all hover:bg-stone-100 active:scale-95"
+                          style={{ color: "var(--text-primary)" }}
+                        >
+                          +
+                        </button>
+                      </div>
+
                       <button
                         type="button"
-                        onClick={() => updateQuantity(item.productId, -1)}
-                        className="w-6 h-6 rounded-lg flex items-center justify-center font-bold text-xs transition-all hover:bg-stone-100 active:scale-95"
-                        style={{ color: "var(--text-primary)" }}
+                        onClick={() => removeFromCart(item.productId)}
+                        className="w-7 h-7 rounded-lg flex items-center justify-center text-stone-400 hover:text-red-600 transition-colors"
+                        title="Remove item"
                       >
-                        −
-                      </button>
-                      <span className="w-5 text-center font-bold text-xs" style={{ color: "var(--text-primary)" }}>
-                        {item.quantity}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => updateQuantity(item.productId, 1)}
-                        className="w-6 h-6 rounded-lg flex items-center justify-center font-bold text-xs transition-all hover:bg-stone-100 active:scale-95"
-                        style={{ color: "var(--text-primary)" }}
-                      >
-                        +
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-3.5 h-3.5">
+                          <polyline points="3 6 5 6 21 6" />
+                          <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+                        </svg>
                       </button>
                     </div>
-
-                    <button
-                      type="button"
-                      onClick={() => removeFromCart(item.productId)}
-                      className="w-7 h-7 rounded-lg flex items-center justify-center text-stone-400 hover:text-red-600 transition-colors"
-                      title="Remove item"
-                    >
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-3.5 h-3.5">
-                        <polyline points="3 6 5 6 21 6" />
-                        <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
-                      </svg>
-                    </button>
                   </div>
                 </div>
               ))}
