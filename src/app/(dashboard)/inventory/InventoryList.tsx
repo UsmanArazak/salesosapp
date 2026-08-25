@@ -131,10 +131,10 @@ export function InventoryList({
         const potentialProfit = stockValue - costValue;
 
         return (
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-3">
             {/* Stock Value */}
             <div
-              className="rounded-2xl p-3 space-y-2 border bg-white"
+              className="rounded-2xl p-3.5 space-y-2 border bg-white"
               style={{ borderColor: "var(--border-color)", boxShadow: "var(--card-shadow)" }}
             >
               <div
@@ -148,41 +148,17 @@ export function InventoryList({
               </div>
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
-                  Stock Value
+                  Total Stock Value
                 </p>
-                <p className="text-sm font-bold leading-tight mt-0.5" style={{ color: "var(--text-primary)" }}>
+                <p className="text-base font-bold leading-tight mt-0.5" style={{ color: "var(--text-primary)" }}>
                   {formatNaira(stockValue)}
-                </p>
-              </div>
-            </div>
-
-            {/* Capital Tied Up */}
-            <div
-              className="rounded-2xl p-3 space-y-2 border bg-white"
-              style={{ borderColor: "var(--border-color)", boxShadow: "var(--card-shadow)" }}
-            >
-              <div
-                className="w-8 h-8 rounded-full flex items-center justify-center"
-                style={{ background: "var(--icon-warning-bg)", color: "var(--icon-warning-text)" }}
-              >
-                <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
-                  <path d="M12 1.5a.75.75 0 01.75.75V7.5h-1.5V2.25A.75.75 0 0112 1.5zM11.25 7.5v5.69l-1.72-1.72a.75.75 0 00-1.06 1.06l3 3a.75.75 0 001.06 0l3-3a.75.75 0 10-1.06-1.06l-1.72 1.72V7.5h-1.5z" />
-                  <path d="M3 16.5a.75.75 0 000 1.5h18a.75.75 0 000-1.5H3zM3 13.5a.75.75 0 000 1.5h18a.75.75 0 000-1.5H3zM3 10.5a.75.75 0 000 1.5h18a.75.75 0 000-1.5H3z" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "var(--text-muted)" }}>
-                  Capital Tied Up
-                </p>
-                <p className="text-sm font-bold leading-tight mt-0.5" style={{ color: "var(--text-primary)" }}>
-                  {formatNaira(costValue)}
                 </p>
               </div>
             </div>
 
             {/* Potential Profit */}
             <div
-              className="rounded-2xl p-3 space-y-2 border bg-white"
+              className="rounded-2xl p-3.5 space-y-2 border bg-white"
               style={{ borderColor: "var(--border-color)", boxShadow: "var(--card-shadow)" }}
             >
               <div
@@ -198,7 +174,7 @@ export function InventoryList({
                   Potential Profit
                 </p>
                 <p
-                  className="text-sm font-bold leading-tight mt-0.5"
+                  className="text-base font-bold leading-tight mt-0.5"
                   style={{ color: potentialProfit >= 0 ? "var(--icon-success-text)" : "var(--icon-danger-text)" }}
                 >
                   {formatNaira(potentialProfit)}
