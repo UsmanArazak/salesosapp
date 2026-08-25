@@ -211,7 +211,80 @@ export function SalesList({ sales }: { sales: SaleRow[] }) {
         </div>
       </div>
 
-      {/* ── Bank Accounts Funds Breakdown Section (Shown when viewing Transfers or when bank records exist) ── */}
+      {/* ── Search & Filter Controls ── */}
+      <div className="space-y-3">
+        {/* Search Bar */}
+        <div className="relative">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={1.8}
+            className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+            style={{ color: "var(--text-muted)" }}
+          >
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+          <input
+            type="text"
+            placeholder="Search by product, customer, or bank name..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="w-full rounded-2xl border pl-10 pr-4 py-2.5 text-xs focus:outline-none transition-colors bg-white"
+            style={{
+              borderColor: "var(--border-color)",
+              color: "var(--text-primary)",
+            }}
+            onFocus={(e) => (e.target.style.borderColor = "var(--accent)")}
+            onBlur={(e) => (e.target.style.borderColor = "var(--border-color)")}
+          />
+        </div>
+
+        {/* Swipable & Mobile-Friendly Payment Filter Chips */}
+        <div
+          className="p-1 rounded-2xl flex items-center gap-1.5 border bg-white overflow-x-auto no-scrollbar"
+          style={{ borderColor: "var(--border-color)" }}
+        >
+          {(
+            [
+              { id: "all", label: "All Sales", count: sales.length },
+              { id: "cash", label: "Cash", count: sales.filter((s) => s.payment_method === "cash").length },
+              { id: "transfer", label: "Transfer", count: sales.filter((s) => s.payment_method === "transfer").length },
+              { id: "credit", label: "Credit", count: sales.filter((s) => s.payment_method === "credit").length },
+            ] as const
+          ).map((tab) => {
+            const active = paymentFilter === tab.id;
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setPaymentFilter(tab.id)}
+                className={`flex-1 min-w-[90px] flex-shrink-0 py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 whitespace-nowrap ${
+                  active ? "shadow-xs" : ""
+                }`}
+                style={{
+                  background: active ? "var(--accent)" : "transparent",
+                  color: active ? "#ffffff" : "var(--text-muted)",
+                }}
+              >
+                <span>{tab.label}</span>
+                <span
+                  className="px-1.5 py-0.2 rounded-full text-[10px]"
+                  style={{
+                    background: active ? "rgba(255,255,255,0.25)" : "var(--icon-neutral-bg)",
+                    color: active ? "#ffffff" : "var(--text-muted)",
+                  }}
+                >
+                  {tab.count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ── Bank Accounts Funds Breakdown Section (Positioned UNDER Sales Type Tabs) ── */}
       {(paymentFilter === "transfer" || (paymentFilter === "all" && bankEntries.length > 0)) && (
         <div
           className="rounded-2xl border p-4 bg-white space-y-3.5 transition-all"
@@ -286,79 +359,6 @@ export function SalesList({ sales }: { sales: SaleRow[] }) {
           )}
         </div>
       )}
-
-      {/* ── Search & Filter Controls ── */}
-      <div className="space-y-3">
-        {/* Search Bar */}
-        <div className="relative">
-          <svg
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth={1.8}
-            className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
-            style={{ color: "var(--text-muted)" }}
-          >
-            <circle cx="11" cy="11" r="8" />
-            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-          </svg>
-          <input
-            type="text"
-            placeholder="Search by product, customer, or bank name..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="w-full rounded-2xl border pl-10 pr-4 py-2.5 text-xs focus:outline-none transition-colors bg-white"
-            style={{
-              borderColor: "var(--border-color)",
-              color: "var(--text-primary)",
-            }}
-            onFocus={(e) => (e.target.style.borderColor = "var(--accent)")}
-            onBlur={(e) => (e.target.style.borderColor = "var(--border-color)")}
-          />
-        </div>
-
-        {/* Segmented Payment Filter Chips */}
-        <div
-          className="p-1 rounded-2xl flex items-center gap-1 border bg-white"
-          style={{ borderColor: "var(--border-color)" }}
-        >
-          {(
-            [
-              { id: "all", label: "All Sales", count: sales.length },
-              { id: "cash", label: "Cash", count: sales.filter((s) => s.payment_method === "cash").length },
-              { id: "transfer", label: "Transfer", count: sales.filter((s) => s.payment_method === "transfer").length },
-              { id: "credit", label: "Credit", count: sales.filter((s) => s.payment_method === "credit").length },
-            ] as const
-          ).map((tab) => {
-            const active = paymentFilter === tab.id;
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setPaymentFilter(tab.id)}
-                className={`flex-1 py-2 px-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
-                  active ? "shadow-xs" : ""
-                }`}
-                style={{
-                  background: active ? "var(--accent)" : "transparent",
-                  color: active ? "#ffffff" : "var(--text-muted)",
-                }}
-              >
-                <span>{tab.label}</span>
-                <span
-                  className="px-1.5 py-0.2 rounded-full text-[10px]"
-                  style={{
-                    background: active ? "rgba(255,255,255,0.25)" : "var(--icon-neutral-bg)",
-                    color: active ? "#ffffff" : "var(--text-muted)",
-                  }}
-                >
-                  {tab.count}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
 
       {/* ── Sales List ── */}
       {filtered.length === 0 ? (
