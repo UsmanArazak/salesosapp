@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { RepaymentModal } from "./RepaymentModal";
 import { deleteCustomer, updateCustomer } from "@/app/actions/customers";
 
@@ -11,6 +12,13 @@ type Customer = {
   name: string;
   phone: string;
   total_debt: number;
+};
+
+type ShopProfile = {
+  name: string;
+  phone?: string | null;
+  address?: string | null;
+  bankAccounts?: string[];
 };
 
 type PurchasedItem = {
@@ -70,9 +78,11 @@ function StatusBadge({ status }: { status: string }) {
 
 export function CustomerProfileClient({
   customer: initialCustomer,
+  shop,
   creditHistory,
 }: {
   customer: Customer;
+  shop?: ShopProfile;
   creditHistory: CreditRecord[];
 }) {
   const router = useRouter();
@@ -158,6 +168,11 @@ export function CustomerProfileClient({
       });
     }
   }
+
+  const totalCreditAmount = creditHistory.reduce((sum, r) => sum + r.amount, 0);
+  const totalRepaidAmount = creditHistory.reduce((sum, r) => sum + r.amount_paid, 0);
+  const shopName = shop?.name || "Our Shop";
+  const bankList = shop?.bankAccounts || [];
 
   return (
     <div className="max-w-xl mx-auto space-y-5">
@@ -293,74 +308,129 @@ export function CustomerProfileClient({
         </div>
       )}
 
-      {/* ── Printable PDF / Account Statement Modal ── */}
+      {/* ── Official SalesOS Debt Invoice & Payment Reminder PDF Modal ── */}
       {statementModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 border shadow-xl space-y-4 max-h-[90vh] overflow-y-auto" style={{ borderColor: "var(--border-color)" }}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+          <div className="bg-white rounded-2xl max-w-xl w-full p-6 border shadow-2xl space-y-5 max-h-[92vh] overflow-y-auto" style={{ borderColor: "var(--border-color)" }}>
             <div className="flex items-center justify-between border-b pb-3" style={{ borderColor: "var(--border-color)" }}>
-              <div>
+              <div className="flex items-center gap-2">
+                <Image src="/logo.png" alt="SalesOS Logo" width={28} height={28} className="rounded-xl" />
                 <h3 className="font-bold text-base" style={{ color: "var(--text-primary)" }}>
-                  Customer Account Statement
+                  Debt Reminder Invoice & Statement
                 </h3>
-                <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-                  Official itemized debt statement for {customer.name}
-                </p>
               </div>
               <button
                 type="button"
                 onClick={() => setStatementModalOpen(false)}
-                className="text-stone-400 hover:text-stone-600 font-bold text-lg leading-none"
+                className="text-stone-400 hover:text-stone-600 font-bold text-xl leading-none"
               >
                 &times;
               </button>
             </div>
 
-            {/* Statement Printable Sheet */}
-            <div id="printable-statement" className="space-y-4 text-xs text-stone-800 p-2">
-              <div className="flex justify-between items-start border-b pb-3 border-stone-200">
+            {/* Printable PDF Invoice Document Container */}
+            <div id="printable-statement" className="bg-white p-4 space-y-5 text-xs text-stone-800 rounded-xl border border-stone-200">
+              
+              {/* Header: Shop Info & SalesOS Branding */}
+              <div className="flex justify-between items-start border-b pb-4 border-stone-200">
                 <div>
-                  <p className="font-bold text-sm text-stone-900">{customer.name}</p>
-                  <p className="text-stone-500">{customer.phone || "No phone linked"}</p>
+                  <h2 className="font-black text-lg text-stone-900 leading-tight">{shopName}</h2>
+                  {shop?.phone && <p className="text-stone-500 mt-0.5">Phone: {shop.phone}</p>}
+                  {shop?.address && <p className="text-stone-500">{shop.address}</p>}
                 </div>
                 <div className="text-right">
-                  <p className="font-bold text-xs uppercase text-amber-600">Current Balance</p>
-                  <p className="font-black text-lg text-amber-600">{formatNaira(customer.total_debt)}</p>
+                  <div className="flex items-center justify-end gap-1.5 mb-1">
+                    <Image src="/logo.png" alt="SalesOS" width={20} height={20} className="rounded-md" />
+                    <span className="font-extrabold text-xs tracking-tight text-amber-600">DEBT REMINDER INVOICE</span>
+                  </div>
+                  <p className="text-[10px] text-stone-400">Date: {new Date().toLocaleDateString("en-NG", { month: "short", day: "numeric", year: "numeric" })}</p>
                 </div>
               </div>
 
-              {/* Items Breakdown Table */}
+              {/* Debt Reminder Notice Box */}
+              <div className="p-3.5 rounded-xl bg-amber-50/80 border border-amber-200 text-amber-900 space-y-1">
+                <p className="font-bold text-xs">Payment Reminder Notice</p>
+                <p className="text-[11px] leading-relaxed text-amber-800">
+                  Dear <strong>{customer.name}</strong>, this is a friendly debt payment reminder regarding your outstanding balance of <strong>{formatNaira(customer.total_debt)}</strong> with <strong>{shopName}</strong>. Please review the itemized breakdown and repayment account details below. Thank you for your prompt settlement!
+                </p>
+              </div>
+
+              {/* Repayment Bank Details Box */}
+              {bankList.length > 0 && (
+                <div className="p-3 rounded-xl bg-blue-50/70 border border-blue-200 text-blue-900 space-y-1.5">
+                  <p className="font-bold text-xs flex items-center gap-1 text-blue-900">
+                    <span>🏦</span> Bank Account(s) for Debt Repayment:
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {bankList.map((bank, idx) => (
+                      <div key={idx} className="p-2 rounded-lg bg-white border border-blue-100 font-semibold text-xs text-blue-950">
+                        {bank}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Itemized Credit Purchases Table */}
               <div>
-                <p className="font-bold text-xs uppercase text-stone-600 mb-2">Itemized Credit Purchase Log</p>
+                <p className="font-bold text-xs uppercase tracking-wider text-stone-700 mb-2">Itemized Purchase Log</p>
                 {allCreditItems.length === 0 ? (
                   <p className="text-stone-400 italic py-2">No itemized credit purchases found.</p>
                 ) : (
                   <table className="w-full text-left border-collapse text-xs">
                     <thead>
-                      <tr className="border-b border-stone-200 text-stone-500 font-semibold">
-                        <th className="py-1.5">Date</th>
-                        <th className="py-1.5">Item</th>
-                        <th className="py-1.5 text-center">Qty</th>
-                        <th className="py-1.5 text-right">Price</th>
-                        <th className="py-1.5 text-right">Total</th>
+                      <tr className="border-b border-stone-200 text-stone-500 font-bold uppercase text-[10px]">
+                        <th className="py-2">Date</th>
+                        <th className="py-2">Item Description</th>
+                        <th className="py-2 text-center">Qty</th>
+                        <th className="py-2 text-right">Unit Price</th>
+                        <th className="py-2 text-right">Total</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-stone-100">
                       {allCreditItems.map((item, idx) => (
                         <tr key={idx}>
-                          <td className="py-1.5 text-stone-400">{item.date}</td>
-                          <td className="py-1.5 font-medium text-stone-800">{item.name}</td>
-                          <td className="py-1.5 text-center font-semibold">{item.qty}</td>
-                          <td className="py-1.5 text-right">{formatNaira(item.unitPrice)}</td>
-                          <td className="py-1.5 text-right font-bold text-stone-900">{formatNaira(item.total)}</td>
+                          <td className="py-2 text-stone-400">{item.date}</td>
+                          <td className="py-2 font-semibold text-stone-900">{item.name}</td>
+                          <td className="py-2 text-center font-bold">{item.qty}</td>
+                          <td className="py-2 text-right">{formatNaira(item.unitPrice)}</td>
+                          <td className="py-2 text-right font-bold text-stone-900">{formatNaira(item.total)}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 )}
               </div>
+
+              {/* Financial Totals Summary */}
+              <div className="pt-3 border-t border-stone-200 space-y-1.5 text-right">
+                <div className="flex justify-between text-xs text-stone-600">
+                  <span>Total Credit Purchases:</span>
+                  <span className="font-semibold">{formatNaira(totalCreditAmount)}</span>
+                </div>
+                <div className="flex justify-between text-xs text-stone-600">
+                  <span>Total Payments Received:</span>
+                  <span className="font-semibold text-emerald-700">-{formatNaira(totalRepaidAmount)}</span>
+                </div>
+                <div className="flex justify-between text-sm font-black pt-2 border-t border-dashed border-stone-300 text-amber-700">
+                  <span>Outstanding Amount Due:</span>
+                  <span>{formatNaira(customer.total_debt)}</span>
+                </div>
+              </div>
+
+              {/* Footer: SalesOS Branding Visibility */}
+              <div className="pt-4 border-t border-stone-200 text-center space-y-1">
+                <div className="flex items-center justify-center gap-1.5 text-stone-400 text-[11px] font-semibold">
+                  <Image src="/logo.png" alt="SalesOS" width={16} height={16} className="rounded-md" />
+                  <span>Powered & Created by SalesOS</span>
+                </div>
+                <p className="text-[10px] text-stone-400">
+                  Manage your business seamlessly • <a href="https://salesos.ng" target="_blank" rel="noopener noreferrer" className="underline font-bold text-amber-600">salesos.ng</a>
+                </p>
+              </div>
             </div>
 
-            {/* Modal Actions */}
+            {/* Modal Action Buttons */}
             <div className="flex gap-2.5 pt-2 border-t" style={{ borderColor: "var(--border-color)" }}>
               <button
                 type="button"
@@ -379,7 +449,7 @@ export function CustomerProfileClient({
                 <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4">
                   <path fillRule="evenodd" d="M7.875 1.5C6.839 1.5 6 2.34 6 3.375v2.25H3.375C2.339 5.625 1.5 6.465 1.5 7.5v6.75c0 1.035.84 1.875 1.875 1.875H6v2.25c0 1.036.84 1.875 1.875 1.875h8.25c1.035 0 1.875-.84 1.875-1.875v-2.25h2.625c1.035 0 1.875-.84 1.875-1.875V7.5c0-1.035-.84-1.875-1.875-1.875H18v-2.25C18 2.34 17.16 1.5 16.125 1.5h-8.25zM16.5 7.5V3.375a.375.375 0 00-.375-.375h-8.25a.375.375 0 00-.375.375V7.5h9z" clipRule="evenodd" />
                 </svg>
-                Print / Save PDF
+                Print / Download PDF
               </button>
             </div>
           </div>
@@ -410,18 +480,18 @@ export function CustomerProfileClient({
 
         {/* Action Buttons */}
         <div className="flex items-center gap-2">
-          {/* Statement PDF Button */}
+          {/* Debt PDF Invoice Button */}
           <button
             type="button"
             onClick={() => setStatementModalOpen(true)}
-            className="p-2.5 rounded-2xl border bg-white hover:bg-stone-50 transition-colors text-stone-700 shadow-2xs flex items-center gap-1 text-xs font-bold"
+            className="p-2.5 rounded-2xl border bg-white hover:bg-stone-50 transition-colors text-stone-700 shadow-2xs flex items-center gap-1.5 text-xs font-bold"
             style={{ borderColor: "var(--border-color)" }}
-            title="Generate Statement PDF"
+            title="Generate Debt Invoice PDF"
           >
-            <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-blue-600">
+            <svg viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-amber-600">
               <path fillRule="evenodd" d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V12.75A3.75 3.75 0 0016.5 9h-1.875a.375.375 0 01-.375-.375V6.75A3.75 3.75 0 0010.5 3H5.625z" clipRule="evenodd" />
             </svg>
-            <span className="hidden sm:inline">Statement</span>
+            <span className="hidden sm:inline">Debt PDF Invoice</span>
           </button>
 
           {/* Edit Button */}
@@ -477,7 +547,7 @@ export function CustomerProfileClient({
           {customer.phone && customer.total_debt > 0 && (
             <a
               href={`https://wa.me/${customer.phone.replace(/\D/g, "")}?text=${encodeURIComponent(
-                `Hello ${customer.name}, a friendly reminder regarding your outstanding balance of ${formatNaira(customer.total_debt)}.`
+                `Hello ${customer.name}, this is a friendly debt payment reminder from ${shopName} regarding your outstanding balance of ${formatNaira(customer.total_debt)}. Please let us know when you will be settling this. Thank you!`
               )}`}
               target="_blank"
               rel="noopener noreferrer"
@@ -510,7 +580,7 @@ export function CustomerProfileClient({
             className="px-4 py-2.5 rounded-2xl font-bold text-xs border bg-stone-50 hover:bg-stone-100 transition-colors"
             style={{ borderColor: "var(--border-color)", color: "var(--text-primary)" }}
           >
-            View Itemized Statement
+            Debt PDF Invoice
           </button>
         </div>
       </div>

@@ -24,7 +24,14 @@ export default async function CustomerProfilePage({
 
   if (!customer) notFound();
 
-  // 2. Fetch Credit History with purchased items (most recent first)
+  // 2. Fetch Shop Details for PDF Statement & Repayment Bank Info
+  const { data: shop } = await supabase
+    .from("shops")
+    .select("name, phone, address, bank_accounts")
+    .eq("id", session.user.shopId)
+    .single();
+
+  // 3. Fetch Credit History with purchased items (most recent first)
   const { data: creditHistory } = await supabase
     .from("credit_sales")
     .select(`
@@ -50,6 +57,7 @@ export default async function CustomerProfilePage({
   return (
     <CustomerProfileClient 
       customer={customer} 
+      shop={shop ? { name: shop.name, phone: shop.phone, address: shop.address, bankAccounts: shop.bank_accounts ?? [] } : undefined}
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       creditHistory={(creditHistory as any) ?? []} 
     />
