@@ -35,15 +35,15 @@ export default function NewCustomerPage() {
   }
 
   return (
-    <div className="max-w-lg mx-auto">
+    <div className="max-w-lg mx-auto space-y-5">
       {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
+      <div className="flex items-center gap-3">
         <Link
           href="/customers"
-          className="w-9 h-9 rounded-xl border flex items-center justify-center transition-colors bg-white"
+          className="w-9 h-9 rounded-2xl border flex items-center justify-center transition-colors bg-white hover:bg-stone-50"
           style={{ borderColor: "var(--border-color)", color: "var(--text-muted)" }}
         >
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} className="w-4 h-4">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} className="w-4 h-4">
             <polyline points="15 18 9 12 15 6" />
           </svg>
         </Link>
@@ -51,25 +51,25 @@ export default function NewCustomerPage() {
           <h1 className="text-xl font-bold" style={{ color: "var(--text-primary)" }}>
             Add Customer
           </h1>
-          <p className="text-sm" style={{ color: "var(--text-muted)" }}>
-            Create a new manual entry
+          <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+            Save customer details for credit tracking
           </p>
         </div>
       </div>
 
       <DismissableHelpBanner
         storageKey="new-customer"
-        message="When a customer buys on debt, save their details so you never forget."
+        message="When a customer buys on credit, save their details here so you can track how much they owe."
       />
 
       {/* Form Card */}
       <div
-        className="rounded-2xl border p-5 bg-white"
-        style={{ borderColor: "var(--border-color)" }}
+        className="rounded-2xl border p-5 bg-white space-y-4"
+        style={{ borderColor: "var(--border-color)", boxShadow: "var(--card-shadow)" }}
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1.5" style={{ color: "var(--text-dim)" }}>
+            <label className="block text-xs font-semibold mb-1" style={{ color: "var(--text-dim)" }}>
               Full Name *
             </label>
             <input
@@ -79,13 +79,13 @@ export default function NewCustomerPage() {
               onChange={(e) => setName(e.target.value)}
               autoFocus
               placeholder="e.g. Samuel Adebayo"
-              className="w-full rounded-xl border px-3 py-2 text-sm focus:outline-none focus:border-[var(--accent)] transition-colors"
+              className="w-full rounded-2xl border px-3.5 py-2.5 text-xs focus:outline-none transition-colors"
               style={{ background: "var(--bg-surface)", borderColor: "var(--border-color)", color: "var(--text-primary)" }}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1.5" style={{ color: "var(--text-dim)" }}>
+            <label className="block text-xs font-semibold mb-1" style={{ color: "var(--text-dim)" }}>
               Phone Number
             </label>
             <input
@@ -93,26 +93,26 @@ export default function NewCustomerPage() {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="08012345678"
-              className="w-full rounded-xl border px-3 py-2 text-sm focus:outline-none focus:border-[var(--accent)] transition-colors"
+              className="w-full rounded-2xl border px-3.5 py-2.5 text-xs focus:outline-none transition-colors"
               style={{ background: "var(--bg-surface)", borderColor: "var(--border-color)", color: "var(--text-primary)" }}
             />
           </div>
 
           {error && (
-            <div className="rounded-xl px-4 py-3 text-sm border" style={{ background: "var(--danger-dim)", borderColor: "var(--danger)", color: "#dc2626" }}>
+            <div className="rounded-xl px-3 py-2 text-xs font-semibold bg-red-50 border border-red-200 text-red-600">
               {error}
             </div>
           )}
 
-          <div className="pt-2">
-             <button
-                type="submit"
-                disabled={loading}
-                className="w-full font-bold py-3 rounded-xl text-sm text-white transition-all active:scale-[0.98] disabled:opacity-60 shadow-sm"
-                style={{ background: "var(--accent)" }}
-             >
-                {loading ? "Saving..." : "Add Customer"}
-             </button>
+          <div className="pt-1">
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full font-bold py-2.5 rounded-2xl text-xs text-white transition-all active:scale-[0.98] disabled:opacity-50 shadow-sm"
+              style={{ background: "var(--accent)" }}
+            >
+              {loading ? "Saving Customer..." : "Add Customer"}
+            </button>
           </div>
         </form>
       </div>
